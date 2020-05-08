@@ -1,18 +1,14 @@
 module Image exposing
     ( Image
-    , page1
-    , page2
-    , page3
-    , page4
-    , page5
-    , page6
-    , page7
-    , page8
-    , page9
+    , building
+    , house
+    , toBackground
     , toElement
+    , worldMap
     )
 
 import Element exposing (Attribute, Element)
+import Element.Background as Background
 
 
 type Image
@@ -27,46 +23,25 @@ toElement attributes (Image { src, description }) =
         }
 
 
-page1 : Image
-page1 =
-    createImage "Page1.png" "Page 1"
+toBackground : Image -> Attribute msg
+toBackground (Image { src }) =
+    Background.image src
 
 
-page2 : Image
-page2 =
-    createImage "Page2.png" "Page 2"
+house : Image
+house =
+    createImage "House.jpg" "Landing Photo"
 
 
-page3 : Image
-page3 =
-    createImage "Page3.png" "Page 3"
+building : Image
+building =
+    createImage "Building.jpg" "Market Photo"
 
 
-page4 : Image
-page4 =
-    createImage "Page4.png" "Page 4"
+worldMap : Image
+worldMap =
+    createImage "WorldMap.png" "World Map Mission Photo"
 
-
-page5 : Image
-page5 =
-    createImage "Page5.png" "Page 5"
-
-
-page6 : Image
-page6 =
-    createImage "Page6.png" "Page 6"
-
-page7 : Image
-page7 =
-    createImage "Page7.png" "Page 7"
-
-page8 : Image
-page8 =
-    createImage "Page8.png" "Page 8"
-
-page9 : Image
-page9 =
-    createImage "Page9.png" "Page 9"
 
 createImage : String -> String -> Image
 createImage filename description =
