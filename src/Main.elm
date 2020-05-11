@@ -312,6 +312,7 @@ attributeBox =
         [ fillWidth
         , [ Element.padding 48
           , Element.spacing 48
+          , Element.alignTop
           ]
         ]
 
