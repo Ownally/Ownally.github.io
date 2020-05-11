@@ -1,10 +1,13 @@
 module Image exposing
     ( Image
-    , building
+    , buildings
     , house
+    , pieChart
+    , rentalContract
+    , technology
     , toBackground
     , toElement
-    , worldMap
+    , tradeGrowth
     )
 
 import Element exposing (Attribute, Element)
@@ -33,14 +36,29 @@ house =
     createImage "House.jpg" "Landing Photo"
 
 
-building : Image
-building =
-    createImage "Building.jpg" "Market Photo"
+pieChart : Image
+pieChart =
+    createImage "PieChart.svg" "Equity Photo"
 
 
-worldMap : Image
-worldMap =
-    createImage "WorldMap.png" "World Map Mission Photo"
+rentalContract : Image
+rentalContract =
+    createImage "RentalContract.svg" "Rental Photo"
+
+
+tradeGrowth : Image
+tradeGrowth =
+    createImage "TradeGrowth.svg" "Trade Photo"
+
+
+buildings : Image
+buildings =
+    createImage "Buildings.jpg" "Building Photo"
+
+
+technology : Image
+technology =
+    createImage "Technology.jpg" "Technology Photo"
 
 
 createImage : String -> String -> Image
