@@ -5183,6 +5183,10 @@ var $elm$core$Task$perform = F2(
 	});
 var $elm$browser$Browser$element = _Browser_element;
 var $elm$json$Json$Decode$field = _Json_decodeField;
+var $author$project$Main$Model = F2(
+	function (window, device) {
+		return {device: device, window: window};
+	});
 var $mdgriffith$elm_ui$Element$BigDesktop = {$: 'BigDesktop'};
 var $mdgriffith$elm_ui$Element$Desktop = {$: 'Desktop'};
 var $mdgriffith$elm_ui$Element$Landscape = {$: 'Landscape'};
@@ -5205,9 +5209,12 @@ var $mdgriffith$elm_ui$Element$classifyDevice = function (window) {
 };
 var $elm$core$Platform$Cmd$batch = _Platform_batch;
 var $elm$core$Platform$Cmd$none = $elm$core$Platform$Cmd$batch(_List_Nil);
-var $author$project$Main$init = function (flag) {
+var $author$project$Main$init = function (window) {
 	return _Utils_Tuple2(
-		$mdgriffith$elm_ui$Element$classifyDevice(flag),
+		A2(
+			$author$project$Main$Model,
+			window,
+			$mdgriffith$elm_ui$Element$classifyDevice(window)),
 		$elm$core$Platform$Cmd$none);
 };
 var $elm$json$Json$Decode$int = _Json_decodeInt;
@@ -5632,19 +5639,33 @@ var $elm$browser$Browser$Events$onResize = function (func) {
 var $author$project$Main$subscriptions = function (_v0) {
 	return $elm$browser$Browser$Events$onResize($author$project$Main$ChangeWindow);
 };
-var $author$project$Main$Flag = F2(
+var $author$project$Main$Window = F2(
 	function (width, height) {
 		return {height: height, width: width};
 	});
 var $author$project$Main$update = F2(
-	function (msg, model) {
+	function (msg, _v0) {
 		var width = msg.a;
 		var height = msg.b;
+		var window = A2($author$project$Main$Window, width, height);
 		return _Utils_Tuple2(
-			$mdgriffith$elm_ui$Element$classifyDevice(
-				A2($author$project$Main$Flag, width, height)),
+			A2(
+				$author$project$Main$Model,
+				window,
+				$mdgriffith$elm_ui$Element$classifyDevice(window)),
 			$elm$core$Platform$Cmd$none);
 	});
+var $elm$core$List$append = F2(
+	function (xs, ys) {
+		if (!ys.b) {
+			return xs;
+		} else {
+			return A3($elm$core$List$foldr, $elm$core$List$cons, ys, xs);
+		}
+	});
+var $elm$core$List$concat = function (lists) {
+	return A3($elm$core$List$foldr, $elm$core$List$append, _List_Nil, lists);
+};
 var $mdgriffith$elm_ui$Internal$Model$Fill = function (a) {
 	return {$: 'Fill', a: a};
 };
@@ -5653,31 +5674,233 @@ var $mdgriffith$elm_ui$Internal$Model$Height = function (a) {
 	return {$: 'Height', a: a};
 };
 var $mdgriffith$elm_ui$Element$height = $mdgriffith$elm_ui$Internal$Model$Height;
+var $mdgriffith$elm_ui$Internal$Model$Width = function (a) {
+	return {$: 'Width', a: a};
+};
+var $mdgriffith$elm_ui$Element$width = $mdgriffith$elm_ui$Internal$Model$Width;
+var $author$project$Main$fillWindow = _List_fromArray(
+	[
+		$mdgriffith$elm_ui$Element$width($mdgriffith$elm_ui$Element$fill),
+		$mdgriffith$elm_ui$Element$height($mdgriffith$elm_ui$Element$fill)
+	]);
+var $mdgriffith$elm_ui$Internal$Model$InFront = {$: 'InFront'};
+var $mdgriffith$elm_ui$Internal$Model$Nearby = F2(
+	function (a, b) {
+		return {$: 'Nearby', a: a, b: b};
+	});
+var $mdgriffith$elm_ui$Internal$Model$NoAttribute = {$: 'NoAttribute'};
+var $mdgriffith$elm_ui$Element$createNearby = F2(
+	function (loc, element) {
+		if (element.$ === 'Empty') {
+			return $mdgriffith$elm_ui$Internal$Model$NoAttribute;
+		} else {
+			return A2($mdgriffith$elm_ui$Internal$Model$Nearby, loc, element);
+		}
+	});
+var $mdgriffith$elm_ui$Element$inFront = function (element) {
+	return A2($mdgriffith$elm_ui$Element$createNearby, $mdgriffith$elm_ui$Internal$Model$InFront, element);
+};
+var $mdgriffith$elm_ui$Internal$Model$Class = F2(
+	function (a, b) {
+		return {$: 'Class', a: a, b: b};
+	});
 var $mdgriffith$elm_ui$Internal$Style$classes = {above: 'a', active: 'atv', alignBottom: 'ab', alignCenterX: 'cx', alignCenterY: 'cy', alignContainerBottom: 'acb', alignContainerCenterX: 'accx', alignContainerCenterY: 'accy', alignContainerRight: 'acr', alignLeft: 'al', alignRight: 'ar', alignTop: 'at', alignedHorizontally: 'ah', alignedVertically: 'av', any: 's', behind: 'bh', below: 'b', bold: 'w7', borderDashed: 'bd', borderDotted: 'bdt', borderNone: 'bn', borderSolid: 'bs', capturePointerEvents: 'cpe', clip: 'cp', clipX: 'cpx', clipY: 'cpy', column: 'c', container: 'ctr', contentBottom: 'cb', contentCenterX: 'ccx', contentCenterY: 'ccy', contentLeft: 'cl', contentRight: 'cr', contentTop: 'ct', cursorPointer: 'cptr', cursorText: 'ctxt', focus: 'fcs', focusedWithin: 'focus-within', fullSize: 'fs', grid: 'g', hasBehind: 'hbh', heightContent: 'hc', heightExact: 'he', heightFill: 'hf', heightFillPortion: 'hfp', hover: 'hv', imageContainer: 'ic', inFront: 'fr', inputMultiline: 'iml', inputMultilineFiller: 'imlf', inputMultilineParent: 'imlp', inputMultilineWrapper: 'implw', inputText: 'it', italic: 'i', link: 'lnk', nearby: 'nb', noTextSelection: 'notxt', onLeft: 'ol', onRight: 'or', opaque: 'oq', overflowHidden: 'oh', page: 'pg', paragraph: 'p', passPointerEvents: 'ppe', root: 'ui', row: 'r', scrollbars: 'sb', scrollbarsX: 'sbx', scrollbarsY: 'sby', seButton: 'sbt', single: 'e', sizeByCapital: 'cap', spaceEvenly: 'sev', strike: 'sk', text: 't', textCenter: 'tc', textExtraBold: 'w8', textExtraLight: 'w2', textHeavy: 'w9', textJustify: 'tj', textJustifyAll: 'tja', textLeft: 'tl', textLight: 'w3', textMedium: 'w5', textNormalWeight: 'w4', textRight: 'tr', textSemiBold: 'w6', textThin: 'w1', textUnitalicized: 'tun', transition: 'ts', transparent: 'clr', underline: 'u', widthContent: 'wc', widthExact: 'we', widthFill: 'wf', widthFillPortion: 'wfp', wrapped: 'wrp'};
-var $mdgriffith$elm_ui$Internal$Model$Attr = function (a) {
-	return {$: 'Attr', a: a};
+var $mdgriffith$elm_ui$Internal$Flag$Flag = function (a) {
+	return {$: 'Flag', a: a};
 };
-var $elm$json$Json$Encode$string = _Json_wrap;
-var $elm$html$Html$Attributes$stringProperty = F2(
-	function (key, string) {
-		return A2(
-			_VirtualDom_property,
-			key,
-			$elm$json$Json$Encode$string(string));
-	});
-var $elm$html$Html$Attributes$class = $elm$html$Html$Attributes$stringProperty('className');
-var $mdgriffith$elm_ui$Internal$Model$htmlClass = function (cls) {
-	return $mdgriffith$elm_ui$Internal$Model$Attr(
-		$elm$html$Html$Attributes$class(cls));
+var $mdgriffith$elm_ui$Internal$Flag$Second = function (a) {
+	return {$: 'Second', a: a};
 };
-var $mdgriffith$elm_ui$Internal$Model$OnlyDynamic = F2(
-	function (a, b) {
-		return {$: 'OnlyDynamic', a: a, b: b};
+var $elm$core$Bitwise$shiftLeftBy = _Bitwise_shiftLeftBy;
+var $mdgriffith$elm_ui$Internal$Flag$flag = function (i) {
+	return (i > 31) ? $mdgriffith$elm_ui$Internal$Flag$Second(1 << (i - 32)) : $mdgriffith$elm_ui$Internal$Flag$Flag(1 << i);
+};
+var $mdgriffith$elm_ui$Internal$Flag$fontAlignment = $mdgriffith$elm_ui$Internal$Flag$flag(12);
+var $mdgriffith$elm_ui$Element$Font$alignLeft = A2($mdgriffith$elm_ui$Internal$Model$Class, $mdgriffith$elm_ui$Internal$Flag$fontAlignment, $mdgriffith$elm_ui$Internal$Style$classes.textLeft);
+var $mdgriffith$elm_ui$Internal$Flag$fontWeight = $mdgriffith$elm_ui$Internal$Flag$flag(13);
+var $mdgriffith$elm_ui$Element$Font$bold = A2($mdgriffith$elm_ui$Internal$Model$Class, $mdgriffith$elm_ui$Internal$Flag$fontWeight, $mdgriffith$elm_ui$Internal$Style$classes.bold);
+var $mdgriffith$elm_ui$Internal$Model$Colored = F3(
+	function (a, b, c) {
+		return {$: 'Colored', a: a, b: b, c: c};
 	});
-var $mdgriffith$elm_ui$Internal$Model$StaticRootAndDynamic = F2(
+var $mdgriffith$elm_ui$Internal$Model$StyleClass = F2(
 	function (a, b) {
-		return {$: 'StaticRootAndDynamic', a: a, b: b};
+		return {$: 'StyleClass', a: a, b: b};
 	});
+var $mdgriffith$elm_ui$Internal$Flag$bgColor = $mdgriffith$elm_ui$Internal$Flag$flag(8);
+var $elm$core$Basics$round = _Basics_round;
+var $mdgriffith$elm_ui$Internal$Model$floatClass = function (x) {
+	return $elm$core$String$fromInt(
+		$elm$core$Basics$round(x * 255));
+};
+var $mdgriffith$elm_ui$Internal$Model$formatColorClass = function (_v0) {
+	var red = _v0.a;
+	var green = _v0.b;
+	var blue = _v0.c;
+	var alpha = _v0.d;
+	return $mdgriffith$elm_ui$Internal$Model$floatClass(red) + ('-' + ($mdgriffith$elm_ui$Internal$Model$floatClass(green) + ('-' + ($mdgriffith$elm_ui$Internal$Model$floatClass(blue) + ('-' + $mdgriffith$elm_ui$Internal$Model$floatClass(alpha))))));
+};
+var $mdgriffith$elm_ui$Element$Background$color = function (clr) {
+	return A2(
+		$mdgriffith$elm_ui$Internal$Model$StyleClass,
+		$mdgriffith$elm_ui$Internal$Flag$bgColor,
+		A3(
+			$mdgriffith$elm_ui$Internal$Model$Colored,
+			'bg-' + $mdgriffith$elm_ui$Internal$Model$formatColorClass(clr),
+			'background-color',
+			clr));
+};
+var $mdgriffith$elm_ui$Internal$Flag$fontColor = $mdgriffith$elm_ui$Internal$Flag$flag(14);
+var $mdgriffith$elm_ui$Element$Font$color = function (fontColor) {
+	return A2(
+		$mdgriffith$elm_ui$Internal$Model$StyleClass,
+		$mdgriffith$elm_ui$Internal$Flag$fontColor,
+		A3(
+			$mdgriffith$elm_ui$Internal$Model$Colored,
+			'fc-' + $mdgriffith$elm_ui$Internal$Model$formatColorClass(fontColor),
+			'color',
+			fontColor));
+};
+var $mdgriffith$elm_ui$Internal$Model$FontFamily = F2(
+	function (a, b) {
+		return {$: 'FontFamily', a: a, b: b};
+	});
+var $mdgriffith$elm_ui$Internal$Flag$fontFamily = $mdgriffith$elm_ui$Internal$Flag$flag(5);
+var $elm$core$String$toLower = _String_toLower;
+var $elm$core$String$words = _String_words;
+var $mdgriffith$elm_ui$Internal$Model$renderFontClassName = F2(
+	function (font, current) {
+		return _Utils_ap(
+			current,
+			function () {
+				switch (font.$) {
+					case 'Serif':
+						return 'serif';
+					case 'SansSerif':
+						return 'sans-serif';
+					case 'Monospace':
+						return 'monospace';
+					case 'Typeface':
+						var name = font.a;
+						return A2(
+							$elm$core$String$join,
+							'-',
+							$elm$core$String$words(
+								$elm$core$String$toLower(name)));
+					case 'ImportFont':
+						var name = font.a;
+						var url = font.b;
+						return A2(
+							$elm$core$String$join,
+							'-',
+							$elm$core$String$words(
+								$elm$core$String$toLower(name)));
+					default:
+						var name = font.a.name;
+						return A2(
+							$elm$core$String$join,
+							'-',
+							$elm$core$String$words(
+								$elm$core$String$toLower(name)));
+				}
+			}());
+	});
+var $mdgriffith$elm_ui$Element$Font$family = function (families) {
+	return A2(
+		$mdgriffith$elm_ui$Internal$Model$StyleClass,
+		$mdgriffith$elm_ui$Internal$Flag$fontFamily,
+		A2(
+			$mdgriffith$elm_ui$Internal$Model$FontFamily,
+			A3($elm$core$List$foldl, $mdgriffith$elm_ui$Internal$Model$renderFontClassName, 'ff-', families),
+			families));
+};
+var $mdgriffith$elm_ui$Internal$Model$Content = {$: 'Content'};
+var $mdgriffith$elm_ui$Element$shrink = $mdgriffith$elm_ui$Internal$Model$Content;
+var $author$project$Main$fillWidth = _List_fromArray(
+	[
+		$mdgriffith$elm_ui$Element$width($mdgriffith$elm_ui$Element$fill),
+		$mdgriffith$elm_ui$Element$height($mdgriffith$elm_ui$Element$shrink)
+	]);
+var $mdgriffith$elm_ui$Internal$Model$Rgba = F4(
+	function (a, b, c, d) {
+		return {$: 'Rgba', a: a, b: b, c: c, d: d};
+	});
+var $mdgriffith$elm_ui$Element$fromRgb255 = function (clr) {
+	return A4($mdgriffith$elm_ui$Internal$Model$Rgba, clr.red / 255, clr.green / 255, clr.blue / 255, clr.alpha);
+};
+var $author$project$Main$lightBlack = $mdgriffith$elm_ui$Element$fromRgb255(
+	{alpha: 1, blue: 32, green: 32, red: 32});
+var $mdgriffith$elm_ui$Internal$Model$PaddingStyle = F5(
+	function (a, b, c, d, e) {
+		return {$: 'PaddingStyle', a: a, b: b, c: c, d: d, e: e};
+	});
+var $mdgriffith$elm_ui$Internal$Flag$padding = $mdgriffith$elm_ui$Internal$Flag$flag(2);
+var $mdgriffith$elm_ui$Element$paddingXY = F2(
+	function (x, y) {
+		return _Utils_eq(x, y) ? A2(
+			$mdgriffith$elm_ui$Internal$Model$StyleClass,
+			$mdgriffith$elm_ui$Internal$Flag$padding,
+			A5(
+				$mdgriffith$elm_ui$Internal$Model$PaddingStyle,
+				'p-' + $elm$core$String$fromInt(x),
+				x,
+				x,
+				x,
+				x)) : A2(
+			$mdgriffith$elm_ui$Internal$Model$StyleClass,
+			$mdgriffith$elm_ui$Internal$Flag$padding,
+			A5(
+				$mdgriffith$elm_ui$Internal$Model$PaddingStyle,
+				'p-' + ($elm$core$String$fromInt(x) + ('-' + $elm$core$String$fromInt(y))),
+				y,
+				x,
+				y,
+				x));
+	});
+var $mdgriffith$elm_ui$Internal$Model$SansSerif = {$: 'SansSerif'};
+var $mdgriffith$elm_ui$Element$Font$sansSerif = $mdgriffith$elm_ui$Internal$Model$SansSerif;
+var $mdgriffith$elm_ui$Internal$Model$Typeface = function (a) {
+	return {$: 'Typeface', a: a};
+};
+var $mdgriffith$elm_ui$Element$Font$typeface = $mdgriffith$elm_ui$Internal$Model$Typeface;
+var $author$project$Main$rubik = _List_fromArray(
+	[
+		$mdgriffith$elm_ui$Element$Font$typeface('Rubik'),
+		$mdgriffith$elm_ui$Element$Font$sansSerif
+	]);
+var $mdgriffith$elm_ui$Internal$Model$FontSize = function (a) {
+	return {$: 'FontSize', a: a};
+};
+var $mdgriffith$elm_ui$Internal$Flag$fontSize = $mdgriffith$elm_ui$Internal$Flag$flag(4);
+var $mdgriffith$elm_ui$Element$Font$size = function (i) {
+	return A2(
+		$mdgriffith$elm_ui$Internal$Model$StyleClass,
+		$mdgriffith$elm_ui$Internal$Flag$fontSize,
+		$mdgriffith$elm_ui$Internal$Model$FontSize(i));
+};
+var $author$project$Main$white = $mdgriffith$elm_ui$Element$fromRgb255(
+	{alpha: 1, blue: 255, green: 255, red: 255});
+var $author$project$Main$attributeHeader = $elm$core$List$concat(
+	_List_fromArray(
+		[
+			$author$project$Main$fillWidth,
+			_List_fromArray(
+			[
+				A2($mdgriffith$elm_ui$Element$paddingXY, 144, 18)
+			]),
+			_List_fromArray(
+			[
+				$mdgriffith$elm_ui$Element$Background$color($author$project$Main$lightBlack)
+			]),
+			_List_fromArray(
+			[
+				$mdgriffith$elm_ui$Element$Font$color($author$project$Main$white),
+				$mdgriffith$elm_ui$Element$Font$size(36),
+				$mdgriffith$elm_ui$Element$Font$family($author$project$Main$rubik),
+				$mdgriffith$elm_ui$Element$Font$alignLeft,
+				$mdgriffith$elm_ui$Element$Font$bold
+			])
+		]));
 var $mdgriffith$elm_ui$Internal$Model$Unkeyed = function (a) {
 	return {$: 'Unkeyed', a: a};
 };
@@ -5784,20 +6007,19 @@ var $mdgriffith$elm_ui$Internal$Model$addKeyedChildren = F3(
 	});
 var $mdgriffith$elm_ui$Internal$Model$AsParagraph = {$: 'AsParagraph'};
 var $mdgriffith$elm_ui$Internal$Model$asParagraph = $mdgriffith$elm_ui$Internal$Model$AsParagraph;
-var $mdgriffith$elm_ui$Internal$Flag$Flag = function (a) {
-	return {$: 'Flag', a: a};
-};
-var $mdgriffith$elm_ui$Internal$Flag$Second = function (a) {
-	return {$: 'Second', a: a};
-};
-var $elm$core$Bitwise$shiftLeftBy = _Bitwise_shiftLeftBy;
-var $mdgriffith$elm_ui$Internal$Flag$flag = function (i) {
-	return (i > 31) ? $mdgriffith$elm_ui$Internal$Flag$Second(1 << (i - 32)) : $mdgriffith$elm_ui$Internal$Flag$Flag(1 << i);
-};
 var $mdgriffith$elm_ui$Internal$Flag$alignBottom = $mdgriffith$elm_ui$Internal$Flag$flag(41);
 var $mdgriffith$elm_ui$Internal$Flag$alignRight = $mdgriffith$elm_ui$Internal$Flag$flag(40);
 var $mdgriffith$elm_ui$Internal$Flag$centerX = $mdgriffith$elm_ui$Internal$Flag$flag(42);
 var $mdgriffith$elm_ui$Internal$Flag$centerY = $mdgriffith$elm_ui$Internal$Flag$flag(43);
+var $elm$json$Json$Encode$string = _Json_wrap;
+var $elm$html$Html$Attributes$stringProperty = F2(
+	function (key, string) {
+		return A2(
+			_VirtualDom_property,
+			key,
+			$elm$json$Json$Encode$string(string));
+	});
+var $elm$html$Html$Attributes$class = $elm$html$Html$Attributes$stringProperty('className');
 var $elm$html$Html$div = _VirtualDom_node('div');
 var $elm$core$Set$Set_elm_builtin = function (a) {
 	return {$: 'Set_elm_builtin', a: a};
@@ -5826,11 +6048,6 @@ var $mdgriffith$elm_ui$Internal$Model$lengthClassName = function (x) {
 var $elm$core$Tuple$second = function (_v0) {
 	var y = _v0.b;
 	return y;
-};
-var $elm$core$Basics$round = _Basics_round;
-var $mdgriffith$elm_ui$Internal$Model$floatClass = function (x) {
-	return $elm$core$String$fromInt(
-		$elm$core$Basics$round(x * 255));
 };
 var $mdgriffith$elm_ui$Internal$Model$transformClass = function (transform) {
 	switch (transform.$) {
@@ -6240,17 +6457,6 @@ var $mdgriffith$elm_ui$Internal$Style$CenterY = {$: 'CenterY'};
 var $mdgriffith$elm_ui$Internal$Style$Top = {$: 'Top'};
 var $mdgriffith$elm_ui$Internal$Style$alignments = _List_fromArray(
 	[$mdgriffith$elm_ui$Internal$Style$Top, $mdgriffith$elm_ui$Internal$Style$Bottom, $mdgriffith$elm_ui$Internal$Style$Right, $mdgriffith$elm_ui$Internal$Style$Left, $mdgriffith$elm_ui$Internal$Style$CenterX, $mdgriffith$elm_ui$Internal$Style$CenterY]);
-var $elm$core$List$append = F2(
-	function (xs, ys) {
-		if (!ys.b) {
-			return xs;
-		} else {
-			return A3($elm$core$List$foldr, $elm$core$List$cons, ys, xs);
-		}
-	});
-var $elm$core$List$concat = function (lists) {
-	return A3($elm$core$List$foldr, $elm$core$List$append, _List_Nil, lists);
-};
 var $elm$core$List$concatMap = F2(
 	function (f, list) {
 		return $elm$core$List$concat(
@@ -11076,12 +11282,59 @@ var $mdgriffith$elm_ui$Internal$Model$element = F4(
 				$mdgriffith$elm_ui$Internal$Model$NoNearbyChildren,
 				$elm$core$List$reverse(attributes)));
 	});
+var $mdgriffith$elm_ui$Element$el = F2(
+	function (attrs, child) {
+		return A4(
+			$mdgriffith$elm_ui$Internal$Model$element,
+			$mdgriffith$elm_ui$Internal$Model$asEl,
+			$mdgriffith$elm_ui$Internal$Model$div,
+			A2(
+				$elm$core$List$cons,
+				$mdgriffith$elm_ui$Element$width($mdgriffith$elm_ui$Element$shrink),
+				A2(
+					$elm$core$List$cons,
+					$mdgriffith$elm_ui$Element$height($mdgriffith$elm_ui$Element$shrink),
+					attrs)),
+			$mdgriffith$elm_ui$Internal$Model$Unkeyed(
+				_List_fromArray(
+					[child])));
+	});
+var $mdgriffith$elm_ui$Internal$Model$Text = function (a) {
+	return {$: 'Text', a: a};
+};
+var $mdgriffith$elm_ui$Element$text = function (content) {
+	return $mdgriffith$elm_ui$Internal$Model$Text(content);
+};
+var $author$project$Main$viewHeader = A2(
+	$mdgriffith$elm_ui$Element$el,
+	$author$project$Main$attributeHeader,
+	$mdgriffith$elm_ui$Element$text('Ownally'));
+var $author$project$Main$attributeLayout = $elm$core$List$concat(
+	_List_fromArray(
+		[
+			$author$project$Main$fillWindow,
+			_List_fromArray(
+			[
+				$mdgriffith$elm_ui$Element$inFront($author$project$Main$viewHeader)
+			])
+		]));
+var $mdgriffith$elm_ui$Internal$Model$Attr = function (a) {
+	return {$: 'Attr', a: a};
+};
+var $mdgriffith$elm_ui$Internal$Model$htmlClass = function (cls) {
+	return $mdgriffith$elm_ui$Internal$Model$Attr(
+		$elm$html$Html$Attributes$class(cls));
+};
+var $mdgriffith$elm_ui$Internal$Model$OnlyDynamic = F2(
+	function (a, b) {
+		return {$: 'OnlyDynamic', a: a, b: b};
+	});
+var $mdgriffith$elm_ui$Internal$Model$StaticRootAndDynamic = F2(
+	function (a, b) {
+		return {$: 'StaticRootAndDynamic', a: a, b: b};
+	});
 var $mdgriffith$elm_ui$Internal$Model$AllowHover = {$: 'AllowHover'};
 var $mdgriffith$elm_ui$Internal$Model$Layout = {$: 'Layout'};
-var $mdgriffith$elm_ui$Internal$Model$Rgba = F4(
-	function (a, b, c, d) {
-		return {$: 'Rgba', a: a, b: b, c: c, d: d};
-	});
 var $mdgriffith$elm_ui$Internal$Model$focusDefaultStyle = {
 	backgroundColor: $elm$core$Maybe$Nothing,
 	borderColor: $elm$core$Maybe$Nothing,
@@ -11216,75 +11469,6 @@ var $mdgriffith$elm_ui$Internal$Model$renderRoot = F3(
 					_List_fromArray(
 						[child]))));
 	});
-var $mdgriffith$elm_ui$Internal$Model$Colored = F3(
-	function (a, b, c) {
-		return {$: 'Colored', a: a, b: b, c: c};
-	});
-var $mdgriffith$elm_ui$Internal$Model$FontFamily = F2(
-	function (a, b) {
-		return {$: 'FontFamily', a: a, b: b};
-	});
-var $mdgriffith$elm_ui$Internal$Model$FontSize = function (a) {
-	return {$: 'FontSize', a: a};
-};
-var $mdgriffith$elm_ui$Internal$Model$SansSerif = {$: 'SansSerif'};
-var $mdgriffith$elm_ui$Internal$Model$StyleClass = F2(
-	function (a, b) {
-		return {$: 'StyleClass', a: a, b: b};
-	});
-var $mdgriffith$elm_ui$Internal$Model$Typeface = function (a) {
-	return {$: 'Typeface', a: a};
-};
-var $mdgriffith$elm_ui$Internal$Flag$bgColor = $mdgriffith$elm_ui$Internal$Flag$flag(8);
-var $mdgriffith$elm_ui$Internal$Flag$fontColor = $mdgriffith$elm_ui$Internal$Flag$flag(14);
-var $mdgriffith$elm_ui$Internal$Flag$fontFamily = $mdgriffith$elm_ui$Internal$Flag$flag(5);
-var $mdgriffith$elm_ui$Internal$Flag$fontSize = $mdgriffith$elm_ui$Internal$Flag$flag(4);
-var $mdgriffith$elm_ui$Internal$Model$formatColorClass = function (_v0) {
-	var red = _v0.a;
-	var green = _v0.b;
-	var blue = _v0.c;
-	var alpha = _v0.d;
-	return $mdgriffith$elm_ui$Internal$Model$floatClass(red) + ('-' + ($mdgriffith$elm_ui$Internal$Model$floatClass(green) + ('-' + ($mdgriffith$elm_ui$Internal$Model$floatClass(blue) + ('-' + $mdgriffith$elm_ui$Internal$Model$floatClass(alpha))))));
-};
-var $elm$core$String$toLower = _String_toLower;
-var $elm$core$String$words = _String_words;
-var $mdgriffith$elm_ui$Internal$Model$renderFontClassName = F2(
-	function (font, current) {
-		return _Utils_ap(
-			current,
-			function () {
-				switch (font.$) {
-					case 'Serif':
-						return 'serif';
-					case 'SansSerif':
-						return 'sans-serif';
-					case 'Monospace':
-						return 'monospace';
-					case 'Typeface':
-						var name = font.a;
-						return A2(
-							$elm$core$String$join,
-							'-',
-							$elm$core$String$words(
-								$elm$core$String$toLower(name)));
-					case 'ImportFont':
-						var name = font.a;
-						var url = font.b;
-						return A2(
-							$elm$core$String$join,
-							'-',
-							$elm$core$String$words(
-								$elm$core$String$toLower(name)));
-					default:
-						var name = font.a.name;
-						return A2(
-							$elm$core$String$join,
-							'-',
-							$elm$core$String$words(
-								$elm$core$String$toLower(name)));
-				}
-			}());
-	});
 var $mdgriffith$elm_ui$Internal$Model$rootStyle = function () {
 	var families = _List_fromArray(
 		[
@@ -11345,82 +11529,7 @@ var $mdgriffith$elm_ui$Element$layoutWith = F3(
 	});
 var $mdgriffith$elm_ui$Element$layout = $mdgriffith$elm_ui$Element$layoutWith(
 	{options: _List_Nil});
-var $mdgriffith$elm_ui$Internal$Model$Content = {$: 'Content'};
-var $mdgriffith$elm_ui$Element$shrink = $mdgriffith$elm_ui$Internal$Model$Content;
-var $mdgriffith$elm_ui$Internal$Model$Width = function (a) {
-	return {$: 'Width', a: a};
-};
-var $mdgriffith$elm_ui$Element$width = $mdgriffith$elm_ui$Internal$Model$Width;
-var $author$project$Main$styledLayout = $mdgriffith$elm_ui$Element$layout(
-	_List_fromArray(
-		[
-			$mdgriffith$elm_ui$Element$width($mdgriffith$elm_ui$Element$fill),
-			$mdgriffith$elm_ui$Element$height($mdgriffith$elm_ui$Element$shrink)
-		]));
-var $author$project$Main$attributeByDevice = _List_fromArray(
-	[
-		$mdgriffith$elm_ui$Element$width($mdgriffith$elm_ui$Element$fill),
-		$mdgriffith$elm_ui$Element$height($mdgriffith$elm_ui$Element$shrink)
-	]);
-var $mdgriffith$elm_ui$Element$Background$color = function (clr) {
-	return A2(
-		$mdgriffith$elm_ui$Internal$Model$StyleClass,
-		$mdgriffith$elm_ui$Internal$Flag$bgColor,
-		A3(
-			$mdgriffith$elm_ui$Internal$Model$Colored,
-			'bg-' + $mdgriffith$elm_ui$Internal$Model$formatColorClass(clr),
-			'background-color',
-			clr));
-};
-var $mdgriffith$elm_ui$Element$fromRgb255 = function (clr) {
-	return A4($mdgriffith$elm_ui$Internal$Model$Rgba, clr.red / 255, clr.green / 255, clr.blue / 255, clr.alpha);
-};
-var $author$project$Main$lightBlack = $mdgriffith$elm_ui$Element$fromRgb255(
-	{alpha: 1, blue: 32, green: 32, red: 32});
-var $mdgriffith$elm_ui$Internal$Model$PaddingStyle = F5(
-	function (a, b, c, d, e) {
-		return {$: 'PaddingStyle', a: a, b: b, c: c, d: d, e: e};
-	});
-var $mdgriffith$elm_ui$Internal$Flag$padding = $mdgriffith$elm_ui$Internal$Flag$flag(2);
-var $mdgriffith$elm_ui$Element$padding = function (x) {
-	return A2(
-		$mdgriffith$elm_ui$Internal$Model$StyleClass,
-		$mdgriffith$elm_ui$Internal$Flag$padding,
-		A5(
-			$mdgriffith$elm_ui$Internal$Model$PaddingStyle,
-			'p-' + $elm$core$String$fromInt(x),
-			x,
-			x,
-			x,
-			x));
-};
-var $mdgriffith$elm_ui$Internal$Model$SpacingStyle = F3(
-	function (a, b, c) {
-		return {$: 'SpacingStyle', a: a, b: b, c: c};
-	});
-var $mdgriffith$elm_ui$Internal$Flag$spacing = $mdgriffith$elm_ui$Internal$Flag$flag(3);
-var $mdgriffith$elm_ui$Internal$Model$spacingName = F2(
-	function (x, y) {
-		return 'spacing-' + ($elm$core$String$fromInt(x) + ('-' + $elm$core$String$fromInt(y)));
-	});
-var $mdgriffith$elm_ui$Element$spacing = function (x) {
-	return A2(
-		$mdgriffith$elm_ui$Internal$Model$StyleClass,
-		$mdgriffith$elm_ui$Internal$Flag$spacing,
-		A3(
-			$mdgriffith$elm_ui$Internal$Model$SpacingStyle,
-			A2($mdgriffith$elm_ui$Internal$Model$spacingName, x, x),
-			x,
-			x));
-};
-var $author$project$Main$attributeFeaturePhonePortrait = _List_fromArray(
-	[
-		$mdgriffith$elm_ui$Element$width($mdgriffith$elm_ui$Element$fill),
-		$mdgriffith$elm_ui$Element$height($mdgriffith$elm_ui$Element$shrink),
-		$mdgriffith$elm_ui$Element$padding(48),
-		$mdgriffith$elm_ui$Element$spacing(48),
-		$mdgriffith$elm_ui$Element$Background$color($author$project$Main$lightBlack)
-	]);
+var $author$project$Main$attributeBody = $author$project$Main$fillWidth;
 var $mdgriffith$elm_ui$Internal$Model$AsColumn = {$: 'AsColumn'};
 var $mdgriffith$elm_ui$Internal$Model$asColumn = $mdgriffith$elm_ui$Internal$Model$AsColumn;
 var $mdgriffith$elm_ui$Element$column = F2(
@@ -11441,67 +11550,131 @@ var $mdgriffith$elm_ui$Element$column = F2(
 						attrs))),
 			$mdgriffith$elm_ui$Internal$Model$Unkeyed(children));
 	});
-var $author$project$Main$atrributeFeatureAdvantagePhonePortrait = _List_fromArray(
-	[
-		$mdgriffith$elm_ui$Element$width($mdgriffith$elm_ui$Element$fill),
-		$mdgriffith$elm_ui$Element$height($mdgriffith$elm_ui$Element$shrink),
-		$mdgriffith$elm_ui$Element$spacing(24)
-	]);
-var $author$project$Main$attributeProPhonePortrait = _List_fromArray(
-	[
-		$mdgriffith$elm_ui$Element$width($mdgriffith$elm_ui$Element$fill),
-		$mdgriffith$elm_ui$Element$height($mdgriffith$elm_ui$Element$shrink),
-		$mdgriffith$elm_ui$Element$spacing(12)
-	]);
-var $mdgriffith$elm_ui$Internal$Model$Class = F2(
-	function (a, b) {
-		return {$: 'Class', a: a, b: b};
-	});
-var $mdgriffith$elm_ui$Internal$Flag$fontAlignment = $mdgriffith$elm_ui$Internal$Flag$flag(12);
+var $author$project$Main$attributeBenefit = $author$project$Main$fillWidth;
 var $mdgriffith$elm_ui$Element$Font$alignRight = A2($mdgriffith$elm_ui$Internal$Model$Class, $mdgriffith$elm_ui$Internal$Flag$fontAlignment, $mdgriffith$elm_ui$Internal$Style$classes.textRight);
-var $mdgriffith$elm_ui$Element$Font$color = function (fontColor) {
+var $mdgriffith$elm_ui$Internal$Model$Behind = {$: 'Behind'};
+var $mdgriffith$elm_ui$Element$behindContent = function (element) {
+	return A2($mdgriffith$elm_ui$Element$createNearby, $mdgriffith$elm_ui$Internal$Model$Behind, element);
+};
+var $mdgriffith$elm_ui$Internal$Model$SpacingStyle = F3(
+	function (a, b, c) {
+		return {$: 'SpacingStyle', a: a, b: b, c: c};
+	});
+var $mdgriffith$elm_ui$Internal$Flag$spacing = $mdgriffith$elm_ui$Internal$Flag$flag(3);
+var $mdgriffith$elm_ui$Internal$Model$spacingName = F2(
+	function (x, y) {
+		return 'spacing-' + ($elm$core$String$fromInt(x) + ('-' + $elm$core$String$fromInt(y)));
+	});
+var $mdgriffith$elm_ui$Element$spacing = function (x) {
 	return A2(
 		$mdgriffith$elm_ui$Internal$Model$StyleClass,
-		$mdgriffith$elm_ui$Internal$Flag$fontColor,
+		$mdgriffith$elm_ui$Internal$Flag$spacing,
 		A3(
-			$mdgriffith$elm_ui$Internal$Model$Colored,
-			'fc-' + $mdgriffith$elm_ui$Internal$Model$formatColorClass(fontColor),
-			'color',
-			fontColor));
+			$mdgriffith$elm_ui$Internal$Model$SpacingStyle,
+			A2($mdgriffith$elm_ui$Internal$Model$spacingName, x, x),
+			x,
+			x));
 };
-var $mdgriffith$elm_ui$Element$Font$family = function (families) {
-	return A2(
-		$mdgriffith$elm_ui$Internal$Model$StyleClass,
-		$mdgriffith$elm_ui$Internal$Flag$fontFamily,
-		A2(
-			$mdgriffith$elm_ui$Internal$Model$FontFamily,
-			A3($elm$core$List$foldl, $mdgriffith$elm_ui$Internal$Model$renderFontClassName, 'ff-', families),
-			families));
-};
-var $mdgriffith$elm_ui$Element$Font$sansSerif = $mdgriffith$elm_ui$Internal$Model$SansSerif;
-var $mdgriffith$elm_ui$Element$Font$typeface = $mdgriffith$elm_ui$Internal$Model$Typeface;
-var $author$project$Main$rubik = _List_fromArray(
+var $author$project$Main$bodyPadding = _List_fromArray(
 	[
-		$mdgriffith$elm_ui$Element$Font$typeface('Rubik'),
-		$mdgriffith$elm_ui$Element$Font$sansSerif
+		A2($mdgriffith$elm_ui$Element$paddingXY, 144, 72),
+		$mdgriffith$elm_ui$Element$spacing(36)
 	]);
-var $mdgriffith$elm_ui$Element$Font$size = function (i) {
-	return A2(
-		$mdgriffith$elm_ui$Internal$Model$StyleClass,
-		$mdgriffith$elm_ui$Internal$Flag$fontSize,
-		$mdgriffith$elm_ui$Internal$Model$FontSize(i));
+var $author$project$Image$Image = function (a) {
+	return {$: 'Image', a: a};
 };
-var $author$project$Main$white = $mdgriffith$elm_ui$Element$fromRgb255(
-	{alpha: 1, blue: 255, green: 255, red: 255});
-var $author$project$Main$attributeListPhonePortrait = _List_fromArray(
-	[
-		$mdgriffith$elm_ui$Element$width($mdgriffith$elm_ui$Element$fill),
-		$mdgriffith$elm_ui$Element$height($mdgriffith$elm_ui$Element$shrink),
-		$mdgriffith$elm_ui$Element$Font$color($author$project$Main$white),
-		$mdgriffith$elm_ui$Element$Font$size(18),
-		$mdgriffith$elm_ui$Element$Font$family($author$project$Main$rubik),
-		$mdgriffith$elm_ui$Element$Font$alignRight
-	]);
+var $author$project$Image$createImage = F2(
+	function (filename, description) {
+		return $author$project$Image$Image(
+			{description: description, src: '/image/' + filename});
+	});
+var $author$project$Image$technology = A2($author$project$Image$createImage, 'Technology.jpg', 'Technology Photo');
+var $elm$virtual_dom$VirtualDom$style = _VirtualDom_style;
+var $mdgriffith$elm_ui$Element$Background$image = function (src) {
+	return $mdgriffith$elm_ui$Internal$Model$Attr(
+		A2($elm$virtual_dom$VirtualDom$style, 'background', 'url(\"' + (src + '\") center / cover no-repeat')));
+};
+var $author$project$Image$toBackground = function (_v0) {
+	var src = _v0.a.src;
+	return $mdgriffith$elm_ui$Element$Background$image(src);
+};
+var $mdgriffith$elm_ui$Internal$Flag$bgGradient = $mdgriffith$elm_ui$Internal$Flag$flag(10);
+var $mdgriffith$elm_ui$Element$Background$gradient = function (_v0) {
+	var angle = _v0.angle;
+	var steps = _v0.steps;
+	if (!steps.b) {
+		return $mdgriffith$elm_ui$Internal$Model$NoAttribute;
+	} else {
+		if (!steps.b.b) {
+			var clr = steps.a;
+			return A2(
+				$mdgriffith$elm_ui$Internal$Model$StyleClass,
+				$mdgriffith$elm_ui$Internal$Flag$bgColor,
+				A3(
+					$mdgriffith$elm_ui$Internal$Model$Colored,
+					'bg-' + $mdgriffith$elm_ui$Internal$Model$formatColorClass(clr),
+					'background-color',
+					clr));
+		} else {
+			return A2(
+				$mdgriffith$elm_ui$Internal$Model$StyleClass,
+				$mdgriffith$elm_ui$Internal$Flag$bgGradient,
+				A3(
+					$mdgriffith$elm_ui$Internal$Model$Single,
+					'bg-grad-' + A2(
+						$elm$core$String$join,
+						'-',
+						A2(
+							$elm$core$List$cons,
+							$mdgriffith$elm_ui$Internal$Model$floatClass(angle),
+							A2($elm$core$List$map, $mdgriffith$elm_ui$Internal$Model$formatColorClass, steps))),
+					'background-image',
+					'linear-gradient(' + (A2(
+						$elm$core$String$join,
+						', ',
+						A2(
+							$elm$core$List$cons,
+							$elm$core$String$fromFloat(angle) + 'rad',
+							A2($elm$core$List$map, $mdgriffith$elm_ui$Internal$Model$formatColor, steps))) + ')')));
+		}
+	}
+};
+var $elm$core$Basics$pi = _Basics_pi;
+var $author$project$Main$transparent = $mdgriffith$elm_ui$Element$fromRgb255(
+	{alpha: 0, blue: 255, green: 255, red: 255});
+var $author$project$Main$attributeFadeBlack = $elm$core$List$concat(
+	_List_fromArray(
+		[
+			$author$project$Main$fillWindow,
+			_List_fromArray(
+			[
+				$mdgriffith$elm_ui$Element$Background$gradient(
+				{
+					angle: $elm$core$Basics$pi / 2,
+					steps: _List_fromArray(
+						[$author$project$Main$transparent, $author$project$Main$lightBlack])
+				})
+			])
+		]));
+var $mdgriffith$elm_ui$Internal$Model$Empty = {$: 'Empty'};
+var $mdgriffith$elm_ui$Element$none = $mdgriffith$elm_ui$Internal$Model$Empty;
+var $author$project$Main$viewFadeBlack = A2($mdgriffith$elm_ui$Element$el, $author$project$Main$attributeFadeBlack, $mdgriffith$elm_ui$Element$none);
+var $author$project$Main$attributeBigData = $elm$core$List$concat(
+	_List_fromArray(
+		[
+			$author$project$Main$fillWidth,
+			$author$project$Main$bodyPadding,
+			_List_fromArray(
+			[
+				$author$project$Image$toBackground($author$project$Image$technology),
+				$mdgriffith$elm_ui$Element$behindContent($author$project$Main$viewFadeBlack),
+				$mdgriffith$elm_ui$Element$Font$color($author$project$Main$white),
+				$mdgriffith$elm_ui$Element$Font$size(48),
+				$mdgriffith$elm_ui$Element$Font$family($author$project$Main$rubik),
+				$mdgriffith$elm_ui$Element$Font$alignRight,
+				$mdgriffith$elm_ui$Element$Font$bold
+			])
+		]));
 var $mdgriffith$elm_ui$Internal$Model$Describe = function (a) {
 	return {$: 'Describe', a: a};
 };
@@ -11524,256 +11697,96 @@ var $mdgriffith$elm_ui$Element$paragraph = F2(
 						attrs))),
 			$mdgriffith$elm_ui$Internal$Model$Unkeyed(children));
 	});
-var $mdgriffith$elm_ui$Internal$Model$Text = function (a) {
-	return {$: 'Text', a: a};
-};
-var $mdgriffith$elm_ui$Element$text = function (content) {
-	return $mdgriffith$elm_ui$Internal$Model$Text(content);
-};
-var $author$project$Main$maroon = $mdgriffith$elm_ui$Element$fromRgb255(
-	{alpha: 1, blue: 0, green: 0, red: 128});
-var $elm$core$List$singleton = function (value) {
-	return _List_fromArray(
-		[value]);
-};
-var $author$project$Main$additionalAttributeRed = $elm$core$List$singleton(
-	$mdgriffith$elm_ui$Element$Font$color($author$project$Main$maroon));
-var $mdgriffith$elm_ui$Element$el = F2(
-	function (attrs, child) {
-		return A4(
-			$mdgriffith$elm_ui$Internal$Model$element,
-			$mdgriffith$elm_ui$Internal$Model$asEl,
-			$mdgriffith$elm_ui$Internal$Model$div,
-			A2(
-				$elm$core$List$cons,
-				$mdgriffith$elm_ui$Element$width($mdgriffith$elm_ui$Element$shrink),
-				A2(
-					$elm$core$List$cons,
-					$mdgriffith$elm_ui$Element$height($mdgriffith$elm_ui$Element$shrink),
-					attrs)),
-			$mdgriffith$elm_ui$Internal$Model$Unkeyed(
-				_List_fromArray(
-					[child])));
-	});
-var $author$project$Main$viewHighlightedPhonePortrait = function (string) {
-	return A2(
-		$mdgriffith$elm_ui$Element$el,
-		$author$project$Main$additionalAttributeRed,
-		$mdgriffith$elm_ui$Element$text(string));
-};
-var $author$project$Main$elementListPhonePortrait = function (_v0) {
-	var red = _v0.red;
-	var non = _v0.non;
-	return A2(
-		$mdgriffith$elm_ui$Element$paragraph,
-		$author$project$Main$attributeListPhonePortrait,
-		_List_fromArray(
-			[
-				$author$project$Main$viewHighlightedPhonePortrait(red),
-				$mdgriffith$elm_ui$Element$text(non)
-			]));
-};
-var $author$project$Main$elementProPhonePortrait = function (list) {
-	return A2(
-		$mdgriffith$elm_ui$Element$column,
-		$author$project$Main$attributeProPhonePortrait,
-		A2($elm$core$List$map, $author$project$Main$elementListPhonePortrait, list));
-};
-var $mdgriffith$elm_ui$Internal$Flag$fontWeight = $mdgriffith$elm_ui$Internal$Flag$flag(13);
-var $mdgriffith$elm_ui$Element$Font$bold = A2($mdgriffith$elm_ui$Internal$Model$Class, $mdgriffith$elm_ui$Internal$Flag$fontWeight, $mdgriffith$elm_ui$Internal$Style$classes.bold);
-var $author$project$Main$attributeProTitlePhonePortrait = _List_fromArray(
-	[
-		$mdgriffith$elm_ui$Element$width($mdgriffith$elm_ui$Element$fill),
-		$mdgriffith$elm_ui$Element$height($mdgriffith$elm_ui$Element$shrink),
-		$mdgriffith$elm_ui$Element$Font$color($author$project$Main$white),
-		$mdgriffith$elm_ui$Element$Font$size(36),
-		$mdgriffith$elm_ui$Element$Font$family($author$project$Main$rubik),
-		$mdgriffith$elm_ui$Element$Font$alignRight,
-		$mdgriffith$elm_ui$Element$Font$bold
-	]);
-var $author$project$Main$elementProTitlePhonePortrait = function (string) {
-	return A2(
-		$mdgriffith$elm_ui$Element$paragraph,
-		$author$project$Main$attributeProTitlePhonePortrait,
-		$elm$core$List$singleton(
-			$mdgriffith$elm_ui$Element$text(string)));
-};
-var $author$project$Main$elementFeatureAdvantagePhonePortrait = F2(
-	function (string, list) {
-		return A2(
-			$mdgriffith$elm_ui$Element$column,
-			$author$project$Main$atrributeFeatureAdvantagePhonePortrait,
-			_List_fromArray(
-				[
-					$author$project$Main$elementProTitlePhonePortrait(string),
-					$author$project$Main$elementProPhonePortrait(list)
-				]));
-	});
-var $author$project$Main$featureBuyer1 = {non: 'debt or loan for the property buyer', red: 'ZERO '};
-var $author$project$Main$featureBuyer2 = {non: 'affordable rates for property buyer than home loans or traditional financing', red: 'MORE '};
-var $author$project$Main$featureBuyer3 = {non: 'collaterals needed', red: 'NO '};
-var $author$project$Main$featureBuyer4 = {non: 'home ownership after appliction process', red: 'DAY-ONE '};
-var $author$project$Main$featureBuyer5 = {non: 'monthly payments', red: 'EASIER '};
-var $author$project$Main$featureBuyerList = _List_fromArray(
-	[$author$project$Main$featureBuyer1, $author$project$Main$featureBuyer2, $author$project$Main$featureBuyer3, $author$project$Main$featureBuyer4, $author$project$Main$featureBuyer5]);
-var $author$project$Main$viewFeatureBuyerPhonePortrait = A2($author$project$Main$elementFeatureAdvantagePhonePortrait, 'Property Buyer', $author$project$Main$featureBuyerList);
-var $author$project$Main$notHighlighted = function (string) {
-	return {non: string, red: ''};
-};
-var $author$project$Main$featureCompany1 = $author$project$Main$notHighlighted('Equity futures charter based on financial enginerring');
-var $author$project$Main$featureCompany2 = $author$project$Main$notHighlighted('Real-time property appraisal and monitoring for property value appreciation');
-var $author$project$Main$featureCompany3 = $author$project$Main$notHighlighted('Home insurance inclusion');
-var $author$project$Main$featureCompanyList = _List_fromArray(
-	[$author$project$Main$featureCompany1, $author$project$Main$featureCompany2, $author$project$Main$featureCompany3]);
-var $author$project$Main$viewFeatureCompanyPhonePortrait = A2($author$project$Main$elementFeatureAdvantagePhonePortrait, 'Ownally', $author$project$Main$featureCompanyList);
-var $author$project$Main$featureThirdParty1 = $author$project$Main$notHighlighted('Tech-enabled and equity proportionate return based on derived valuation');
-var $author$project$Main$featureThirdParty2 = $author$project$Main$notHighlighted('Appreciating fractional home equity subscription');
-var $author$project$Main$featureThirdParty3 = $author$project$Main$notHighlighted('Price mediation and discovery');
-var $author$project$Main$featureThirdParty4 = $author$project$Main$notHighlighted('Portfolio management');
-var $author$project$Main$featureThirdPartyList = _List_fromArray(
-	[$author$project$Main$featureThirdParty1, $author$project$Main$featureThirdParty2, $author$project$Main$featureThirdParty3, $author$project$Main$featureThirdParty4]);
-var $author$project$Main$viewFeatureThirdPartyPhonePortrait = A2($author$project$Main$elementFeatureAdvantagePhonePortrait, 'Equity Investor', $author$project$Main$featureThirdPartyList);
-var $author$project$Main$viewFeaturePhonePortrait = A2(
-	$mdgriffith$elm_ui$Element$column,
-	$author$project$Main$attributeFeaturePhonePortrait,
+var $author$project$Main$viewBigData = A2(
+	$mdgriffith$elm_ui$Element$paragraph,
+	$author$project$Main$attributeBigData,
 	_List_fromArray(
-		[$author$project$Main$viewFeatureBuyerPhonePortrait, $author$project$Main$viewFeatureCompanyPhonePortrait, $author$project$Main$viewFeatureThirdPartyPhonePortrait]));
-var $author$project$Main$sizePhone = {fontSize: 24, padding: 12};
-var $mdgriffith$elm_ui$Element$Font$alignLeft = A2($mdgriffith$elm_ui$Internal$Model$Class, $mdgriffith$elm_ui$Internal$Flag$fontAlignment, $mdgriffith$elm_ui$Internal$Style$classes.textLeft);
-var $author$project$Main$styledHeader = function (_v0) {
-	var padding = _v0.padding;
-	var fontSize = _v0.fontSize;
-	return $mdgriffith$elm_ui$Element$el(
-		_List_fromArray(
+		[
+			$mdgriffith$elm_ui$Element$text('Using Big Data and AI to get the right price')
+		]));
+var $author$project$Main$attributeEmergency = $elm$core$List$concat(
+	_List_fromArray(
+		[
+			$author$project$Main$fillWidth,
+			$author$project$Main$bodyPadding,
+			_List_fromArray(
 			[
-				$mdgriffith$elm_ui$Element$width($mdgriffith$elm_ui$Element$fill),
-				$mdgriffith$elm_ui$Element$height($mdgriffith$elm_ui$Element$shrink),
-				$mdgriffith$elm_ui$Element$padding(padding),
 				$mdgriffith$elm_ui$Element$Background$color($author$project$Main$lightBlack),
 				$mdgriffith$elm_ui$Element$Font$color($author$project$Main$white),
-				$mdgriffith$elm_ui$Element$Font$size(fontSize),
+				$mdgriffith$elm_ui$Element$Font$size(48),
 				$mdgriffith$elm_ui$Element$Font$family($author$project$Main$rubik),
 				$mdgriffith$elm_ui$Element$Font$alignLeft,
 				$mdgriffith$elm_ui$Element$Font$bold
-			]));
-};
-var $author$project$Main$viewHeader = function (size) {
-	return A2(
-		$author$project$Main$styledHeader,
-		size,
-		$mdgriffith$elm_ui$Element$text('Ownally'));
-};
-var $author$project$Main$viewHeaderPhonePortrait = $author$project$Main$viewHeader($author$project$Main$sizePhone);
-var $mdgriffith$elm_ui$Internal$Model$Behind = {$: 'Behind'};
-var $mdgriffith$elm_ui$Internal$Model$Nearby = F2(
-	function (a, b) {
-		return {$: 'Nearby', a: a, b: b};
-	});
-var $mdgriffith$elm_ui$Internal$Model$NoAttribute = {$: 'NoAttribute'};
-var $mdgriffith$elm_ui$Element$createNearby = F2(
-	function (loc, element) {
-		if (element.$ === 'Empty') {
-			return $mdgriffith$elm_ui$Internal$Model$NoAttribute;
-		} else {
-			return A2($mdgriffith$elm_ui$Internal$Model$Nearby, loc, element);
-		}
-	});
-var $mdgriffith$elm_ui$Element$behindContent = function (element) {
-	return A2($mdgriffith$elm_ui$Element$createNearby, $mdgriffith$elm_ui$Internal$Model$Behind, element);
-};
-var $author$project$Image$Image = function (a) {
-	return {$: 'Image', a: a};
-};
-var $author$project$Image$createImage = F2(
-	function (filename, description) {
-		return $author$project$Image$Image(
-			{description: description, src: '/image/' + filename});
-	});
-var $author$project$Image$house = A2($author$project$Image$createImage, 'House.jpg', 'Landing Photo');
-var $mdgriffith$elm_ui$Element$paddingXY = F2(
-	function (x, y) {
-		return _Utils_eq(x, y) ? A2(
-			$mdgriffith$elm_ui$Internal$Model$StyleClass,
-			$mdgriffith$elm_ui$Internal$Flag$padding,
-			A5(
-				$mdgriffith$elm_ui$Internal$Model$PaddingStyle,
-				'p-' + $elm$core$String$fromInt(x),
-				x,
-				x,
-				x,
-				x)) : A2(
-			$mdgriffith$elm_ui$Internal$Model$StyleClass,
-			$mdgriffith$elm_ui$Internal$Flag$padding,
-			A5(
-				$mdgriffith$elm_ui$Internal$Model$PaddingStyle,
-				'p-' + ($elm$core$String$fromInt(x) + ('-' + $elm$core$String$fromInt(y))),
-				y,
-				x,
-				y,
-				x));
-	});
-var $elm$virtual_dom$VirtualDom$style = _VirtualDom_style;
-var $mdgriffith$elm_ui$Element$Background$image = function (src) {
-	return $mdgriffith$elm_ui$Internal$Model$Attr(
-		A2($elm$virtual_dom$VirtualDom$style, 'background', 'url(\"' + (src + '\") center / cover no-repeat')));
-};
-var $author$project$Image$toBackground = function (_v0) {
-	var src = _v0.a.src;
-	return $mdgriffith$elm_ui$Element$Background$image(src);
-};
-var $mdgriffith$elm_ui$Internal$Model$Empty = {$: 'Empty'};
-var $mdgriffith$elm_ui$Element$none = $mdgriffith$elm_ui$Internal$Model$Empty;
-var $author$project$Main$transparentBlack = $mdgriffith$elm_ui$Element$fromRgb255(
-	{alpha: 0.7, blue: 0, green: 0, red: 0});
-var $author$project$Main$styledtransparentBlack = $mdgriffith$elm_ui$Element$el(
+			])
+		]));
+var $author$project$Main$viewEmergency = A2(
+	$mdgriffith$elm_ui$Element$paragraph,
+	$author$project$Main$attributeEmergency,
 	_List_fromArray(
 		[
-			$mdgriffith$elm_ui$Element$width($mdgriffith$elm_ui$Element$fill),
-			$mdgriffith$elm_ui$Element$height($mdgriffith$elm_ui$Element$fill),
-			$mdgriffith$elm_ui$Element$Background$color($author$project$Main$transparentBlack)
+			$mdgriffith$elm_ui$Element$text('Easily trade equities for cash in black swan emergencies')
 		]));
-var $author$project$Main$viewtransparentBlack = $author$project$Main$styledtransparentBlack($mdgriffith$elm_ui$Element$none);
-var $author$project$Main$attributeLandingPhonePortrait = _List_fromArray(
-	[
-		$mdgriffith$elm_ui$Element$width($mdgriffith$elm_ui$Element$fill),
-		$mdgriffith$elm_ui$Element$height($mdgriffith$elm_ui$Element$shrink),
-		A2($mdgriffith$elm_ui$Element$paddingXY, 48, 288),
-		$mdgriffith$elm_ui$Element$spacing(12),
-		$author$project$Image$toBackground($author$project$Image$house),
-		$mdgriffith$elm_ui$Element$behindContent($author$project$Main$viewtransparentBlack)
-	]);
-var $mdgriffith$elm_ui$Element$Font$center = A2($mdgriffith$elm_ui$Internal$Model$Class, $mdgriffith$elm_ui$Internal$Flag$fontAlignment, $mdgriffith$elm_ui$Internal$Style$classes.textCenter);
-var $author$project$Main$styledInfoPhonePortrait = $mdgriffith$elm_ui$Element$paragraph(
+var $author$project$Main$attributeInvest = $elm$core$List$concat(
 	_List_fromArray(
 		[
-			$mdgriffith$elm_ui$Element$width($mdgriffith$elm_ui$Element$fill),
-			$mdgriffith$elm_ui$Element$height($mdgriffith$elm_ui$Element$shrink),
-			$mdgriffith$elm_ui$Element$Font$color($author$project$Main$white),
-			$mdgriffith$elm_ui$Element$Font$size(18),
-			$mdgriffith$elm_ui$Element$Font$family($author$project$Main$rubik),
-			$mdgriffith$elm_ui$Element$Font$center
+			$author$project$Main$fillWidth,
+			$author$project$Main$bodyPadding,
+			_List_fromArray(
+			[
+				$mdgriffith$elm_ui$Element$Background$color($author$project$Main$lightBlack),
+				$mdgriffith$elm_ui$Element$Font$color($author$project$Main$white),
+				$mdgriffith$elm_ui$Element$Font$size(48),
+				$mdgriffith$elm_ui$Element$Font$family($author$project$Main$rubik),
+				$mdgriffith$elm_ui$Element$Font$alignLeft,
+				$mdgriffith$elm_ui$Element$Font$bold
+			])
 		]));
-var $author$project$Main$viewInfoPhonePortrait = $author$project$Main$styledInfoPhonePortrait(
-	$elm$core$List$singleton(
-		$mdgriffith$elm_ui$Element$text('Artificial Intelligence and Financial Technology for Transforming Real Estate Acquisition')));
-var $author$project$Main$styledSubtitlePhonePortrait = $mdgriffith$elm_ui$Element$el(
+var $author$project$Main$viewInvest = A2(
+	$mdgriffith$elm_ui$Element$paragraph,
+	$author$project$Main$attributeInvest,
 	_List_fromArray(
 		[
-			$mdgriffith$elm_ui$Element$width($mdgriffith$elm_ui$Element$fill),
-			$mdgriffith$elm_ui$Element$height($mdgriffith$elm_ui$Element$shrink),
-			$mdgriffith$elm_ui$Element$Font$color($author$project$Main$white),
-			$mdgriffith$elm_ui$Element$Font$size(24),
-			$mdgriffith$elm_ui$Element$Font$family($author$project$Main$rubik),
-			$mdgriffith$elm_ui$Element$Font$center,
-			$mdgriffith$elm_ui$Element$Font$bold
+			$mdgriffith$elm_ui$Element$text('Sharing the appreciation and depreciation of your property')
 		]));
-var $author$project$Main$viewSubtitlePhonePortrait = $author$project$Main$styledSubtitlePhonePortrait(
-	$mdgriffith$elm_ui$Element$text('You can own finally!'));
-var $author$project$Main$attributeTitlePhonePortrait = _List_fromArray(
-	[
-		$mdgriffith$elm_ui$Element$width($mdgriffith$elm_ui$Element$fill),
-		$mdgriffith$elm_ui$Element$height($mdgriffith$elm_ui$Element$shrink)
-	]);
+var $author$project$Image$buildings = A2($author$project$Image$createImage, 'Buildings.jpg', 'Building Photo');
+var $author$project$Main$attributeLesser = $elm$core$List$concat(
+	_List_fromArray(
+		[
+			$author$project$Main$fillWidth,
+			$author$project$Main$bodyPadding,
+			_List_fromArray(
+			[
+				$author$project$Image$toBackground($author$project$Image$buildings),
+				$mdgriffith$elm_ui$Element$behindContent($author$project$Main$viewFadeBlack),
+				$mdgriffith$elm_ui$Element$Font$color($author$project$Main$white),
+				$mdgriffith$elm_ui$Element$Font$size(48),
+				$mdgriffith$elm_ui$Element$Font$family($author$project$Main$rubik),
+				$mdgriffith$elm_ui$Element$Font$alignRight,
+				$mdgriffith$elm_ui$Element$Font$bold
+			])
+		]));
+var $author$project$Main$viewLesser = A2(
+	$mdgriffith$elm_ui$Element$paragraph,
+	$author$project$Main$attributeLesser,
+	_List_fromArray(
+		[
+			$mdgriffith$elm_ui$Element$text('Lower your monthly payments to fit you')
+		]));
+var $author$project$Main$viewBenefit = A2(
+	$mdgriffith$elm_ui$Element$column,
+	$author$project$Main$attributeBenefit,
+	_List_fromArray(
+		[$author$project$Main$viewLesser, $author$project$Main$viewInvest, $author$project$Main$viewBigData, $author$project$Main$viewEmergency]));
+var $author$project$Main$attributeHow = $elm$core$List$concat(
+	_List_fromArray(
+		[
+			$author$project$Main$fillWidth,
+			$author$project$Main$bodyPadding,
+			_List_fromArray(
+			[
+				$mdgriffith$elm_ui$Element$Background$color($author$project$Main$white)
+			])
+		]));
 var $mdgriffith$elm_ui$Internal$Model$AsRow = {$: 'AsRow'};
 var $mdgriffith$elm_ui$Internal$Model$asRow = $mdgriffith$elm_ui$Internal$Model$AsRow;
 var $mdgriffith$elm_ui$Element$row = F2(
@@ -11794,304 +11807,45 @@ var $mdgriffith$elm_ui$Element$row = F2(
 						attrs))),
 			$mdgriffith$elm_ui$Internal$Model$Unkeyed(children));
 	});
+var $author$project$Image$pieChart = A2($author$project$Image$createImage, 'PieChart.svg', 'Equity Photo');
+var $mdgriffith$elm_ui$Element$padding = function (x) {
+	return A2(
+		$mdgriffith$elm_ui$Internal$Model$StyleClass,
+		$mdgriffith$elm_ui$Internal$Flag$padding,
+		A5(
+			$mdgriffith$elm_ui$Internal$Model$PaddingStyle,
+			'p-' + $elm$core$String$fromInt(x),
+			x,
+			x,
+			x,
+			x));
+};
+var $author$project$Main$attributeBox = $elm$core$List$concat(
+	_List_fromArray(
+		[
+			$author$project$Main$fillWidth,
+			_List_fromArray(
+			[
+				$mdgriffith$elm_ui$Element$padding(48),
+				$mdgriffith$elm_ui$Element$spacing(48)
+			])
+		]));
 var $mdgriffith$elm_ui$Internal$Model$AlignX = function (a) {
 	return {$: 'AlignX', a: a};
 };
 var $mdgriffith$elm_ui$Internal$Model$CenterX = {$: 'CenterX'};
 var $mdgriffith$elm_ui$Element$centerX = $mdgriffith$elm_ui$Internal$Model$AlignX($mdgriffith$elm_ui$Internal$Model$CenterX);
-var $author$project$Main$styledOwnallyPhonePortrait = $mdgriffith$elm_ui$Element$el(
-	_List_fromArray(
-		[
-			$mdgriffith$elm_ui$Element$width($mdgriffith$elm_ui$Element$shrink),
-			$mdgriffith$elm_ui$Element$height($mdgriffith$elm_ui$Element$shrink),
-			$mdgriffith$elm_ui$Element$centerX,
-			$mdgriffith$elm_ui$Element$Font$color($author$project$Main$white),
-			$mdgriffith$elm_ui$Element$Font$size(60),
-			$mdgriffith$elm_ui$Element$Font$family($author$project$Main$rubik),
-			$mdgriffith$elm_ui$Element$Font$bold
-		]));
-var $author$project$Main$viewOwnallyPhonePortrait = $author$project$Main$styledOwnallyPhonePortrait(
-	$mdgriffith$elm_ui$Element$text('Ownally'));
-var $mdgriffith$elm_ui$Internal$Model$AlignY = function (a) {
-	return {$: 'AlignY', a: a};
+var $mdgriffith$elm_ui$Internal$Model$Px = function (a) {
+	return {$: 'Px', a: a};
 };
-var $mdgriffith$elm_ui$Internal$Model$Top = {$: 'Top'};
-var $mdgriffith$elm_ui$Element$alignTop = $mdgriffith$elm_ui$Internal$Model$AlignY($mdgriffith$elm_ui$Internal$Model$Top);
-var $author$project$Main$styledTmPhonePortrait = $mdgriffith$elm_ui$Element$el(
-	_List_fromArray(
-		[
-			$mdgriffith$elm_ui$Element$width($mdgriffith$elm_ui$Element$shrink),
-			$mdgriffith$elm_ui$Element$height($mdgriffith$elm_ui$Element$shrink),
-			$mdgriffith$elm_ui$Element$centerX,
-			$mdgriffith$elm_ui$Element$alignTop,
-			$mdgriffith$elm_ui$Element$Font$color($author$project$Main$white),
-			$mdgriffith$elm_ui$Element$Font$size(12),
-			$mdgriffith$elm_ui$Element$Font$family($author$project$Main$rubik),
-			$mdgriffith$elm_ui$Element$Font$bold
-		]));
-var $author$project$Main$viewTmPhonePortrait = $author$project$Main$styledTmPhonePortrait(
-	$mdgriffith$elm_ui$Element$text('TM'));
-var $author$project$Main$viewTitlePhonePortrait = A2(
-	$mdgriffith$elm_ui$Element$row,
-	$author$project$Main$attributeTitlePhonePortrait,
-	_List_fromArray(
-		[$author$project$Main$viewOwnallyPhonePortrait, $author$project$Main$viewTmPhonePortrait]));
-var $author$project$Main$viewLandingPhonePortrait = A2(
-	$mdgriffith$elm_ui$Element$column,
-	$author$project$Main$attributeLandingPhonePortrait,
-	_List_fromArray(
-		[$author$project$Main$viewTitlePhonePortrait, $author$project$Main$viewSubtitlePhonePortrait, $author$project$Main$viewInfoPhonePortrait]));
-var $author$project$Image$building = A2($author$project$Image$createImage, 'Building.jpg', 'Market Photo');
-var $author$project$Main$transparentWhite = $mdgriffith$elm_ui$Element$fromRgb255(
-	{alpha: 0.7, blue: 255, green: 255, red: 255});
-var $author$project$Main$viewTransparentWhite = A2(
-	$mdgriffith$elm_ui$Element$el,
-	_List_fromArray(
-		[
-			$mdgriffith$elm_ui$Element$width($mdgriffith$elm_ui$Element$fill),
-			$mdgriffith$elm_ui$Element$height($mdgriffith$elm_ui$Element$fill),
-			$mdgriffith$elm_ui$Element$Background$color($author$project$Main$transparentWhite)
-		]),
-	$mdgriffith$elm_ui$Element$none);
-var $author$project$Main$attributeMarketPhonePortrait = _List_fromArray(
+var $mdgriffith$elm_ui$Element$px = $mdgriffith$elm_ui$Internal$Model$Px;
+var $author$project$Main$attributeImageIcon = _List_fromArray(
 	[
-		$mdgriffith$elm_ui$Element$width($mdgriffith$elm_ui$Element$fill),
-		$mdgriffith$elm_ui$Element$height($mdgriffith$elm_ui$Element$shrink),
-		$mdgriffith$elm_ui$Element$padding(48),
-		$mdgriffith$elm_ui$Element$spacing(48),
-		$author$project$Image$toBackground($author$project$Image$building),
-		$mdgriffith$elm_ui$Element$behindContent($author$project$Main$viewTransparentWhite)
-	]);
-var $author$project$Main$attributeMarketFootnotePhonePortrait = _List_fromArray(
-	[
-		$mdgriffith$elm_ui$Element$width($mdgriffith$elm_ui$Element$fill),
-		$mdgriffith$elm_ui$Element$height($mdgriffith$elm_ui$Element$shrink),
-		$mdgriffith$elm_ui$Element$spacing(3)
-	]);
-var $author$project$Main$attributeMarketFootnoteOnePhonePortrait = _List_fromArray(
-	[
-		$mdgriffith$elm_ui$Element$width($mdgriffith$elm_ui$Element$fill),
-		$mdgriffith$elm_ui$Element$height($mdgriffith$elm_ui$Element$fill),
-		$mdgriffith$elm_ui$Element$Font$color($author$project$Main$lightBlack),
-		$mdgriffith$elm_ui$Element$Font$size(12),
-		$mdgriffith$elm_ui$Element$Font$alignLeft,
-		$mdgriffith$elm_ui$Element$Font$family($author$project$Main$rubik)
-	]);
-var $author$project$Main$elementMarketFootnotePhonePortrait = function (string) {
-	return A2(
-		$mdgriffith$elm_ui$Element$paragraph,
-		$author$project$Main$attributeMarketFootnoteOnePhonePortrait,
-		$elm$core$List$singleton(
-			$mdgriffith$elm_ui$Element$text(string)));
-};
-var $author$project$Main$viewMarketFootnoteFourPhonePortrait = $author$project$Main$elementMarketFootnotePhonePortrait('4 Department of Budget and Management (DBM) 2019');
-var $author$project$Main$viewMarketFootnoteOnePhonePortrait = $author$project$Main$elementMarketFootnotePhonePortrait('1 JLL Phlippines 2019');
-var $author$project$Main$viewMarketFootnoteThreePhonePortrait = $author$project$Main$elementMarketFootnotePhonePortrait('3 LeeChiu Property Consultants 2017');
-var $author$project$Main$viewMarketFootnoteTwoPhonePortrait = $author$project$Main$elementMarketFootnotePhonePortrait('2 Lamudi 2020');
-var $author$project$Main$viewMarketFootnotePhonePortrait = A2(
-	$mdgriffith$elm_ui$Element$column,
-	$author$project$Main$attributeMarketFootnotePhonePortrait,
-	_List_fromArray(
-		[$author$project$Main$viewMarketFootnoteOnePhonePortrait, $author$project$Main$viewMarketFootnoteTwoPhonePortrait, $author$project$Main$viewMarketFootnoteThreePhonePortrait, $author$project$Main$viewMarketFootnoteFourPhonePortrait]));
-var $author$project$Main$attributeMarketHistoryPhonePortrait = _List_fromArray(
-	[
-		$mdgriffith$elm_ui$Element$width($mdgriffith$elm_ui$Element$fill),
-		$mdgriffith$elm_ui$Element$height($mdgriffith$elm_ui$Element$shrink),
-		$mdgriffith$elm_ui$Element$spacing(12)
-	]);
-var $author$project$Main$attributeMarketGrowthPhonePortrait = _List_fromArray(
-	[
-		$mdgriffith$elm_ui$Element$width($mdgriffith$elm_ui$Element$fill),
-		$mdgriffith$elm_ui$Element$height($mdgriffith$elm_ui$Element$shrink),
-		$mdgriffith$elm_ui$Element$Font$color($author$project$Main$lightBlack),
-		$mdgriffith$elm_ui$Element$Font$size(24),
-		$mdgriffith$elm_ui$Element$Font$family($author$project$Main$rubik),
-		$mdgriffith$elm_ui$Element$Font$alignLeft,
-		$mdgriffith$elm_ui$Element$Font$bold
-	]);
-var $author$project$Main$viewMarketGrowthPhonePortrait = A2(
-	$mdgriffith$elm_ui$Element$paragraph,
-	$author$project$Main$attributeMarketGrowthPhonePortrait,
-	$elm$core$List$singleton(
-		$mdgriffith$elm_ui$Element$text('Strong historical growth of real estate after crises')));
-var $author$project$Main$attributeMarketIncreasePhonePortrait = _List_fromArray(
-	[
-		$mdgriffith$elm_ui$Element$width($mdgriffith$elm_ui$Element$fill),
-		$mdgriffith$elm_ui$Element$height($mdgriffith$elm_ui$Element$shrink),
-		$mdgriffith$elm_ui$Element$Font$color($author$project$Main$lightBlack),
-		$mdgriffith$elm_ui$Element$Font$size(18),
-		$mdgriffith$elm_ui$Element$Font$family($author$project$Main$rubik),
-		$mdgriffith$elm_ui$Element$Font$alignLeft
-	]);
-var $author$project$Main$viewMarketIncreasePhonePortrait = A2(
-	$mdgriffith$elm_ui$Element$paragraph,
-	$author$project$Main$attributeMarketIncreasePhonePortrait,
-	$elm$core$List$singleton(
-		$mdgriffith$elm_ui$Element$text('Property values in NCR have increased at a rate of around 65% to 121% from 2011 to 2016 - a good investment vehicle out of reach for many Filipinos.')));
-var $author$project$Main$viewMarketHistoryPhonePortrait = A2(
-	$mdgriffith$elm_ui$Element$column,
-	$author$project$Main$attributeMarketHistoryPhonePortrait,
-	_List_fromArray(
-		[$author$project$Main$viewMarketGrowthPhonePortrait, $author$project$Main$viewMarketIncreasePhonePortrait]));
-var $author$project$Main$attributeMarketPredictionPhonePortrait = _List_fromArray(
-	[
-		$mdgriffith$elm_ui$Element$width($mdgriffith$elm_ui$Element$fill),
-		$mdgriffith$elm_ui$Element$height($mdgriffith$elm_ui$Element$shrink),
-		$mdgriffith$elm_ui$Element$spacing(12)
-	]);
-var $author$project$Main$attributeMarketGdpPhonePortrait = _List_fromArray(
-	[
-		$mdgriffith$elm_ui$Element$width($mdgriffith$elm_ui$Element$fill),
-		$mdgriffith$elm_ui$Element$height($mdgriffith$elm_ui$Element$shrink),
-		$mdgriffith$elm_ui$Element$Font$color($author$project$Main$lightBlack),
-		$mdgriffith$elm_ui$Element$Font$size(24),
-		$mdgriffith$elm_ui$Element$Font$family($author$project$Main$rubik),
-		$mdgriffith$elm_ui$Element$Font$alignLeft,
-		$mdgriffith$elm_ui$Element$Font$bold
-	]);
-var $author$project$Main$viewMarketGdpPhonePortrait = A2(
-	$mdgriffith$elm_ui$Element$paragraph,
-	$author$project$Main$attributeMarketGdpPhonePortrait,
-	$elm$core$List$singleton(
-		$mdgriffith$elm_ui$Element$text('7% of GDP in 2022 from 3% in 2015')));
-var $author$project$Main$attributeMarketInfrastructurePhonePortrait = _List_fromArray(
-	[
-		$mdgriffith$elm_ui$Element$width($mdgriffith$elm_ui$Element$fill),
-		$mdgriffith$elm_ui$Element$height($mdgriffith$elm_ui$Element$shrink),
-		$mdgriffith$elm_ui$Element$Font$color($author$project$Main$lightBlack),
-		$mdgriffith$elm_ui$Element$Font$size(18),
-		$mdgriffith$elm_ui$Element$Font$family($author$project$Main$rubik),
-		$mdgriffith$elm_ui$Element$Font$alignLeft
-	]);
-var $author$project$Main$viewMarketInfrastructurePhonePortrait = A2(
-	$mdgriffith$elm_ui$Element$paragraph,
-	$author$project$Main$attributeMarketInfrastructurePhonePortrait,
-	$elm$core$List$singleton(
-		$mdgriffith$elm_ui$Element$text('It is expected to be spent on infrastructore projects, boosting the national real estate industry.')));
-var $author$project$Main$viewMarketPredictionPhonePortrait = A2(
-	$mdgriffith$elm_ui$Element$column,
-	$author$project$Main$attributeMarketPredictionPhonePortrait,
-	_List_fromArray(
-		[$author$project$Main$viewMarketGdpPhonePortrait, $author$project$Main$viewMarketInfrastructurePhonePortrait]));
-var $author$project$Main$attributeMarketSizePhonePortrait = _List_fromArray(
-	[
-		$mdgriffith$elm_ui$Element$width($mdgriffith$elm_ui$Element$fill),
-		$mdgriffith$elm_ui$Element$height($mdgriffith$elm_ui$Element$shrink),
-		$mdgriffith$elm_ui$Element$spacing(12)
-	]);
-var $author$project$Main$attributeMarketResidentialPhonePortrait = _List_fromArray(
-	[
-		$mdgriffith$elm_ui$Element$width($mdgriffith$elm_ui$Element$fill),
-		$mdgriffith$elm_ui$Element$height($mdgriffith$elm_ui$Element$shrink),
-		$mdgriffith$elm_ui$Element$Font$color($author$project$Main$lightBlack),
-		$mdgriffith$elm_ui$Element$Font$size(18),
-		$mdgriffith$elm_ui$Element$Font$family($author$project$Main$rubik),
-		$mdgriffith$elm_ui$Element$Font$alignLeft
-	]);
-var $author$project$Main$viewMarketResidentialPhonePortrait = A2(
-	$mdgriffith$elm_ui$Element$paragraph,
-	$author$project$Main$attributeMarketResidentialPhonePortrait,
-	$elm$core$List$singleton(
-		$mdgriffith$elm_ui$Element$text('An additional 91,500 residential units is forecasted by the end of 2022, growing at a rate of 25% from 2019, or 8% year on year - many of which are inaccessible to many Filipinos.')));
-var $author$project$Main$attributeMarketTrillionPhonePortrait = _List_fromArray(
-	[
-		$mdgriffith$elm_ui$Element$width($mdgriffith$elm_ui$Element$fill),
-		$mdgriffith$elm_ui$Element$height($mdgriffith$elm_ui$Element$shrink),
-		$mdgriffith$elm_ui$Element$Font$color($author$project$Main$lightBlack),
-		$mdgriffith$elm_ui$Element$Font$size(24),
-		$mdgriffith$elm_ui$Element$Font$family($author$project$Main$rubik),
-		$mdgriffith$elm_ui$Element$Font$alignLeft,
-		$mdgriffith$elm_ui$Element$Font$bold
-	]);
-var $author$project$Main$viewMarketTrillionPhonePortrait = A2(
-	$mdgriffith$elm_ui$Element$paragraph,
-	$author$project$Main$attributeMarketTrillionPhonePortrait,
-	$elm$core$List$singleton(
-		$mdgriffith$elm_ui$Element$text('PHP 3.5 Trillion industry potential in the National Capital Region (NCR) Alone')));
-var $author$project$Main$viewMarketSizePhonePortrait = A2(
-	$mdgriffith$elm_ui$Element$column,
-	$author$project$Main$attributeMarketSizePhonePortrait,
-	_List_fromArray(
-		[$author$project$Main$viewMarketTrillionPhonePortrait, $author$project$Main$viewMarketResidentialPhonePortrait]));
-var $author$project$Main$attributeMarketTitlePhonePortrait = _List_fromArray(
-	[
-		$mdgriffith$elm_ui$Element$width($mdgriffith$elm_ui$Element$fill),
-		$mdgriffith$elm_ui$Element$height($mdgriffith$elm_ui$Element$shrink),
-		$mdgriffith$elm_ui$Element$Font$color($author$project$Main$lightBlack),
-		$mdgriffith$elm_ui$Element$Font$size(36),
-		$mdgriffith$elm_ui$Element$Font$center,
-		$mdgriffith$elm_ui$Element$Font$family($author$project$Main$rubik),
-		$mdgriffith$elm_ui$Element$Font$bold
-	]);
-var $author$project$Main$viewMarketTitlePhonePortrait = A2(
-	$mdgriffith$elm_ui$Element$paragraph,
-	$author$project$Main$attributeMarketTitlePhonePortrait,
-	$elm$core$List$singleton(
-		$mdgriffith$elm_ui$Element$text('Real Estate Industry in the Philippines')));
-var $author$project$Main$viewMarketPhonePortrait = A2(
-	$mdgriffith$elm_ui$Element$column,
-	$author$project$Main$attributeMarketPhonePortrait,
-	_List_fromArray(
-		[$author$project$Main$viewMarketTitlePhonePortrait, $author$project$Main$viewMarketSizePhonePortrait, $author$project$Main$viewMarketHistoryPhonePortrait, $author$project$Main$viewMarketPredictionPhonePortrait, $author$project$Main$viewMarketFootnotePhonePortrait]));
-var $author$project$Main$attributeMissionPhonePortrait = _List_fromArray(
-	[
-		$mdgriffith$elm_ui$Element$width($mdgriffith$elm_ui$Element$fill),
-		$mdgriffith$elm_ui$Element$height($mdgriffith$elm_ui$Element$shrink),
-		$mdgriffith$elm_ui$Element$padding(48),
-		$mdgriffith$elm_ui$Element$spacing(48),
-		$mdgriffith$elm_ui$Element$Background$color($author$project$Main$lightBlack)
-	]);
-var $author$project$Main$atrributeOurMissionPhonePortrait = _List_fromArray(
-	[
-		$mdgriffith$elm_ui$Element$width($mdgriffith$elm_ui$Element$fill),
-		$mdgriffith$elm_ui$Element$height($mdgriffith$elm_ui$Element$shrink),
-		$mdgriffith$elm_ui$Element$spacing(12)
-	]);
-var $author$project$Main$attributeMissionParagraphPhonePortrait = _List_fromArray(
-	[
-		$mdgriffith$elm_ui$Element$width($mdgriffith$elm_ui$Element$fill),
-		$mdgriffith$elm_ui$Element$height($mdgriffith$elm_ui$Element$shrink),
-		$mdgriffith$elm_ui$Element$Font$color($author$project$Main$white),
-		$mdgriffith$elm_ui$Element$Font$size(18),
-		$mdgriffith$elm_ui$Element$Font$family($author$project$Main$rubik)
-	]);
-var $mdgriffith$elm_ui$Element$Font$heavy = A2($mdgriffith$elm_ui$Internal$Model$Class, $mdgriffith$elm_ui$Internal$Flag$fontWeight, $mdgriffith$elm_ui$Internal$Style$classes.textHeavy);
-var $author$project$Main$additionalAttributeBold = $elm$core$List$singleton($mdgriffith$elm_ui$Element$Font$heavy);
-var $author$project$Main$viewMissionBoldPhonePortrait = A2(
-	$mdgriffith$elm_ui$Element$el,
-	$author$project$Main$additionalAttributeBold,
-	$mdgriffith$elm_ui$Element$text('easier, more affordable, and earlier in their lives, with zero in loans or debt.'));
-var $author$project$Main$viewMissionParagraphPhonePortrait = A2(
-	$mdgriffith$elm_ui$Element$paragraph,
-	$author$project$Main$attributeMissionParagraphPhonePortrait,
-	_List_fromArray(
-		[
-			$mdgriffith$elm_ui$Element$text('Leveraging the use of Artificial Intelligence, Smart Contract Technology, Real Estate and Legal Know-How, and Financial Engineering, we provide the platform enabling people in the Philippines, Southeast Asia and East Asia to finally own their dream homes - '),
-			$author$project$Main$viewMissionBoldPhonePortrait
-		]));
-var $author$project$Main$attributeMissionTitlePhonePortrait = _List_fromArray(
-	[
-		$mdgriffith$elm_ui$Element$width($mdgriffith$elm_ui$Element$fill),
-		$mdgriffith$elm_ui$Element$height($mdgriffith$elm_ui$Element$shrink),
-		$mdgriffith$elm_ui$Element$Font$color($author$project$Main$white),
-		$mdgriffith$elm_ui$Element$Font$size(36),
-		$mdgriffith$elm_ui$Element$Font$family($author$project$Main$rubik),
-		$mdgriffith$elm_ui$Element$Font$alignLeft
-	]);
-var $author$project$Main$viewMissionTitlePhonePortrait = A2(
-	$mdgriffith$elm_ui$Element$paragraph,
-	$author$project$Main$attributeMissionTitlePhonePortrait,
-	$elm$core$List$singleton(
-		$mdgriffith$elm_ui$Element$text('Our Mission')));
-var $author$project$Main$viewOurMissionPhonePortrait = A2(
-	$mdgriffith$elm_ui$Element$column,
-	$author$project$Main$atrributeOurMissionPhonePortrait,
-	_List_fromArray(
-		[$author$project$Main$viewMissionTitlePhonePortrait, $author$project$Main$viewMissionParagraphPhonePortrait]));
-var $author$project$Main$attributeWorldMapPhonePortrait = _List_fromArray(
-	[
-		$mdgriffith$elm_ui$Element$width($mdgriffith$elm_ui$Element$fill),
-		$mdgriffith$elm_ui$Element$height($mdgriffith$elm_ui$Element$shrink)
+		$mdgriffith$elm_ui$Element$width(
+		$mdgriffith$elm_ui$Element$px(150)),
+		$mdgriffith$elm_ui$Element$height(
+		$mdgriffith$elm_ui$Element$px(150)),
+		$mdgriffith$elm_ui$Element$centerX
 	]);
 var $elm$html$Html$Attributes$alt = $elm$html$Html$Attributes$stringProperty('alt');
 var $elm$html$Html$Attributes$src = function (url) {
@@ -12153,364 +11907,202 @@ var $author$project$Image$toElement = F2(
 			attributes,
 			{description: description, src: src});
 	});
-var $author$project$Image$worldMap = A2($author$project$Image$createImage, 'WorldMap.png', 'World Map Mission Photo');
-var $author$project$Main$viewWorldMapPhonePortrait = A2($author$project$Image$toElement, $author$project$Main$attributeWorldMapPhonePortrait, $author$project$Image$worldMap);
-var $author$project$Main$viewMissionPhonePortrait = A2(
-	$mdgriffith$elm_ui$Element$column,
-	$author$project$Main$attributeMissionPhonePortrait,
-	_List_fromArray(
-		[$author$project$Main$viewWorldMapPhonePortrait, $author$project$Main$viewOurMissionPhonePortrait]));
-var $author$project$Main$styledProblemPhonePortrait = $mdgriffith$elm_ui$Element$column(
+var $author$project$Main$viewImageIcon = $author$project$Image$toElement($author$project$Main$attributeImageIcon);
+var $mdgriffith$elm_ui$Element$Font$justify = A2($mdgriffith$elm_ui$Internal$Model$Class, $mdgriffith$elm_ui$Internal$Flag$fontAlignment, $mdgriffith$elm_ui$Internal$Style$classes.textJustify);
+var $author$project$Main$attributeStep = $elm$core$List$concat(
 	_List_fromArray(
 		[
-			$mdgriffith$elm_ui$Element$width($mdgriffith$elm_ui$Element$fill),
-			$mdgriffith$elm_ui$Element$height($mdgriffith$elm_ui$Element$shrink),
-			$mdgriffith$elm_ui$Element$padding(48),
-			$mdgriffith$elm_ui$Element$spacing(48)
+			$author$project$Main$fillWidth,
+			_List_fromArray(
+			[
+				$mdgriffith$elm_ui$Element$Font$color($author$project$Main$lightBlack),
+				$mdgriffith$elm_ui$Element$Font$size(24),
+				$mdgriffith$elm_ui$Element$Font$family($author$project$Main$rubik),
+				$mdgriffith$elm_ui$Element$Font$justify
+			])
 		]));
-var $author$project$Main$styledProblemPopulationPhonePortrait = $mdgriffith$elm_ui$Element$column(
+var $author$project$Main$viewStep = function (string) {
+	return A2(
+		$mdgriffith$elm_ui$Element$paragraph,
+		$author$project$Main$attributeStep,
+		_List_fromArray(
+			[
+				$mdgriffith$elm_ui$Element$text(string)
+			]));
+};
+var $author$project$Main$viewBox = F2(
+	function (image, string) {
+		return A2(
+			$mdgriffith$elm_ui$Element$column,
+			$author$project$Main$attributeBox,
+			_List_fromArray(
+				[
+					$author$project$Main$viewImageIcon(image),
+					$author$project$Main$viewStep(string)
+				]));
+	});
+var $author$project$Main$viewEquity = A2($author$project$Main$viewBox, $author$project$Image$pieChart, 'Sell fractional equities of your property to Ownally and investors, so you have the funds to purchase your property without loans.');
+var $author$project$Image$rentalContract = A2($author$project$Image$createImage, 'RentalContract.svg', 'Rental Photo');
+var $author$project$Main$viewRental = A2($author$project$Main$viewBox, $author$project$Image$rentalContract, 'Only pay fractional rent for the proportional equities you don\'t own. More equities you own, lesser the rent.');
+var $author$project$Image$tradeGrowth = A2($author$project$Image$createImage, 'TradeGrowth.svg', 'Trade Photo');
+var $author$project$Main$viewTrade = A2($author$project$Main$viewBox, $author$project$Image$tradeGrowth, 'Freely trade equities with Ownally and investors anytime you want. Slowly build your wealth without debt.');
+var $author$project$Main$viewHow = A2(
+	$mdgriffith$elm_ui$Element$row,
+	$author$project$Main$attributeHow,
+	_List_fromArray(
+		[$author$project$Main$viewEquity, $author$project$Main$viewRental, $author$project$Main$viewTrade]));
+var $author$project$Image$house = A2($author$project$Image$createImage, 'House.jpg', 'Landing Photo');
+var $author$project$Main$attributeFadeWhite = $elm$core$List$concat(
 	_List_fromArray(
 		[
-			$mdgriffith$elm_ui$Element$width($mdgriffith$elm_ui$Element$fill),
-			$mdgriffith$elm_ui$Element$height($mdgriffith$elm_ui$Element$shrink),
-			$mdgriffith$elm_ui$Element$spacing(12)
+			$author$project$Main$fillWindow,
+			_List_fromArray(
+			[
+				$mdgriffith$elm_ui$Element$Background$gradient(
+				{
+					angle: $elm$core$Basics$pi / 2,
+					steps: _List_fromArray(
+						[$author$project$Main$white, $author$project$Main$transparent])
+				})
+			])
 		]));
+var $author$project$Main$viewFadeWhite = A2($mdgriffith$elm_ui$Element$el, $author$project$Main$attributeFadeWhite, $mdgriffith$elm_ui$Element$none);
+var $author$project$Main$attributeLanding = function (_v0) {
+	var width = _v0.width;
+	var height = _v0.height;
+	return _List_fromArray(
+		[
+			$mdgriffith$elm_ui$Element$width($mdgriffith$elm_ui$Element$fill),
+			$mdgriffith$elm_ui$Element$height(
+			$mdgriffith$elm_ui$Element$px(height)),
+			A2($mdgriffith$elm_ui$Element$paddingXY, 144, 72),
+			$mdgriffith$elm_ui$Element$spacing(36),
+			$author$project$Image$toBackground($author$project$Image$house),
+			$mdgriffith$elm_ui$Element$behindContent($author$project$Main$viewFadeWhite)
+		]);
+};
 var $mdgriffith$elm_ui$Internal$Model$Left = {$: 'Left'};
 var $mdgriffith$elm_ui$Element$alignLeft = $mdgriffith$elm_ui$Internal$Model$AlignX($mdgriffith$elm_ui$Internal$Model$Left);
-var $author$project$Main$edges = {bottom: 0, left: 0, right: 0, top: 0};
-var $mdgriffith$elm_ui$Internal$Model$paddingName = F4(
-	function (top, right, bottom, left) {
-		return 'pad-' + ($elm$core$String$fromInt(top) + ('-' + ($elm$core$String$fromInt(right) + ('-' + ($elm$core$String$fromInt(bottom) + ('-' + $elm$core$String$fromInt(left)))))));
-	});
-var $mdgriffith$elm_ui$Element$paddingEach = function (_v0) {
-	var top = _v0.top;
-	var right = _v0.right;
-	var bottom = _v0.bottom;
-	var left = _v0.left;
-	return (_Utils_eq(top, right) && (_Utils_eq(top, bottom) && _Utils_eq(top, left))) ? A2(
-		$mdgriffith$elm_ui$Internal$Model$StyleClass,
-		$mdgriffith$elm_ui$Internal$Flag$padding,
-		A5(
-			$mdgriffith$elm_ui$Internal$Model$PaddingStyle,
-			'p-' + $elm$core$String$fromInt(top),
-			top,
-			top,
-			top,
-			top)) : A2(
-		$mdgriffith$elm_ui$Internal$Model$StyleClass,
-		$mdgriffith$elm_ui$Internal$Flag$padding,
-		A5(
-			$mdgriffith$elm_ui$Internal$Model$PaddingStyle,
-			A4($mdgriffith$elm_ui$Internal$Model$paddingName, top, right, bottom, left),
-			top,
-			right,
-			bottom,
-			left));
+var $mdgriffith$elm_ui$Internal$Model$AlignY = function (a) {
+	return {$: 'AlignY', a: a};
 };
-var $author$project$Main$styledFilipinoPopulationPhonePortrait = $mdgriffith$elm_ui$Element$paragraph(
-	_List_fromArray(
-		[
-			$mdgriffith$elm_ui$Element$width($mdgriffith$elm_ui$Element$fill),
-			$mdgriffith$elm_ui$Element$height($mdgriffith$elm_ui$Element$shrink),
-			$mdgriffith$elm_ui$Element$alignLeft,
-			$mdgriffith$elm_ui$Element$paddingEach(
-			_Utils_update(
-				$author$project$Main$edges,
-				{right: 48})),
-			$mdgriffith$elm_ui$Element$Font$color($author$project$Main$lightBlack),
-			$mdgriffith$elm_ui$Element$Font$size(18),
-			$mdgriffith$elm_ui$Element$Font$family($author$project$Main$rubik)
-		]));
-var $author$project$Main$viewFilipinoPopulationPhonePortrait = $author$project$Main$styledFilipinoPopulationPhonePortrait(
-	$elm$core$List$singleton(
-		$mdgriffith$elm_ui$Element$text('Filipinos in the National Capital Region do not have property titles or have difficulty in acquiring their own homes.')));
-var $author$project$Main$styledNumberPopulationPhonePortrait = $mdgriffith$elm_ui$Element$row(
-	_List_fromArray(
-		[
-			$mdgriffith$elm_ui$Element$width($mdgriffith$elm_ui$Element$fill),
-			$mdgriffith$elm_ui$Element$height($mdgriffith$elm_ui$Element$shrink)
-		]));
-var $author$project$Main$styledOnePhonePortrait = $mdgriffith$elm_ui$Element$el(
-	_List_fromArray(
-		[
-			$mdgriffith$elm_ui$Element$width($mdgriffith$elm_ui$Element$shrink),
-			$mdgriffith$elm_ui$Element$height($mdgriffith$elm_ui$Element$shrink),
-			$mdgriffith$elm_ui$Element$alignLeft,
-			$mdgriffith$elm_ui$Element$alignTop,
-			$mdgriffith$elm_ui$Element$Font$color($author$project$Main$lightBlack),
-			$mdgriffith$elm_ui$Element$Font$size(12),
-			$mdgriffith$elm_ui$Element$Font$family($author$project$Main$rubik),
-			$mdgriffith$elm_ui$Element$Font$bold
-		]));
-var $author$project$Main$viewOnePhonePortrait = $author$project$Main$styledOnePhonePortrait(
-	$mdgriffith$elm_ui$Element$text('1'));
-var $author$project$Main$styledThreeMillionPhonePortrait = $mdgriffith$elm_ui$Element$el(
-	_List_fromArray(
-		[
-			$mdgriffith$elm_ui$Element$width($mdgriffith$elm_ui$Element$shrink),
-			$mdgriffith$elm_ui$Element$height($mdgriffith$elm_ui$Element$shrink),
-			$mdgriffith$elm_ui$Element$alignLeft,
-			$mdgriffith$elm_ui$Element$Font$color($author$project$Main$lightBlack),
-			$mdgriffith$elm_ui$Element$Font$size(36),
-			$mdgriffith$elm_ui$Element$Font$family($author$project$Main$rubik),
-			$mdgriffith$elm_ui$Element$Font$bold
-		]));
-var $author$project$Main$viewThreeMillionPhonePortrait = $author$project$Main$styledThreeMillionPhonePortrait(
-	$mdgriffith$elm_ui$Element$text('Three Million'));
-var $author$project$Main$viewNumberPopulationPhonePortrait = $author$project$Main$styledNumberPopulationPhonePortrait(
-	_List_fromArray(
-		[$author$project$Main$viewThreeMillionPhonePortrait, $author$project$Main$viewOnePhonePortrait]));
-var $author$project$Main$styledProblemFootnoteOnePhonePortrait = $mdgriffith$elm_ui$Element$el(
-	_List_fromArray(
-		[
-			$mdgriffith$elm_ui$Element$width($mdgriffith$elm_ui$Element$fill),
-			$mdgriffith$elm_ui$Element$height($mdgriffith$elm_ui$Element$shrink),
-			$mdgriffith$elm_ui$Element$Font$color($author$project$Main$lightBlack),
-			$mdgriffith$elm_ui$Element$Font$size(12),
-			$mdgriffith$elm_ui$Element$Font$alignLeft,
-			$mdgriffith$elm_ui$Element$Font$family($author$project$Main$rubik)
-		]));
-var $author$project$Main$viewProblemFootnoteOnePhonePortrait = $author$project$Main$styledProblemFootnoteOnePhonePortrait(
-	$mdgriffith$elm_ui$Element$text('1 Philippine Statistics Authority (PSA)'));
-var $author$project$Main$viewProblemPopulationPhonePortrait = $author$project$Main$styledProblemPopulationPhonePortrait(
-	_List_fromArray(
-		[$author$project$Main$viewNumberPopulationPhonePortrait, $author$project$Main$viewFilipinoPopulationPhonePortrait, $author$project$Main$viewProblemFootnoteOnePhonePortrait]));
-var $author$project$Main$styledProblemTimePhonePortrait = $mdgriffith$elm_ui$Element$column(
-	_List_fromArray(
-		[
-			$mdgriffith$elm_ui$Element$width($mdgriffith$elm_ui$Element$fill),
-			$mdgriffith$elm_ui$Element$height($mdgriffith$elm_ui$Element$shrink),
-			$mdgriffith$elm_ui$Element$spacing(12)
-		]));
-var $author$project$Main$styledFilipinoYearsPhonePortrait = $mdgriffith$elm_ui$Element$paragraph(
-	_List_fromArray(
-		[
-			$mdgriffith$elm_ui$Element$width($mdgriffith$elm_ui$Element$fill),
-			$mdgriffith$elm_ui$Element$height($mdgriffith$elm_ui$Element$shrink),
-			$mdgriffith$elm_ui$Element$paddingEach(
-			_Utils_update(
-				$author$project$Main$edges,
-				{left: 48})),
-			$mdgriffith$elm_ui$Element$Font$color($author$project$Main$lightBlack),
-			$mdgriffith$elm_ui$Element$Font$size(18),
-			$mdgriffith$elm_ui$Element$Font$alignRight,
-			$mdgriffith$elm_ui$Element$Font$family($author$project$Main$rubik)
-		]));
-var $author$project$Main$viewFilipinoYearsPhonePortrait = $author$project$Main$styledFilipinoYearsPhonePortrait(
-	$elm$core$List$singleton(
-		$mdgriffith$elm_ui$Element$text('The number of years majority of Filipinos have to wait and save funds before acquiring their own home.')));
-var $author$project$Main$styledProblemFootnoteTwoPhonePortrait = $mdgriffith$elm_ui$Element$el(
-	_List_fromArray(
-		[
-			$mdgriffith$elm_ui$Element$width($mdgriffith$elm_ui$Element$fill),
-			$mdgriffith$elm_ui$Element$height($mdgriffith$elm_ui$Element$shrink),
-			$mdgriffith$elm_ui$Element$Font$color($author$project$Main$lightBlack),
-			$mdgriffith$elm_ui$Element$Font$size(12),
-			$mdgriffith$elm_ui$Element$Font$alignRight,
-			$mdgriffith$elm_ui$Element$Font$family($author$project$Main$rubik)
-		]));
-var $author$project$Main$viewProblemFootnoteTwoPhonePortrait = $author$project$Main$styledProblemFootnoteTwoPhonePortrait(
-	$mdgriffith$elm_ui$Element$text('2 Philippine Daily Inquirer 2019'));
-var $author$project$Main$styledTenYearsPhonePortrait = $mdgriffith$elm_ui$Element$row(
-	_List_fromArray(
-		[
-			$mdgriffith$elm_ui$Element$width($mdgriffith$elm_ui$Element$fill),
-			$mdgriffith$elm_ui$Element$height($mdgriffith$elm_ui$Element$shrink)
-		]));
-var $mdgriffith$elm_ui$Internal$Model$Right = {$: 'Right'};
-var $mdgriffith$elm_ui$Element$alignRight = $mdgriffith$elm_ui$Internal$Model$AlignX($mdgriffith$elm_ui$Internal$Model$Right);
-var $author$project$Main$styledTenPlusYearsPhonePortrait = $mdgriffith$elm_ui$Element$el(
-	_List_fromArray(
-		[
-			$mdgriffith$elm_ui$Element$width($mdgriffith$elm_ui$Element$shrink),
-			$mdgriffith$elm_ui$Element$height($mdgriffith$elm_ui$Element$shrink),
-			$mdgriffith$elm_ui$Element$alignRight,
-			$mdgriffith$elm_ui$Element$Font$color($author$project$Main$lightBlack),
-			$mdgriffith$elm_ui$Element$Font$size(36),
-			$mdgriffith$elm_ui$Element$Font$family($author$project$Main$rubik),
-			$mdgriffith$elm_ui$Element$Font$bold
-		]));
-var $author$project$Main$viewTenPlusYearsPhonePortrait = $author$project$Main$styledTenPlusYearsPhonePortrait(
-	$mdgriffith$elm_ui$Element$text('10+ Years'));
-var $author$project$Main$styledTwoPhonePortrait = $mdgriffith$elm_ui$Element$el(
-	_List_fromArray(
-		[
-			$mdgriffith$elm_ui$Element$width($mdgriffith$elm_ui$Element$shrink),
-			$mdgriffith$elm_ui$Element$height($mdgriffith$elm_ui$Element$shrink),
-			$mdgriffith$elm_ui$Element$alignRight,
-			$mdgriffith$elm_ui$Element$alignTop,
-			$mdgriffith$elm_ui$Element$Font$color($author$project$Main$lightBlack),
-			$mdgriffith$elm_ui$Element$Font$size(12),
-			$mdgriffith$elm_ui$Element$Font$family($author$project$Main$rubik),
-			$mdgriffith$elm_ui$Element$Font$bold
-		]));
-var $author$project$Main$viewTwoPhonePortrait = $author$project$Main$styledTwoPhonePortrait(
-	$mdgriffith$elm_ui$Element$text('2'));
-var $author$project$Main$viewTenYearsPhonePortrait = $author$project$Main$styledTenYearsPhonePortrait(
-	_List_fromArray(
-		[$author$project$Main$viewTenPlusYearsPhonePortrait, $author$project$Main$viewTwoPhonePortrait]));
-var $author$project$Main$viewProblemTimePhonePortrait = $author$project$Main$styledProblemTimePhonePortrait(
-	_List_fromArray(
-		[$author$project$Main$viewTenYearsPhonePortrait, $author$project$Main$viewFilipinoYearsPhonePortrait, $author$project$Main$viewProblemFootnoteTwoPhonePortrait]));
-var $author$project$Main$viewProblemPhonePortrait = $author$project$Main$styledProblemPhonePortrait(
-	_List_fromArray(
-		[$author$project$Main$viewProblemPopulationPhonePortrait, $author$project$Main$viewProblemTimePhonePortrait]));
-var $author$project$Main$attributeProductPhonePortrait = _List_fromArray(
-	[
-		$mdgriffith$elm_ui$Element$width($mdgriffith$elm_ui$Element$fill),
-		$mdgriffith$elm_ui$Element$height($mdgriffith$elm_ui$Element$shrink),
-		$mdgriffith$elm_ui$Element$padding(48),
-		$mdgriffith$elm_ui$Element$spacing(48)
-	]);
-var $author$project$Main$atrributeNextPhonePortrait = _List_fromArray(
-	[
-		$mdgriffith$elm_ui$Element$width($mdgriffith$elm_ui$Element$fill),
-		$mdgriffith$elm_ui$Element$height($mdgriffith$elm_ui$Element$shrink),
-		$mdgriffith$elm_ui$Element$Font$color($author$project$Main$lightBlack),
-		$mdgriffith$elm_ui$Element$Font$size(18),
-		$mdgriffith$elm_ui$Element$Font$family($author$project$Main$rubik),
-		$mdgriffith$elm_ui$Element$Font$center
-	]);
-var $author$project$Main$elementNextPhonePortrait = function (string) {
-	return A2(
-		$mdgriffith$elm_ui$Element$paragraph,
-		$author$project$Main$atrributeNextPhonePortrait,
-		$elm$core$List$singleton(
-			$mdgriffith$elm_ui$Element$text(string)));
-};
-var $author$project$Main$viewBigDataPhonePortrait = $author$project$Main$elementNextPhonePortrait('Artificial Intelligence R&V Modeling-enabled Acquisition');
-var $mdgriffith$elm_ui$Internal$Model$Px = function (a) {
-	return {$: 'Px', a: a};
-};
-var $mdgriffith$elm_ui$Element$px = $mdgriffith$elm_ui$Internal$Model$Px;
-var $mdgriffith$elm_ui$Internal$Flag$borderRound = $mdgriffith$elm_ui$Internal$Flag$flag(17);
-var $mdgriffith$elm_ui$Element$Border$roundEach = function (_v0) {
-	var topLeft = _v0.topLeft;
-	var topRight = _v0.topRight;
-	var bottomLeft = _v0.bottomLeft;
-	var bottomRight = _v0.bottomRight;
-	return A2(
-		$mdgriffith$elm_ui$Internal$Model$StyleClass,
-		$mdgriffith$elm_ui$Internal$Flag$borderRound,
-		A3(
-			$mdgriffith$elm_ui$Internal$Model$Single,
-			'br-' + ($elm$core$String$fromInt(topLeft) + ('-' + ($elm$core$String$fromInt(topRight) + ($elm$core$String$fromInt(bottomLeft) + ('-' + $elm$core$String$fromInt(bottomRight)))))),
-			'border-radius',
-			$elm$core$String$fromInt(topLeft) + ('px ' + ($elm$core$String$fromInt(topRight) + ('px ' + ($elm$core$String$fromInt(bottomRight) + ('px ' + ($elm$core$String$fromInt(bottomLeft) + 'px'))))))));
-};
-var $author$project$Main$rounded = {bottomLeft: 0, bottomRight: 0, topLeft: 0, topRight: 0};
-var $author$project$Main$attributeBoxPhonePortrait = _List_fromArray(
-	[
-		$mdgriffith$elm_ui$Element$width($mdgriffith$elm_ui$Element$fill),
-		$mdgriffith$elm_ui$Element$height(
-		$mdgriffith$elm_ui$Element$px(96)),
-		A2($mdgriffith$elm_ui$Element$paddingXY, 48, 0),
-		$mdgriffith$elm_ui$Element$Background$color($author$project$Main$lightBlack),
-		$mdgriffith$elm_ui$Element$Border$roundEach(
-		_Utils_update(
-			$author$project$Main$rounded,
-			{topLeft: 20, topRight: 20}))
-	]);
 var $mdgriffith$elm_ui$Internal$Model$CenterY = {$: 'CenterY'};
 var $mdgriffith$elm_ui$Element$centerY = $mdgriffith$elm_ui$Internal$Model$AlignY($mdgriffith$elm_ui$Internal$Model$CenterY);
-var $author$project$Main$atrributeTextBoxPhonePortrait = _List_fromArray(
+var $author$project$Main$shrinkContent = _List_fromArray(
 	[
-		$mdgriffith$elm_ui$Element$width($mdgriffith$elm_ui$Element$fill),
-		$mdgriffith$elm_ui$Element$height($mdgriffith$elm_ui$Element$shrink),
-		$mdgriffith$elm_ui$Element$centerY,
-		$mdgriffith$elm_ui$Element$Font$color($author$project$Main$white),
-		$mdgriffith$elm_ui$Element$Font$size(24),
-		$mdgriffith$elm_ui$Element$Font$family($author$project$Main$rubik),
-		$mdgriffith$elm_ui$Element$Font$center,
-		$mdgriffith$elm_ui$Element$Font$bold
+		$mdgriffith$elm_ui$Element$width($mdgriffith$elm_ui$Element$shrink),
+		$mdgriffith$elm_ui$Element$height($mdgriffith$elm_ui$Element$shrink)
 	]);
-var $author$project$Main$elementTextBoxPhonePortrait = function (string) {
-	return A2(
-		$mdgriffith$elm_ui$Element$paragraph,
-		$author$project$Main$atrributeTextBoxPhonePortrait,
-		$elm$core$List$singleton(
-			$mdgriffith$elm_ui$Element$text(string)));
-};
-var $author$project$Main$elementBoxPortrait = function (string) {
-	return A2(
-		$mdgriffith$elm_ui$Element$el,
-		$author$project$Main$attributeBoxPhonePortrait,
-		$author$project$Main$elementTextBoxPhonePortrait(string));
-};
-var $author$project$Main$viewBuyerPhonePortrait = $author$project$Main$elementBoxPortrait('Buyer Chooses any Property');
-var $author$project$Main$viewCompanyPhonePortrait = $author$project$Main$elementBoxPortrait('Ownally as Primary Partner Co-Investor');
-var $author$project$Main$attributeProductSubtitlePhonePortrait = _List_fromArray(
-	[
-		$mdgriffith$elm_ui$Element$width($mdgriffith$elm_ui$Element$fill),
-		$mdgriffith$elm_ui$Element$height($mdgriffith$elm_ui$Element$shrink),
-		$mdgriffith$elm_ui$Element$Font$color($author$project$Main$lightBlack),
-		$mdgriffith$elm_ui$Element$Font$size(24),
-		$mdgriffith$elm_ui$Element$Font$family($author$project$Main$rubik),
-		$mdgriffith$elm_ui$Element$Font$center,
-		$mdgriffith$elm_ui$Element$Font$bold
-	]);
-var $author$project$Main$viewProductSubtitlePhonePortrait = A2(
-	$mdgriffith$elm_ui$Element$paragraph,
-	$author$project$Main$attributeProductSubtitlePhonePortrait,
-	$elm$core$List$singleton(
-		$mdgriffith$elm_ui$Element$text('Opening up opportunities for a new wave of property buyers and passive investors')));
-var $author$project$Main$viewSmartContractPhonePortrait = $author$project$Main$elementNextPhonePortrait('Smart Contract-enabled Fintech Network Platform');
-var $author$project$Main$viewThirdPartyPhonePortrait = $author$project$Main$elementBoxPortrait('Third-Party Home Equity Investor');
-var $author$project$Main$viewProductPhonePortrait = A2(
-	$mdgriffith$elm_ui$Element$column,
-	$author$project$Main$attributeProductPhonePortrait,
+var $author$project$Main$attributeHeadline = $elm$core$List$concat(
 	_List_fromArray(
-		[$author$project$Main$viewProductSubtitlePhonePortrait, $author$project$Main$viewBuyerPhonePortrait, $author$project$Main$viewBigDataPhonePortrait, $author$project$Main$viewCompanyPhonePortrait, $author$project$Main$viewSmartContractPhonePortrait, $author$project$Main$viewThirdPartyPhonePortrait]));
-var $author$project$Main$childrenPhonePortrait = _List_fromArray(
-	[$author$project$Main$viewHeaderPhonePortrait, $author$project$Main$viewLandingPhonePortrait, $author$project$Main$viewProblemPhonePortrait, $author$project$Main$viewMarketPhonePortrait, $author$project$Main$viewMissionPhonePortrait, $author$project$Main$viewProductPhonePortrait, $author$project$Main$viewFeaturePhonePortrait]);
-var $author$project$Main$viewByDevice = function (_v0) {
-	var _class = _v0._class;
-	var orientation = _v0.orientation;
-	var column = $mdgriffith$elm_ui$Element$column($author$project$Main$attributeByDevice);
-	var _v1 = _Utils_Tuple2(_class, orientation);
+		[
+			$author$project$Main$shrinkContent,
+			_List_fromArray(
+			[$mdgriffith$elm_ui$Element$alignLeft, $mdgriffith$elm_ui$Element$centerY]),
+			_List_fromArray(
+			[
+				$mdgriffith$elm_ui$Element$Font$color($author$project$Main$lightBlack),
+				$mdgriffith$elm_ui$Element$Font$size(72),
+				$mdgriffith$elm_ui$Element$Font$family($author$project$Main$rubik),
+				$mdgriffith$elm_ui$Element$Font$alignLeft,
+				$mdgriffith$elm_ui$Element$Font$bold
+			])
+		]));
+var $author$project$Main$viewHeadline = A2(
+	$mdgriffith$elm_ui$Element$paragraph,
+	$author$project$Main$attributeHeadline,
+	_List_fromArray(
+		[
+			$mdgriffith$elm_ui$Element$text('Own your home at your terms')
+		]));
+var $author$project$Main$attributeSubHeadline = $elm$core$List$concat(
+	_List_fromArray(
+		[
+			$author$project$Main$shrinkContent,
+			_List_fromArray(
+			[$mdgriffith$elm_ui$Element$alignLeft, $mdgriffith$elm_ui$Element$centerY]),
+			_List_fromArray(
+			[
+				$mdgriffith$elm_ui$Element$Font$color($author$project$Main$lightBlack),
+				$mdgriffith$elm_ui$Element$Font$size(36),
+				$mdgriffith$elm_ui$Element$Font$family($author$project$Main$rubik),
+				$mdgriffith$elm_ui$Element$Font$alignLeft
+			])
+		]));
+var $author$project$Main$viewSubHeadline = A2(
+	$mdgriffith$elm_ui$Element$paragraph,
+	$author$project$Main$attributeSubHeadline,
+	_List_fromArray(
+		[
+			$mdgriffith$elm_ui$Element$text('Lower monthly payments + No loans and interest + Trade for cash anytime')
+		]));
+var $author$project$Main$viewLanding = function (window) {
+	return A2(
+		$mdgriffith$elm_ui$Element$column,
+		$author$project$Main$attributeLanding(window),
+		_List_fromArray(
+			[$author$project$Main$viewHeadline, $author$project$Main$viewSubHeadline]));
+};
+var $author$project$Main$viewBody = function (window) {
+	return A2(
+		$mdgriffith$elm_ui$Element$column,
+		$author$project$Main$attributeBody,
+		_List_fromArray(
+			[
+				$author$project$Main$viewLanding(window),
+				$author$project$Main$viewHow,
+				$author$project$Main$viewBenefit
+			]));
+};
+var $author$project$Main$viewLayout = function (window) {
+	return A2(
+		$mdgriffith$elm_ui$Element$layout,
+		$author$project$Main$attributeLayout,
+		$author$project$Main$viewBody(window));
+};
+var $author$project$Main$view = function (_v0) {
+	var window = _v0.window;
+	var device = _v0.device;
+	var _v1 = _Utils_Tuple2(device._class, device.orientation);
 	if (_v1.b.$ === 'Portrait') {
 		switch (_v1.a.$) {
 			case 'Phone':
 				var _v2 = _v1.a;
 				var _v3 = _v1.b;
-				return column($author$project$Main$childrenPhonePortrait);
+				return $author$project$Main$viewLayout(window);
 			case 'Tablet':
 				var _v4 = _v1.a;
 				var _v5 = _v1.b;
-				return $mdgriffith$elm_ui$Element$none;
+				return $author$project$Main$viewLayout(window);
 			case 'Desktop':
 				var _v6 = _v1.a;
 				var _v7 = _v1.b;
-				return $mdgriffith$elm_ui$Element$none;
+				return $author$project$Main$viewLayout(window);
 			default:
 				var _v8 = _v1.a;
 				var _v9 = _v1.b;
-				return $mdgriffith$elm_ui$Element$none;
+				return $author$project$Main$viewLayout(window);
 		}
 	} else {
 		switch (_v1.a.$) {
 			case 'Phone':
 				var _v10 = _v1.a;
 				var _v11 = _v1.b;
-				return $mdgriffith$elm_ui$Element$none;
+				return $author$project$Main$viewLayout(window);
 			case 'Tablet':
 				var _v12 = _v1.a;
 				var _v13 = _v1.b;
-				return $mdgriffith$elm_ui$Element$none;
+				return $author$project$Main$viewLayout(window);
 			case 'Desktop':
 				var _v14 = _v1.a;
 				var _v15 = _v1.b;
-				return $mdgriffith$elm_ui$Element$none;
+				return $author$project$Main$viewLayout(window);
 			default:
 				var _v16 = _v1.a;
 				var _v17 = _v1.b;
-				return $mdgriffith$elm_ui$Element$none;
+				return $author$project$Main$viewLayout(window);
 		}
 	}
-};
-var $author$project$Main$view = function (model) {
-	return $author$project$Main$styledLayout(
-		$author$project$Main$viewByDevice(model));
 };
 var $author$project$Main$main = $elm$browser$Browser$element(
 	{init: $author$project$Main$init, subscriptions: $author$project$Main$subscriptions, update: $author$project$Main$update, view: $author$project$Main$view});
