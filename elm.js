@@ -11808,6 +11808,11 @@ var $mdgriffith$elm_ui$Element$row = F2(
 			$mdgriffith$elm_ui$Internal$Model$Unkeyed(children));
 	});
 var $author$project$Image$pieChart = A2($author$project$Image$createImage, 'PieChart.svg', 'Equity Photo');
+var $mdgriffith$elm_ui$Internal$Model$AlignY = function (a) {
+	return {$: 'AlignY', a: a};
+};
+var $mdgriffith$elm_ui$Internal$Model$Top = {$: 'Top'};
+var $mdgriffith$elm_ui$Element$alignTop = $mdgriffith$elm_ui$Internal$Model$AlignY($mdgriffith$elm_ui$Internal$Model$Top);
 var $mdgriffith$elm_ui$Element$padding = function (x) {
 	return A2(
 		$mdgriffith$elm_ui$Internal$Model$StyleClass,
@@ -11827,7 +11832,8 @@ var $author$project$Main$attributeBox = $elm$core$List$concat(
 			_List_fromArray(
 			[
 				$mdgriffith$elm_ui$Element$padding(48),
-				$mdgriffith$elm_ui$Element$spacing(48)
+				$mdgriffith$elm_ui$Element$spacing(48),
+				$mdgriffith$elm_ui$Element$alignTop
 			])
 		]));
 var $mdgriffith$elm_ui$Internal$Model$AlignX = function (a) {
@@ -11983,9 +11989,6 @@ var $author$project$Main$attributeLanding = function (_v0) {
 };
 var $mdgriffith$elm_ui$Internal$Model$Left = {$: 'Left'};
 var $mdgriffith$elm_ui$Element$alignLeft = $mdgriffith$elm_ui$Internal$Model$AlignX($mdgriffith$elm_ui$Internal$Model$Left);
-var $mdgriffith$elm_ui$Internal$Model$AlignY = function (a) {
-	return {$: 'AlignY', a: a};
-};
 var $mdgriffith$elm_ui$Internal$Model$CenterY = {$: 'CenterY'};
 var $mdgriffith$elm_ui$Element$centerY = $mdgriffith$elm_ui$Internal$Model$AlignY($mdgriffith$elm_ui$Internal$Model$CenterY);
 var $author$project$Main$shrinkContent = _List_fromArray(
