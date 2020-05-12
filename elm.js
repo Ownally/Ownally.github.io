@@ -5761,59 +5761,6 @@ var $mdgriffith$elm_ui$Element$Font$color = function (fontColor) {
 			'color',
 			fontColor));
 };
-var $mdgriffith$elm_ui$Internal$Model$FontFamily = F2(
-	function (a, b) {
-		return {$: 'FontFamily', a: a, b: b};
-	});
-var $mdgriffith$elm_ui$Internal$Flag$fontFamily = $mdgriffith$elm_ui$Internal$Flag$flag(5);
-var $elm$core$String$toLower = _String_toLower;
-var $elm$core$String$words = _String_words;
-var $mdgriffith$elm_ui$Internal$Model$renderFontClassName = F2(
-	function (font, current) {
-		return _Utils_ap(
-			current,
-			function () {
-				switch (font.$) {
-					case 'Serif':
-						return 'serif';
-					case 'SansSerif':
-						return 'sans-serif';
-					case 'Monospace':
-						return 'monospace';
-					case 'Typeface':
-						var name = font.a;
-						return A2(
-							$elm$core$String$join,
-							'-',
-							$elm$core$String$words(
-								$elm$core$String$toLower(name)));
-					case 'ImportFont':
-						var name = font.a;
-						var url = font.b;
-						return A2(
-							$elm$core$String$join,
-							'-',
-							$elm$core$String$words(
-								$elm$core$String$toLower(name)));
-					default:
-						var name = font.a.name;
-						return A2(
-							$elm$core$String$join,
-							'-',
-							$elm$core$String$words(
-								$elm$core$String$toLower(name)));
-				}
-			}());
-	});
-var $mdgriffith$elm_ui$Element$Font$family = function (families) {
-	return A2(
-		$mdgriffith$elm_ui$Internal$Model$StyleClass,
-		$mdgriffith$elm_ui$Internal$Flag$fontFamily,
-		A2(
-			$mdgriffith$elm_ui$Internal$Model$FontFamily,
-			A3($elm$core$List$foldl, $mdgriffith$elm_ui$Internal$Model$renderFontClassName, 'ff-', families),
-			families));
-};
 var $mdgriffith$elm_ui$Internal$Model$Content = {$: 'Content'};
 var $mdgriffith$elm_ui$Element$shrink = $mdgriffith$elm_ui$Internal$Model$Content;
 var $author$project$Main$fillWidth = _List_fromArray(
@@ -5857,17 +5804,6 @@ var $mdgriffith$elm_ui$Element$paddingXY = F2(
 				y,
 				x));
 	});
-var $mdgriffith$elm_ui$Internal$Model$SansSerif = {$: 'SansSerif'};
-var $mdgriffith$elm_ui$Element$Font$sansSerif = $mdgriffith$elm_ui$Internal$Model$SansSerif;
-var $mdgriffith$elm_ui$Internal$Model$Typeface = function (a) {
-	return {$: 'Typeface', a: a};
-};
-var $mdgriffith$elm_ui$Element$Font$typeface = $mdgriffith$elm_ui$Internal$Model$Typeface;
-var $author$project$Main$rubik = _List_fromArray(
-	[
-		$mdgriffith$elm_ui$Element$Font$typeface('Rubik'),
-		$mdgriffith$elm_ui$Element$Font$sansSerif
-	]);
 var $mdgriffith$elm_ui$Internal$Model$FontSize = function (a) {
 	return {$: 'FontSize', a: a};
 };
@@ -5896,7 +5832,6 @@ var $author$project$Main$attributeHeader = $elm$core$List$concat(
 			[
 				$mdgriffith$elm_ui$Element$Font$color($author$project$Main$white),
 				$mdgriffith$elm_ui$Element$Font$size(36),
-				$mdgriffith$elm_ui$Element$Font$family($author$project$Main$rubik),
 				$mdgriffith$elm_ui$Element$Font$alignLeft,
 				$mdgriffith$elm_ui$Element$Font$bold
 			])
@@ -11469,6 +11404,54 @@ var $mdgriffith$elm_ui$Internal$Model$renderRoot = F3(
 					_List_fromArray(
 						[child]))));
 	});
+var $mdgriffith$elm_ui$Internal$Model$FontFamily = F2(
+	function (a, b) {
+		return {$: 'FontFamily', a: a, b: b};
+	});
+var $mdgriffith$elm_ui$Internal$Model$SansSerif = {$: 'SansSerif'};
+var $mdgriffith$elm_ui$Internal$Model$Typeface = function (a) {
+	return {$: 'Typeface', a: a};
+};
+var $mdgriffith$elm_ui$Internal$Flag$fontFamily = $mdgriffith$elm_ui$Internal$Flag$flag(5);
+var $elm$core$String$toLower = _String_toLower;
+var $elm$core$String$words = _String_words;
+var $mdgriffith$elm_ui$Internal$Model$renderFontClassName = F2(
+	function (font, current) {
+		return _Utils_ap(
+			current,
+			function () {
+				switch (font.$) {
+					case 'Serif':
+						return 'serif';
+					case 'SansSerif':
+						return 'sans-serif';
+					case 'Monospace':
+						return 'monospace';
+					case 'Typeface':
+						var name = font.a;
+						return A2(
+							$elm$core$String$join,
+							'-',
+							$elm$core$String$words(
+								$elm$core$String$toLower(name)));
+					case 'ImportFont':
+						var name = font.a;
+						var url = font.b;
+						return A2(
+							$elm$core$String$join,
+							'-',
+							$elm$core$String$words(
+								$elm$core$String$toLower(name)));
+					default:
+						var name = font.a.name;
+						return A2(
+							$elm$core$String$join,
+							'-',
+							$elm$core$String$words(
+								$elm$core$String$toLower(name)));
+				}
+			}());
+	});
 var $mdgriffith$elm_ui$Internal$Model$rootStyle = function () {
 	var families = _List_fromArray(
 		[
@@ -11551,6 +11534,15 @@ var $mdgriffith$elm_ui$Element$column = F2(
 			$mdgriffith$elm_ui$Internal$Model$Unkeyed(children));
 	});
 var $author$project$Main$attributeBenefit = $author$project$Main$fillWidth;
+var $author$project$Image$Image = function (a) {
+	return {$: 'Image', a: a};
+};
+var $author$project$Image$createImage = F2(
+	function (filename, description) {
+		return $author$project$Image$Image(
+			{description: description, src: '/image/' + filename});
+	});
+var $author$project$Image$technology = A2($author$project$Image$createImage, 'Technology.jpg', 'Technology Photo');
 var $mdgriffith$elm_ui$Element$Font$alignRight = A2($mdgriffith$elm_ui$Internal$Model$Class, $mdgriffith$elm_ui$Internal$Flag$fontAlignment, $mdgriffith$elm_ui$Internal$Style$classes.textRight);
 var $mdgriffith$elm_ui$Internal$Model$Behind = {$: 'Behind'};
 var $mdgriffith$elm_ui$Element$behindContent = function (element) {
@@ -11580,15 +11572,6 @@ var $author$project$Main$bodyPadding = _List_fromArray(
 		A2($mdgriffith$elm_ui$Element$paddingXY, 144, 72),
 		$mdgriffith$elm_ui$Element$spacing(36)
 	]);
-var $author$project$Image$Image = function (a) {
-	return {$: 'Image', a: a};
-};
-var $author$project$Image$createImage = F2(
-	function (filename, description) {
-		return $author$project$Image$Image(
-			{description: description, src: '/image/' + filename});
-	});
-var $author$project$Image$technology = A2($author$project$Image$createImage, 'Technology.jpg', 'Technology Photo');
 var $elm$virtual_dom$VirtualDom$style = _VirtualDom_style;
 var $mdgriffith$elm_ui$Element$Background$image = function (src) {
 	return $mdgriffith$elm_ui$Internal$Model$Attr(
@@ -11659,22 +11642,23 @@ var $author$project$Main$attributeFadeBlack = $elm$core$List$concat(
 var $mdgriffith$elm_ui$Internal$Model$Empty = {$: 'Empty'};
 var $mdgriffith$elm_ui$Element$none = $mdgriffith$elm_ui$Internal$Model$Empty;
 var $author$project$Main$viewFadeBlack = A2($mdgriffith$elm_ui$Element$el, $author$project$Main$attributeFadeBlack, $mdgriffith$elm_ui$Element$none);
-var $author$project$Main$attributeBigData = $elm$core$List$concat(
-	_List_fromArray(
-		[
-			$author$project$Main$fillWidth,
-			$author$project$Main$bodyPadding,
-			_List_fromArray(
+var $author$project$Main$attributeWithPic = function (image) {
+	return $elm$core$List$concat(
+		_List_fromArray(
 			[
-				$author$project$Image$toBackground($author$project$Image$technology),
-				$mdgriffith$elm_ui$Element$behindContent($author$project$Main$viewFadeBlack),
-				$mdgriffith$elm_ui$Element$Font$color($author$project$Main$white),
-				$mdgriffith$elm_ui$Element$Font$size(48),
-				$mdgriffith$elm_ui$Element$Font$family($author$project$Main$rubik),
-				$mdgriffith$elm_ui$Element$Font$alignRight,
-				$mdgriffith$elm_ui$Element$Font$bold
-			])
-		]));
+				$author$project$Main$fillWidth,
+				$author$project$Main$bodyPadding,
+				_List_fromArray(
+				[
+					$author$project$Image$toBackground(image),
+					$mdgriffith$elm_ui$Element$behindContent($author$project$Main$viewFadeBlack),
+					$mdgriffith$elm_ui$Element$Font$color($author$project$Main$white),
+					$mdgriffith$elm_ui$Element$Font$size(48),
+					$mdgriffith$elm_ui$Element$Font$alignRight,
+					$mdgriffith$elm_ui$Element$Font$bold
+				])
+			]));
+};
 var $mdgriffith$elm_ui$Internal$Model$Describe = function (a) {
 	return {$: 'Describe', a: a};
 };
@@ -11697,14 +11681,18 @@ var $mdgriffith$elm_ui$Element$paragraph = F2(
 						attrs))),
 			$mdgriffith$elm_ui$Internal$Model$Unkeyed(children));
 	});
-var $author$project$Main$viewBigData = A2(
-	$mdgriffith$elm_ui$Element$paragraph,
-	$author$project$Main$attributeBigData,
-	_List_fromArray(
-		[
-			$mdgriffith$elm_ui$Element$text('Using Big Data and AI to get the right price')
-		]));
-var $author$project$Main$attributeEmergency = $elm$core$List$concat(
+var $author$project$Main$viewWithPic = F2(
+	function (image, string) {
+		return A2(
+			$mdgriffith$elm_ui$Element$paragraph,
+			$author$project$Main$attributeWithPic(image),
+			_List_fromArray(
+				[
+					$mdgriffith$elm_ui$Element$text(string)
+				]));
+	});
+var $author$project$Main$viewBigData = A2($author$project$Main$viewWithPic, $author$project$Image$technology, 'Determination of prices using Big Data and AI');
+var $author$project$Main$attributeBlack = $elm$core$List$concat(
 	_List_fromArray(
 		[
 			$author$project$Main$fillWidth,
@@ -11714,64 +11702,23 @@ var $author$project$Main$attributeEmergency = $elm$core$List$concat(
 				$mdgriffith$elm_ui$Element$Background$color($author$project$Main$lightBlack),
 				$mdgriffith$elm_ui$Element$Font$color($author$project$Main$white),
 				$mdgriffith$elm_ui$Element$Font$size(48),
-				$mdgriffith$elm_ui$Element$Font$family($author$project$Main$rubik),
 				$mdgriffith$elm_ui$Element$Font$alignLeft,
 				$mdgriffith$elm_ui$Element$Font$bold
 			])
 		]));
-var $author$project$Main$viewEmergency = A2(
-	$mdgriffith$elm_ui$Element$paragraph,
-	$author$project$Main$attributeEmergency,
-	_List_fromArray(
-		[
-			$mdgriffith$elm_ui$Element$text('Easily trade equities for cash in black swan emergencies')
-		]));
-var $author$project$Main$attributeInvest = $elm$core$List$concat(
-	_List_fromArray(
-		[
-			$author$project$Main$fillWidth,
-			$author$project$Main$bodyPadding,
-			_List_fromArray(
+var $author$project$Main$viewBlack = function (string) {
+	return A2(
+		$mdgriffith$elm_ui$Element$paragraph,
+		$author$project$Main$attributeBlack,
+		_List_fromArray(
 			[
-				$mdgriffith$elm_ui$Element$Background$color($author$project$Main$lightBlack),
-				$mdgriffith$elm_ui$Element$Font$color($author$project$Main$white),
-				$mdgriffith$elm_ui$Element$Font$size(48),
-				$mdgriffith$elm_ui$Element$Font$family($author$project$Main$rubik),
-				$mdgriffith$elm_ui$Element$Font$alignLeft,
-				$mdgriffith$elm_ui$Element$Font$bold
-			])
-		]));
-var $author$project$Main$viewInvest = A2(
-	$mdgriffith$elm_ui$Element$paragraph,
-	$author$project$Main$attributeInvest,
-	_List_fromArray(
-		[
-			$mdgriffith$elm_ui$Element$text('Sharing the appreciation and depreciation of your property')
-		]));
+				$mdgriffith$elm_ui$Element$text(string)
+			]));
+};
+var $author$project$Main$viewEmergency = $author$project$Main$viewBlack('Seamless conversion of equity to cash in times of need');
+var $author$project$Main$viewInvest = $author$project$Main$viewBlack('Own your property');
 var $author$project$Image$buildings = A2($author$project$Image$createImage, 'Buildings.jpg', 'Building Photo');
-var $author$project$Main$attributeLesser = $elm$core$List$concat(
-	_List_fromArray(
-		[
-			$author$project$Main$fillWidth,
-			$author$project$Main$bodyPadding,
-			_List_fromArray(
-			[
-				$author$project$Image$toBackground($author$project$Image$buildings),
-				$mdgriffith$elm_ui$Element$behindContent($author$project$Main$viewFadeBlack),
-				$mdgriffith$elm_ui$Element$Font$color($author$project$Main$white),
-				$mdgriffith$elm_ui$Element$Font$size(48),
-				$mdgriffith$elm_ui$Element$Font$family($author$project$Main$rubik),
-				$mdgriffith$elm_ui$Element$Font$alignRight,
-				$mdgriffith$elm_ui$Element$Font$bold
-			])
-		]));
-var $author$project$Main$viewLesser = A2(
-	$mdgriffith$elm_ui$Element$paragraph,
-	$author$project$Main$attributeLesser,
-	_List_fromArray(
-		[
-			$mdgriffith$elm_ui$Element$text('Lower your monthly payments to fit you')
-		]));
+var $author$project$Main$viewLesser = A2($author$project$Main$viewWithPic, $author$project$Image$buildings, 'Customizable monthly payments for you');
 var $author$project$Main$viewBenefit = A2(
 	$mdgriffith$elm_ui$Element$column,
 	$author$project$Main$attributeBenefit,
@@ -11923,7 +11870,6 @@ var $author$project$Main$attributeStep = $elm$core$List$concat(
 			[
 				$mdgriffith$elm_ui$Element$Font$color($author$project$Main$lightBlack),
 				$mdgriffith$elm_ui$Element$Font$size(24),
-				$mdgriffith$elm_ui$Element$Font$family($author$project$Main$rubik),
 				$mdgriffith$elm_ui$Element$Font$justify
 			])
 		]));
@@ -12006,7 +11952,6 @@ var $author$project$Main$attributeHeadline = $elm$core$List$concat(
 			[
 				$mdgriffith$elm_ui$Element$Font$color($author$project$Main$lightBlack),
 				$mdgriffith$elm_ui$Element$Font$size(72),
-				$mdgriffith$elm_ui$Element$Font$family($author$project$Main$rubik),
 				$mdgriffith$elm_ui$Element$Font$alignLeft,
 				$mdgriffith$elm_ui$Element$Font$bold
 			])
@@ -12028,7 +11973,6 @@ var $author$project$Main$attributeSubHeadline = $elm$core$List$concat(
 			[
 				$mdgriffith$elm_ui$Element$Font$color($author$project$Main$lightBlack),
 				$mdgriffith$elm_ui$Element$Font$size(36),
-				$mdgriffith$elm_ui$Element$Font$family($author$project$Main$rubik),
 				$mdgriffith$elm_ui$Element$Font$alignLeft
 			])
 		]));
@@ -12037,7 +11981,7 @@ var $author$project$Main$viewSubHeadline = A2(
 	$author$project$Main$attributeSubHeadline,
 	_List_fromArray(
 		[
-			$mdgriffith$elm_ui$Element$text('Lower monthly payments + No loans and interest + Trade for cash anytime')
+			$mdgriffith$elm_ui$Element$text('Lower monthly payments + No loans and interest')
 		]));
 var $author$project$Main$viewLanding = function (window) {
 	return A2(
