@@ -6,7 +6,7 @@ import Browser
 import Browser.Events
 import Element exposing (Attribute, Color, Device, Element)
 import Element.Background as Background
-import Element.Font as Font exposing (Font)
+import Element.Font as Font
 import Html exposing (Html)
 import Image exposing (Image)
 
@@ -145,7 +145,6 @@ attributeHeader =
         , [ Background.color lightBlack ]
         , [ Font.color white
           , Font.size 36
-          , Font.family rubik
           , Font.alignLeft
           , Font.bold
           ]
@@ -229,7 +228,6 @@ attributeHeadline =
           ]
         , [ Font.color lightBlack
           , Font.size 72
-          , Font.family rubik
           , Font.alignLeft
           , Font.bold
           ]
@@ -243,7 +241,7 @@ attributeHeadline =
 viewSubHeadline : Element Msg
 viewSubHeadline =
     Element.paragraph attributeSubHeadline
-        [ Element.text "Lower monthly payments + No loans and interest + Trade for cash anytime" ]
+        [ Element.text "Lower monthly payments + No loans and interest" ]
 
 
 attributeSubHeadline : List (Attribute Msg)
@@ -255,7 +253,6 @@ attributeSubHeadline =
           ]
         , [ Font.color lightBlack
           , Font.size 36
-          , Font.family rubik
           , Font.alignLeft
           ]
         ]
@@ -342,7 +339,6 @@ attributeStep =
         [ fillWidth
         , [ Font.color lightBlack
           , Font.size 24
-          , Font.family rubik
           , Font.justify
           ]
         ]
@@ -369,20 +365,39 @@ attributeBenefit =
 
 viewLesser : Element Msg
 viewLesser =
-    Element.paragraph attributeLesser
-        [ Element.text "Lower your monthly payments to fit you" ]
+    viewWithPic Image.buildings "Customizable monthly payments for you"
 
 
-attributeLesser : List (Attribute Msg)
-attributeLesser =
+viewInvest : Element Msg
+viewInvest =
+    viewBlack "Own your property"
+
+
+viewBigData : Element Msg
+viewBigData =
+    viewWithPic Image.technology "Determination of prices using Big Data and AI"
+
+
+viewEmergency : Element Msg
+viewEmergency =
+    viewBlack "Seamless conversion of equity to cash in times of need"
+
+
+viewWithPic : Image -> String -> Element Msg
+viewWithPic image string =
+    Element.paragraph (attributeWithPic image)
+        [ Element.text string ]
+
+
+attributeWithPic : Image -> List (Attribute Msg)
+attributeWithPic image =
     List.concat
         [ fillWidth
         , bodyPadding
-        , [ Image.toBackground Image.buildings
+        , [ Image.toBackground image
           , Element.behindContent viewFadeBlack
           , Font.color white
           , Font.size 48
-          , Font.family rubik
           , Font.alignRight
           , Font.bold
           ]
@@ -406,64 +421,20 @@ attributeFadeBlack =
         ]
 
 
-viewInvest : Element Msg
-viewInvest =
-    Element.paragraph attributeInvest
-        [ Element.text "Sharing the appreciation and depreciation of your property" ]
+viewBlack : String -> Element Msg
+viewBlack string =
+    Element.paragraph attributeBlack
+        [ Element.text string ]
 
 
-attributeInvest : List (Attribute Msg)
-attributeInvest =
+attributeBlack : List (Attribute Msg)
+attributeBlack =
     List.concat
         [ fillWidth
         , bodyPadding
         , [ Background.color lightBlack
           , Font.color white
           , Font.size 48
-          , Font.family rubik
-          , Font.alignLeft
-          , Font.bold
-          ]
-        ]
-
-
-viewBigData : Element Msg
-viewBigData =
-    Element.paragraph attributeBigData
-        [ Element.text "Using Big Data and AI to get the right price" ]
-
-
-attributeBigData : List (Attribute Msg)
-attributeBigData =
-    List.concat
-        [ fillWidth
-        , bodyPadding
-        , [ Image.toBackground Image.technology
-          , Element.behindContent viewFadeBlack
-          , Font.color white
-          , Font.size 48
-          , Font.family rubik
-          , Font.alignRight
-          , Font.bold
-          ]
-        ]
-
-
-viewEmergency : Element Msg
-viewEmergency =
-    Element.paragraph attributeEmergency
-        [ Element.text "Easily trade equities for cash in black swan emergencies" ]
-
-
-attributeEmergency : List (Attribute Msg)
-attributeEmergency =
-    List.concat
-        [ fillWidth
-        , bodyPadding
-        , [ Background.color lightBlack
-          , Font.color white
-          , Font.size 48
-          , Font.family rubik
           , Font.alignLeft
           , Font.bold
           ]
@@ -538,14 +509,3 @@ transparent =
         , blue = 255
         , alpha = 0
         }
-
-
-
--- FONT FAMILY
-
-
-rubik : List Font
-rubik =
-    [ Font.typeface "Rubik"
-    , Font.sansSerif
-    ]
