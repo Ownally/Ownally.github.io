@@ -3,19 +3,21 @@ module Main exposing (main)
 -- IMPORT
 
 import Browser
-import Browser.Events
 import Element exposing (Attribute, Color, Device, Element)
 import Element.Background as Background
 import Element.Font as Font
+import Element.Input as Input
 import Html exposing (Html)
-import Image exposing (Image)
+import Page.Dashboard as Dashboard
+import Page.Home as Home
+import Window exposing (Window)
 
 
 
 -- MAIN
 
 
-main : Program Window Model Msg
+main : Program Flag Model Msg
 main =
     Browser.element
         { init = init
@@ -31,31 +33,45 @@ main =
 
 type alias Model =
     { window : Window
-    , device : Device
+    , page : Page
     }
 
 
+type Page
+    = Home
+    | Dashboard Dashboard.Model
 
+
+
+--| Dashboard
 -- INIT
 
 
-type alias Window =
+type alias Flag =
     { width : Int
     , height : Int
     }
 
 
-init : Window -> ( Model, Cmd Msg )
-init window =
-    ( Model window <| Element.classifyDevice window, Cmd.none )
+init : Flag -> ( Model, Cmd Msg )
+init =
+    Window.init initialize
+
+
+initialize : Window -> ( Model, Cmd Msg )
+initialize window =
+    ( Model window Home, Cmd.none )
 
 
 
--- MSG
+-- Msg
 
 
 type Msg
-    = ChangeWindow Int Int
+    = ChangeWindow Window
+    | GoHome
+    | GoDashboard
+    | OnDashboard Dashboard.Msg
 
 
 
@@ -63,15 +79,33 @@ type Msg
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
-update msg _ =
-    case msg of
-        ChangeWindow width height ->
+update msg ({ page } as model) =
+    case ( msg, page ) of
+        ( ChangeWindow window, _ ) ->
+            ( { model | window = window }, Cmd.none )
+
+        ( GoHome, Home ) ->
+            ( model, Cmd.none )
+
+        ( GoHome, _ ) ->
+            ( { model | page = Home }, Cmd.none )
+
+        ( GoDashboard, Dashboard _ ) ->
+            ( model, Cmd.none )
+
+        ( GoDashboard, _ ) ->
+            ( { model | page = Dashboard Dashboard.initialModel }, Cmd.none )
+
+        ( OnDashboard dashboardMsg, Dashboard dashboardModel ) ->
             let
-                window : Window
-                window =
-                    Window width height
+                next : ( Dashboard.Model, Cmd Dashboard.Msg )
+                next =
+                    Dashboard.update dashboardMsg dashboardModel
             in
-            ( Model window <| Element.classifyDevice window, Cmd.none )
+            ( { model | page = Dashboard <| Tuple.first next }, Cmd.map OnDashboard <| Tuple.second next )
+
+        _ ->
+            ( model, Cmd.none )
 
 
 
@@ -80,7 +114,7 @@ update msg _ =
 
 subscriptions : Model -> Sub Msg
 subscriptions _ =
-    Browser.Events.onResize ChangeWindow
+    Window.onResize ChangeWindow
 
 
 
@@ -88,43 +122,75 @@ subscriptions _ =
 
 
 view : Model -> Html Msg
-view { window, device } =
-    case ( device.class, device.orientation ) of
-        ( Element.Phone, Element.Portrait ) ->
-            viewLayout window
+view { window, page } =
+    let
+        device : Device
+        device =
+            Window.classifyDevice window
 
-        ( Element.Tablet, Element.Portrait ) ->
-            viewLayout window
+        layoutHome : Element Msg -> (Window -> Element Msg) -> Html Msg
+        layoutHome header currentPage =
+            Element.layout (attribute header) <| currentPage window
 
-        ( Element.Desktop, Element.Portrait ) ->
-            viewLayout window
+        layoutDashboard : Element Msg -> (Window -> Dashboard.Model -> Element Dashboard.Msg) -> Dashboard.Model -> Html Msg
+        layoutDashboard header currentPage dashboardModel =
+            Element.layout (attribute header) <| Element.map OnDashboard <| currentPage window dashboardModel
+    in
+    case ( page, device.class, device.orientation ) of
+        ( Home, Element.Phone, Element.Portrait ) ->
+            layoutHome viewHeaderHomePhonePortrait Home.viewPhonePortrait
 
-        ( Element.BigDesktop, Element.Portrait ) ->
-            viewLayout window
+        ( Home, Element.Tablet, Element.Portrait ) ->
+            layoutHome viewHeaderHomeTabletPortrait Home.viewTabletPortrait
 
-        ( Element.Phone, Element.Landscape ) ->
-            viewLayout window
+        ( Home, Element.Desktop, Element.Portrait ) ->
+            layoutHome viewHeaderHomeDesktopPortrait Home.viewDesktopPortrait
 
-        ( Element.Tablet, Element.Landscape ) ->
-            viewLayout window
+        ( Home, Element.BigDesktop, Element.Portrait ) ->
+            layoutHome viewHeaderHomeBigDesktopPortrait Home.viewBigDesktopPortrait
 
-        ( Element.Desktop, Element.Landscape ) ->
-            viewLayout window
+        ( Home, Element.Phone, Element.Landscape ) ->
+            layoutHome viewHeaderHomePhoneLandscape Home.viewPhoneLandscape
 
-        ( Element.BigDesktop, Element.Landscape ) ->
-            viewLayout window
+        ( Home, Element.Tablet, Element.Landscape ) ->
+            layoutHome viewHeaderHomeTabletLandscape Home.viewTabletLandscape
+
+        ( Home, Element.Desktop, Element.Landscape ) ->
+            layoutHome viewHeaderHomeDesktopLandscape Home.viewDesktopLandscape
+
+        ( Home, Element.BigDesktop, Element.Landscape ) ->
+            layoutHome viewHeaderHomeBigDesktopLandscape Home.viewBigDesktopLandscape
+
+        ( Dashboard dashboardModel, Element.Phone, Element.Portrait ) ->
+            layoutDashboard viewHeaderDashboardPhonePortrait Dashboard.viewPhonePortrait dashboardModel
+
+        ( Dashboard dashboardModel, Element.Tablet, Element.Portrait ) ->
+            layoutDashboard viewHeaderDashboardTabletPortrait Dashboard.viewTabletPortrait dashboardModel
+
+        ( Dashboard dashboardModel, Element.Desktop, Element.Portrait ) ->
+            layoutDashboard viewHeaderDashboardDesktopPortrait Dashboard.viewDesktopPortrait dashboardModel
+
+        ( Dashboard dashboardModel, Element.BigDesktop, Element.Portrait ) ->
+            layoutDashboard viewHeaderDashboardBigDesktopPortrait Dashboard.viewBigDesktopPortrait dashboardModel
+
+        ( Dashboard dashboardModel, Element.Phone, Element.Landscape ) ->
+            layoutDashboard viewHeaderDashboardPhoneLandscape Dashboard.viewPhoneLandscape dashboardModel
+
+        ( Dashboard dashboardModel, Element.Tablet, Element.Landscape ) ->
+            layoutDashboard viewHeaderDashboardTabletLandscape Dashboard.viewTabletLandscape dashboardModel
+
+        ( Dashboard dashboardModel, Element.Desktop, Element.Landscape ) ->
+            layoutDashboard viewHeaderDashboardDesktopLandscape Dashboard.viewDesktopLandscape dashboardModel
+
+        ( Dashboard dashboardModel, Element.BigDesktop, Element.Landscape ) ->
+            layoutDashboard viewHeaderDashboardBigDesktopLandscape Dashboard.viewBigDesktopLandscape dashboardModel
 
 
-viewLayout : Window -> Html Msg
-viewLayout window =
-    Element.layout attributeLayout <| viewBody window
-
-
-attributeLayout : List (Attribute Msg)
-attributeLayout =
+attribute : Element Msg -> List (Attribute Msg)
+attribute header =
     List.concat
         [ fillWindow
-        , [ Element.inFront viewHeader ]
+        , [ Element.inFront header ]
         ]
 
 
@@ -132,18 +198,78 @@ attributeLayout =
 -- HEADER
 
 
-viewHeader : Element Msg
-viewHeader =
-    Element.el attributeHeader <| Element.text "Ownally"
+viewHeaderHomePhonePortrait : Element Msg
+viewHeaderHomePhonePortrait =
+    viewHeaderHome
 
 
-attributeHeader : List (Attribute Msg)
-attributeHeader =
+viewHeaderHomeTabletPortrait : Element Msg
+viewHeaderHomeTabletPortrait =
+    viewHeaderHome
+
+
+viewHeaderHomeDesktopPortrait : Element Msg
+viewHeaderHomeDesktopPortrait =
+    viewHeaderHome
+
+
+viewHeaderHomeBigDesktopPortrait : Element Msg
+viewHeaderHomeBigDesktopPortrait =
+    viewHeaderHome
+
+
+viewHeaderHomePhoneLandscape : Element Msg
+viewHeaderHomePhoneLandscape =
+    viewHeaderHome
+
+
+viewHeaderHomeTabletLandscape : Element Msg
+viewHeaderHomeTabletLandscape =
+    viewHeaderHome
+
+
+viewHeaderHomeDesktopLandscape : Element Msg
+viewHeaderHomeDesktopLandscape =
+    viewHeaderHome
+
+
+viewHeaderHomeBigDesktopLandscape : Element Msg
+viewHeaderHomeBigDesktopLandscape =
+    viewHeaderHome
+
+
+viewHeaderHome : Element Msg
+viewHeaderHome =
+    Element.row attributeHeaderHome
+        [ viewTitle
+        , viewButtonDashboard
+        ]
+
+
+attributeHeaderHome : List (Attribute Msg)
+attributeHeaderHome =
     List.concat
         [ fillWidth
-        , [ Element.paddingXY 144 18 ]
-        , [ Background.color lightBlack ]
-        , [ Font.color white
+        , [ Element.paddingXY 144 18
+          , Background.color lightBlack
+          ]
+        ]
+
+
+viewTitle : Element Msg
+viewTitle =
+    Input.button attributeTitle
+        { onPress = Nothing
+        , label = Element.text "Ownally"
+        }
+
+
+attributeTitle : List (Attribute Msg)
+attributeTitle =
+    List.concat
+        [ shrinkContent
+        , [ Element.alignLeft
+          , Font.color white
           , Font.size 36
           , Font.alignLeft
           , Font.bold
@@ -151,330 +277,102 @@ attributeHeader =
         ]
 
 
-
--- BODY
-
-
-viewBody : Window -> Element Msg
-viewBody window =
-    Element.column attributeBody
-        [ viewLanding window
-        , viewHow
-        , viewBenefit
-        ]
+viewButtonDashboard : Element Msg
+viewButtonDashboard =
+    Input.button attributeButtonDashboard
+        { onPress = Just GoDashboard
+        , label = Element.text "Dashboard"
+        }
 
 
-attributeBody : List (Attribute Msg)
-attributeBody =
-    fillWidth
-
-
-
--- LANDING
-
-
-viewLanding : Window -> Element Msg
-viewLanding window =
-    Element.column (attributeLanding window)
-        [ viewHeadline
-        , viewSubHeadline
-        ]
-
-
-attributeLanding : Window -> List (Attribute Msg)
-attributeLanding { width, height } =
-    [ Element.width Element.fill
-    , Element.height <| Element.px height
-    , Element.paddingXY 144 72
-    , Element.spacing 36
-    , Image.toBackground Image.house
-    , Element.behindContent viewFadeWhite
-    ]
-
-
-viewFadeWhite : Element Msg
-viewFadeWhite =
-    Element.el attributeFadeWhite Element.none
-
-
-attributeFadeWhite : List (Attribute Msg)
-attributeFadeWhite =
-    List.concat
-        [ fillWindow
-        , [ Background.gradient
-                { angle = pi / 2
-                , steps = [ white, transparent ]
-                }
-          ]
-        ]
-
-
-
--- HEADLINE
-
-
-viewHeadline : Element Msg
-viewHeadline =
-    Element.paragraph attributeHeadline
-        [ Element.text "Own your home at your terms" ]
-
-
-attributeHeadline : List (Attribute Msg)
-attributeHeadline =
+attributeButtonDashboard : List (Attribute Msg)
+attributeButtonDashboard =
     List.concat
         [ shrinkContent
-        , [ Element.alignLeft
+        , [ Element.alignRight
           , Element.centerY
-          ]
-        , [ Font.color lightBlack
-          , Font.size 72
-          , Font.alignLeft
-          , Font.bold
-          ]
-        ]
-
-
-
--- SUBHEADLINE
-
-
-viewSubHeadline : Element Msg
-viewSubHeadline =
-    Element.paragraph attributeSubHeadline
-        [ Element.text "Lower monthly payments + No loans and interest" ]
-
-
-attributeSubHeadline : List (Attribute Msg)
-attributeSubHeadline =
-    List.concat
-        [ shrinkContent
-        , [ Element.alignLeft
-          , Element.centerY
-          ]
-        , [ Font.color lightBlack
-          , Font.size 36
-          , Font.alignLeft
-          ]
-        ]
-
-
-
--- HOW
-
-
-viewHow : Element Msg
-viewHow =
-    Element.row attributeHow
-        [ viewEquity
-        , viewRental
-        , viewTrade
-        ]
-
-
-attributeHow : List (Attribute Msg)
-attributeHow =
-    List.concat
-        [ fillWidth
-        , bodyPadding
-        , [ Background.color white ]
-        ]
-
-
-viewEquity : Element Msg
-viewEquity =
-    viewBox Image.pieChart "Sell fractional equities of your property to Ownally and investors, so you have the funds to purchase your property without loans."
-
-
-viewRental : Element Msg
-viewRental =
-    viewBox Image.rentalContract "Only pay fractional rent for the proportional equities you don't own. More equities you own, lesser the rent."
-
-
-viewTrade : Element Msg
-viewTrade =
-    viewBox Image.tradeGrowth "Freely trade equities with Ownally and investors anytime you want. Slowly build your wealth without debt."
-
-
-viewBox : Image -> String -> Element Msg
-viewBox image string =
-    Element.column attributeBox
-        [ viewImageIcon image
-        , viewStep string
-        ]
-
-
-attributeBox : List (Attribute Msg)
-attributeBox =
-    List.concat
-        [ fillWidth
-        , [ Element.padding 48
-          , Element.spacing 48
-          , Element.alignTop
-          ]
-        ]
-
-
-viewImageIcon : Image -> Element Msg
-viewImageIcon =
-    Image.toElement attributeImageIcon
-
-
-attributeImageIcon : List (Attribute Msg)
-attributeImageIcon =
-    [ Element.width <| Element.px 150
-    , Element.height <| Element.px 150
-    , Element.centerX
-    ]
-
-
-viewStep : String -> Element Msg
-viewStep string =
-    Element.paragraph attributeStep
-        [ Element.text string ]
-
-
-attributeStep : List (Attribute Msg)
-attributeStep =
-    List.concat
-        [ fillWidth
-        , [ Font.color lightBlack
+          , Font.color white
           , Font.size 24
-          , Font.justify
+          , Font.alignLeft
           ]
         ]
 
 
-
--- BENEFIT
-
-
-viewBenefit : Element Msg
-viewBenefit =
-    Element.column attributeBenefit
-        [ viewLesser
-        , viewInvest
-        , viewBigData
-        , viewEmergency
-        ]
+viewHeaderDashboardPhonePortrait : Element Msg
+viewHeaderDashboardPhonePortrait =
+    viewHeaderDashboard
 
 
-attributeBenefit : List (Attribute Msg)
-attributeBenefit =
-    fillWidth
+viewHeaderDashboardTabletPortrait : Element Msg
+viewHeaderDashboardTabletPortrait =
+    viewHeaderDashboard
 
 
-viewLesser : Element Msg
-viewLesser =
-    viewWithPic Image.buildings "Customizable monthly payments for you"
+viewHeaderDashboardDesktopPortrait : Element Msg
+viewHeaderDashboardDesktopPortrait =
+    viewHeaderDashboard
 
 
-viewInvest : Element Msg
-viewInvest =
-    viewBlack "Own your property"
+viewHeaderDashboardBigDesktopPortrait : Element Msg
+viewHeaderDashboardBigDesktopPortrait =
+    viewHeaderDashboard
 
 
-viewBigData : Element Msg
-viewBigData =
-    viewWithPic Image.technology "Determination of prices using Big Data and AI"
+viewHeaderDashboardPhoneLandscape : Element Msg
+viewHeaderDashboardPhoneLandscape =
+    viewHeaderDashboard
 
 
-viewEmergency : Element Msg
-viewEmergency =
-    viewBlack "Seamless conversion of equity to cash in times of need"
+viewHeaderDashboardTabletLandscape : Element Msg
+viewHeaderDashboardTabletLandscape =
+    viewHeaderDashboard
 
 
-viewWithPic : Image -> String -> Element Msg
-viewWithPic image string =
-    Element.paragraph (attributeWithPic image)
-        [ Element.text string ]
+viewHeaderDashboardDesktopLandscape : Element Msg
+viewHeaderDashboardDesktopLandscape =
+    viewHeaderDashboard
 
 
-attributeWithPic : Image -> List (Attribute Msg)
-attributeWithPic image =
+viewHeaderDashboardBigDesktopLandscape : Element Msg
+viewHeaderDashboardBigDesktopLandscape =
+    viewHeaderDashboard
+
+
+viewHeaderDashboard : Element Msg
+viewHeaderDashboard =
+    Element.row attributeHeaderDashboard
+        [ viewDashboardTitle ]
+
+
+attributeHeaderDashboard : List (Attribute Msg)
+attributeHeaderDashboard =
     List.concat
         [ fillWidth
-        , bodyPadding
-        , [ Image.toBackground image
-          , Element.behindContent viewFadeBlack
-          , Font.color white
-          , Font.size 48
-          , Font.alignRight
-          , Font.bold
+        , [ Element.paddingXY 144 18
+          , Background.color lightBlack
           ]
         ]
 
 
-viewFadeBlack : Element Msg
-viewFadeBlack =
-    Element.el attributeFadeBlack Element.none
+viewDashboardTitle : Element Msg
+viewDashboardTitle =
+    Input.button attributeDashboardTitle
+        { onPress = Just GoHome
+        , label = Element.text "Ownally"
+        }
 
 
-attributeFadeBlack : List (Attribute Msg)
-attributeFadeBlack =
+attributeDashboardTitle : List (Attribute Msg)
+attributeDashboardTitle =
     List.concat
-        [ fillWindow
-        , [ Background.gradient
-                { angle = pi / 2
-                , steps = [ transparent, lightBlack ]
-                }
-          ]
-        ]
-
-
-viewBlack : String -> Element Msg
-viewBlack string =
-    Element.paragraph attributeBlack
-        [ Element.text string ]
-
-
-attributeBlack : List (Attribute Msg)
-attributeBlack =
-    List.concat
-        [ fillWidth
-        , bodyPadding
-        , [ Background.color lightBlack
+        [ shrinkContent
+        , [ Element.alignLeft
           , Font.color white
-          , Font.size 48
+          , Font.size 36
           , Font.alignLeft
           , Font.bold
           ]
         ]
-
-
-
--- SIZE
-
-
-fillWindow : List (Attribute Msg)
-fillWindow =
-    [ Element.width Element.fill
-    , Element.height Element.fill
-    ]
-
-
-fillWidth : List (Attribute Msg)
-fillWidth =
-    [ Element.width Element.fill
-    , Element.height Element.shrink
-    ]
-
-
-shrinkContent : List (Attribute Msg)
-shrinkContent =
-    [ Element.width Element.shrink
-    , Element.height Element.shrink
-    ]
-
-
-
--- PADDING AND SPACING
-
-
-bodyPadding : List (Attribute Msg)
-bodyPadding =
-    [ Element.paddingXY 144 72
-    , Element.spacing 36
-    ]
 
 
 
@@ -501,11 +399,26 @@ lightBlack =
         }
 
 
-transparent : Color
-transparent =
-    Element.fromRgb255
-        { red = 255
-        , green = 255
-        , blue = 255
-        , alpha = 0
-        }
+
+-- SIZE
+
+
+fillWindow : List (Attribute Msg)
+fillWindow =
+    [ Element.width Element.fill
+    , Element.height Element.fill
+    ]
+
+
+fillWidth : List (Attribute Msg)
+fillWidth =
+    [ Element.width Element.fill
+    , Element.height Element.shrink
+    ]
+
+
+shrinkContent : List (Attribute Msg)
+shrinkContent =
+    [ Element.width Element.shrink
+    , Element.height Element.shrink
+    ]

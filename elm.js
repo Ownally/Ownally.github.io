@@ -5183,45 +5183,38 @@ var $elm$core$Task$perform = F2(
 	});
 var $elm$browser$Browser$element = _Browser_element;
 var $elm$json$Json$Decode$field = _Json_decodeField;
-var $author$project$Main$Model = F2(
-	function (window, device) {
-		return {device: device, window: window};
+var $author$project$Window$Dimension = F2(
+	function (width, height) {
+		return {height: height, width: width};
 	});
-var $mdgriffith$elm_ui$Element$BigDesktop = {$: 'BigDesktop'};
-var $mdgriffith$elm_ui$Element$Desktop = {$: 'Desktop'};
-var $mdgriffith$elm_ui$Element$Landscape = {$: 'Landscape'};
-var $mdgriffith$elm_ui$Element$Phone = {$: 'Phone'};
-var $mdgriffith$elm_ui$Element$Portrait = {$: 'Portrait'};
-var $mdgriffith$elm_ui$Element$Tablet = {$: 'Tablet'};
-var $elm$core$Basics$min = F2(
-	function (x, y) {
-		return (_Utils_cmp(x, y) < 0) ? x : y;
-	});
-var $mdgriffith$elm_ui$Element$classifyDevice = function (window) {
-	return {
-		_class: function () {
-			var shortSide = A2($elm$core$Basics$min, window.width, window.height);
-			var longSide = A2($elm$core$Basics$max, window.width, window.height);
-			return (shortSide < 600) ? $mdgriffith$elm_ui$Element$Phone : ((longSide <= 1200) ? $mdgriffith$elm_ui$Element$Tablet : (((longSide > 1200) && (longSide <= 1920)) ? $mdgriffith$elm_ui$Element$Desktop : $mdgriffith$elm_ui$Element$BigDesktop));
-		}(),
-		orientation: (_Utils_cmp(window.width, window.height) < 0) ? $mdgriffith$elm_ui$Element$Portrait : $mdgriffith$elm_ui$Element$Landscape
-	};
+var $author$project$Window$Window = function (a) {
+	return {$: 'Window', a: a};
 };
+var $author$project$Window$init = F2(
+	function (model, _v0) {
+		var width = _v0.width;
+		var height = _v0.height;
+		return model(
+			$author$project$Window$Window(
+				A2($author$project$Window$Dimension, width, height)));
+	});
+var $author$project$Main$Home = {$: 'Home'};
+var $author$project$Main$Model = F2(
+	function (window, page) {
+		return {page: page, window: window};
+	});
 var $elm$core$Platform$Cmd$batch = _Platform_batch;
 var $elm$core$Platform$Cmd$none = $elm$core$Platform$Cmd$batch(_List_Nil);
-var $author$project$Main$init = function (window) {
+var $author$project$Main$initialize = function (window) {
 	return _Utils_Tuple2(
-		A2(
-			$author$project$Main$Model,
-			window,
-			$mdgriffith$elm_ui$Element$classifyDevice(window)),
+		A2($author$project$Main$Model, window, $author$project$Main$Home),
 		$elm$core$Platform$Cmd$none);
 };
+var $author$project$Main$init = $author$project$Window$init($author$project$Main$initialize);
 var $elm$json$Json$Decode$int = _Json_decodeInt;
-var $author$project$Main$ChangeWindow = F2(
-	function (a, b) {
-		return {$: 'ChangeWindow', a: a, b: b};
-	});
+var $author$project$Main$ChangeWindow = function (a) {
+	return {$: 'ChangeWindow', a: a};
+};
 var $elm$browser$Browser$Events$Window = {$: 'Window'};
 var $elm$browser$Browser$Events$MySub = F3(
 	function (a, b, c) {
@@ -5636,24 +5629,161 @@ var $elm$browser$Browser$Events$onResize = function (func) {
 				A2($elm$json$Json$Decode$field, 'innerWidth', $elm$json$Json$Decode$int),
 				A2($elm$json$Json$Decode$field, 'innerHeight', $elm$json$Json$Decode$int))));
 };
-var $author$project$Main$subscriptions = function (_v0) {
-	return $elm$browser$Browser$Events$onResize($author$project$Main$ChangeWindow);
+var $author$project$Window$onResize = function (msg) {
+	var toMsg = F2(
+		function (width, height) {
+			return msg(
+				$author$project$Window$Window(
+					A2($author$project$Window$Dimension, width, height)));
+		});
+	return $elm$browser$Browser$Events$onResize(toMsg);
 };
-var $author$project$Main$Window = F2(
-	function (width, height) {
-		return {height: height, width: width};
+var $author$project$Main$subscriptions = function (_v0) {
+	return $author$project$Window$onResize($author$project$Main$ChangeWindow);
+};
+var $author$project$Main$Dashboard = function (a) {
+	return {$: 'Dashboard', a: a};
+};
+var $author$project$Main$OnDashboard = function (a) {
+	return {$: 'OnDashboard', a: a};
+};
+var $author$project$Page$Dashboard$initialModel = {askInput: $elm$core$Maybe$Nothing, bidInput: $elm$core$Maybe$Nothing, shares: 20000};
+var $elm$core$Platform$Cmd$map = _Platform_map;
+var $elm$core$Tuple$second = function (_v0) {
+	var y = _v0.b;
+	return y;
+};
+var $author$project$Page$Dashboard$totalShares = 100000;
+var $author$project$Page$Dashboard$update = F2(
+	function (msg, model) {
+		switch (msg.$) {
+			case 'ChangeBidInput':
+				var string = msg.a;
+				if (string === '') {
+					return _Utils_Tuple2(
+						_Utils_update(
+							model,
+							{bidInput: $elm$core$Maybe$Nothing}),
+						$elm$core$Platform$Cmd$none);
+				} else {
+					var maybeInteger = $elm$core$String$toInt(string);
+					if (maybeInteger.$ === 'Just') {
+						var integer = maybeInteger.a;
+						return (integer > 0) ? _Utils_Tuple2(
+							_Utils_update(
+								model,
+								{
+									bidInput: $elm$core$Maybe$Just(integer)
+								}),
+							$elm$core$Platform$Cmd$none) : _Utils_Tuple2(model, $elm$core$Platform$Cmd$none);
+					} else {
+						return _Utils_Tuple2(model, $elm$core$Platform$Cmd$none);
+					}
+				}
+			case 'ChangeAskInput':
+				var string = msg.a;
+				if (string === '') {
+					return _Utils_Tuple2(
+						_Utils_update(
+							model,
+							{askInput: $elm$core$Maybe$Nothing}),
+						$elm$core$Platform$Cmd$none);
+				} else {
+					var maybeInteger = $elm$core$String$toInt(string);
+					if (maybeInteger.$ === 'Just') {
+						var integer = maybeInteger.a;
+						return (integer > 0) ? _Utils_Tuple2(
+							_Utils_update(
+								model,
+								{
+									askInput: $elm$core$Maybe$Just(integer)
+								}),
+							$elm$core$Platform$Cmd$none) : _Utils_Tuple2(model, $elm$core$Platform$Cmd$none);
+					} else {
+						return _Utils_Tuple2(model, $elm$core$Platform$Cmd$none);
+					}
+				}
+			case 'Bid':
+				var _v5 = model.bidInput;
+				if (_v5.$ === 'Just') {
+					var integer = _v5.a;
+					return (_Utils_cmp(integer, model.shares) < 1) ? _Utils_Tuple2(
+						_Utils_update(
+							model,
+							{bidInput: $elm$core$Maybe$Nothing, shares: model.shares - integer}),
+						$elm$core$Platform$Cmd$none) : _Utils_Tuple2(model, $elm$core$Platform$Cmd$none);
+				} else {
+					return _Utils_Tuple2(model, $elm$core$Platform$Cmd$none);
+				}
+			default:
+				var _v6 = model.askInput;
+				if (_v6.$ === 'Just') {
+					var integer = _v6.a;
+					return (_Utils_cmp(integer + model.shares, $author$project$Page$Dashboard$totalShares) < 1) ? _Utils_Tuple2(
+						_Utils_update(
+							model,
+							{askInput: $elm$core$Maybe$Nothing, shares: model.shares + integer}),
+						$elm$core$Platform$Cmd$none) : _Utils_Tuple2(model, $elm$core$Platform$Cmd$none);
+				} else {
+					return _Utils_Tuple2(model, $elm$core$Platform$Cmd$none);
+				}
+		}
 	});
 var $author$project$Main$update = F2(
-	function (msg, _v0) {
-		var width = msg.a;
-		var height = msg.b;
-		var window = A2($author$project$Main$Window, width, height);
-		return _Utils_Tuple2(
-			A2(
-				$author$project$Main$Model,
-				window,
-				$mdgriffith$elm_ui$Element$classifyDevice(window)),
-			$elm$core$Platform$Cmd$none);
+	function (msg, model) {
+		var page = model.page;
+		var _v0 = _Utils_Tuple2(msg, page);
+		switch (_v0.a.$) {
+			case 'ChangeWindow':
+				var window = _v0.a.a;
+				return _Utils_Tuple2(
+					_Utils_update(
+						model,
+						{window: window}),
+					$elm$core$Platform$Cmd$none);
+			case 'GoHome':
+				if (_v0.b.$ === 'Home') {
+					var _v1 = _v0.a;
+					var _v2 = _v0.b;
+					return _Utils_Tuple2(model, $elm$core$Platform$Cmd$none);
+				} else {
+					var _v3 = _v0.a;
+					return _Utils_Tuple2(
+						_Utils_update(
+							model,
+							{page: $author$project$Main$Home}),
+						$elm$core$Platform$Cmd$none);
+				}
+			case 'GoDashboard':
+				if (_v0.b.$ === 'Dashboard') {
+					var _v4 = _v0.a;
+					return _Utils_Tuple2(model, $elm$core$Platform$Cmd$none);
+				} else {
+					var _v5 = _v0.a;
+					return _Utils_Tuple2(
+						_Utils_update(
+							model,
+							{
+								page: $author$project$Main$Dashboard($author$project$Page$Dashboard$initialModel)
+							}),
+						$elm$core$Platform$Cmd$none);
+				}
+			default:
+				if (_v0.b.$ === 'Dashboard') {
+					var dashboardMsg = _v0.a.a;
+					var dashboardModel = _v0.b.a;
+					var next = A2($author$project$Page$Dashboard$update, dashboardMsg, dashboardModel);
+					return _Utils_Tuple2(
+						_Utils_update(
+							model,
+							{
+								page: $author$project$Main$Dashboard(next.a)
+							}),
+						A2($elm$core$Platform$Cmd$map, $author$project$Main$OnDashboard, next.b));
+				} else {
+					return _Utils_Tuple2(model, $elm$core$Platform$Cmd$none);
+				}
+		}
 	});
 var $elm$core$List$append = F2(
 	function (xs, ys) {
@@ -5700,142 +5830,66 @@ var $mdgriffith$elm_ui$Element$createNearby = F2(
 var $mdgriffith$elm_ui$Element$inFront = function (element) {
 	return A2($mdgriffith$elm_ui$Element$createNearby, $mdgriffith$elm_ui$Internal$Model$InFront, element);
 };
-var $mdgriffith$elm_ui$Internal$Model$Class = F2(
-	function (a, b) {
-		return {$: 'Class', a: a, b: b};
-	});
-var $mdgriffith$elm_ui$Internal$Style$classes = {above: 'a', active: 'atv', alignBottom: 'ab', alignCenterX: 'cx', alignCenterY: 'cy', alignContainerBottom: 'acb', alignContainerCenterX: 'accx', alignContainerCenterY: 'accy', alignContainerRight: 'acr', alignLeft: 'al', alignRight: 'ar', alignTop: 'at', alignedHorizontally: 'ah', alignedVertically: 'av', any: 's', behind: 'bh', below: 'b', bold: 'w7', borderDashed: 'bd', borderDotted: 'bdt', borderNone: 'bn', borderSolid: 'bs', capturePointerEvents: 'cpe', clip: 'cp', clipX: 'cpx', clipY: 'cpy', column: 'c', container: 'ctr', contentBottom: 'cb', contentCenterX: 'ccx', contentCenterY: 'ccy', contentLeft: 'cl', contentRight: 'cr', contentTop: 'ct', cursorPointer: 'cptr', cursorText: 'ctxt', focus: 'fcs', focusedWithin: 'focus-within', fullSize: 'fs', grid: 'g', hasBehind: 'hbh', heightContent: 'hc', heightExact: 'he', heightFill: 'hf', heightFillPortion: 'hfp', hover: 'hv', imageContainer: 'ic', inFront: 'fr', inputMultiline: 'iml', inputMultilineFiller: 'imlf', inputMultilineParent: 'imlp', inputMultilineWrapper: 'implw', inputText: 'it', italic: 'i', link: 'lnk', nearby: 'nb', noTextSelection: 'notxt', onLeft: 'ol', onRight: 'or', opaque: 'oq', overflowHidden: 'oh', page: 'pg', paragraph: 'p', passPointerEvents: 'ppe', root: 'ui', row: 'r', scrollbars: 'sb', scrollbarsX: 'sbx', scrollbarsY: 'sby', seButton: 'sbt', single: 'e', sizeByCapital: 'cap', spaceEvenly: 'sev', strike: 'sk', text: 't', textCenter: 'tc', textExtraBold: 'w8', textExtraLight: 'w2', textHeavy: 'w9', textJustify: 'tj', textJustifyAll: 'tja', textLeft: 'tl', textLight: 'w3', textMedium: 'w5', textNormalWeight: 'w4', textRight: 'tr', textSemiBold: 'w6', textThin: 'w1', textUnitalicized: 'tun', transition: 'ts', transparent: 'clr', underline: 'u', widthContent: 'wc', widthExact: 'we', widthFill: 'wf', widthFillPortion: 'wfp', wrapped: 'wrp'};
-var $mdgriffith$elm_ui$Internal$Flag$Flag = function (a) {
-	return {$: 'Flag', a: a};
+var $author$project$Main$attribute = function (header) {
+	return $elm$core$List$concat(
+		_List_fromArray(
+			[
+				$author$project$Main$fillWindow,
+				_List_fromArray(
+				[
+					$mdgriffith$elm_ui$Element$inFront(header)
+				])
+			]));
 };
-var $mdgriffith$elm_ui$Internal$Flag$Second = function (a) {
-	return {$: 'Second', a: a};
-};
-var $elm$core$Bitwise$shiftLeftBy = _Bitwise_shiftLeftBy;
-var $mdgriffith$elm_ui$Internal$Flag$flag = function (i) {
-	return (i > 31) ? $mdgriffith$elm_ui$Internal$Flag$Second(1 << (i - 32)) : $mdgriffith$elm_ui$Internal$Flag$Flag(1 << i);
-};
-var $mdgriffith$elm_ui$Internal$Flag$fontAlignment = $mdgriffith$elm_ui$Internal$Flag$flag(12);
-var $mdgriffith$elm_ui$Element$Font$alignLeft = A2($mdgriffith$elm_ui$Internal$Model$Class, $mdgriffith$elm_ui$Internal$Flag$fontAlignment, $mdgriffith$elm_ui$Internal$Style$classes.textLeft);
-var $mdgriffith$elm_ui$Internal$Flag$fontWeight = $mdgriffith$elm_ui$Internal$Flag$flag(13);
-var $mdgriffith$elm_ui$Element$Font$bold = A2($mdgriffith$elm_ui$Internal$Model$Class, $mdgriffith$elm_ui$Internal$Flag$fontWeight, $mdgriffith$elm_ui$Internal$Style$classes.bold);
-var $mdgriffith$elm_ui$Internal$Model$Colored = F3(
-	function (a, b, c) {
-		return {$: 'Colored', a: a, b: b, c: c};
-	});
-var $mdgriffith$elm_ui$Internal$Model$StyleClass = F2(
-	function (a, b) {
-		return {$: 'StyleClass', a: a, b: b};
-	});
-var $mdgriffith$elm_ui$Internal$Flag$bgColor = $mdgriffith$elm_ui$Internal$Flag$flag(8);
-var $elm$core$Basics$round = _Basics_round;
-var $mdgriffith$elm_ui$Internal$Model$floatClass = function (x) {
-	return $elm$core$String$fromInt(
-		$elm$core$Basics$round(x * 255));
-};
-var $mdgriffith$elm_ui$Internal$Model$formatColorClass = function (_v0) {
-	var red = _v0.a;
-	var green = _v0.b;
-	var blue = _v0.c;
-	var alpha = _v0.d;
-	return $mdgriffith$elm_ui$Internal$Model$floatClass(red) + ('-' + ($mdgriffith$elm_ui$Internal$Model$floatClass(green) + ('-' + ($mdgriffith$elm_ui$Internal$Model$floatClass(blue) + ('-' + $mdgriffith$elm_ui$Internal$Model$floatClass(alpha))))));
-};
-var $mdgriffith$elm_ui$Element$Background$color = function (clr) {
-	return A2(
-		$mdgriffith$elm_ui$Internal$Model$StyleClass,
-		$mdgriffith$elm_ui$Internal$Flag$bgColor,
-		A3(
-			$mdgriffith$elm_ui$Internal$Model$Colored,
-			'bg-' + $mdgriffith$elm_ui$Internal$Model$formatColorClass(clr),
-			'background-color',
-			clr));
-};
-var $mdgriffith$elm_ui$Internal$Flag$fontColor = $mdgriffith$elm_ui$Internal$Flag$flag(14);
-var $mdgriffith$elm_ui$Element$Font$color = function (fontColor) {
-	return A2(
-		$mdgriffith$elm_ui$Internal$Model$StyleClass,
-		$mdgriffith$elm_ui$Internal$Flag$fontColor,
-		A3(
-			$mdgriffith$elm_ui$Internal$Model$Colored,
-			'fc-' + $mdgriffith$elm_ui$Internal$Model$formatColorClass(fontColor),
-			'color',
-			fontColor));
-};
-var $mdgriffith$elm_ui$Internal$Model$Content = {$: 'Content'};
-var $mdgriffith$elm_ui$Element$shrink = $mdgriffith$elm_ui$Internal$Model$Content;
-var $author$project$Main$fillWidth = _List_fromArray(
-	[
-		$mdgriffith$elm_ui$Element$width($mdgriffith$elm_ui$Element$fill),
-		$mdgriffith$elm_ui$Element$height($mdgriffith$elm_ui$Element$shrink)
-	]);
-var $mdgriffith$elm_ui$Internal$Model$Rgba = F4(
-	function (a, b, c, d) {
-		return {$: 'Rgba', a: a, b: b, c: c, d: d};
-	});
-var $mdgriffith$elm_ui$Element$fromRgb255 = function (clr) {
-	return A4($mdgriffith$elm_ui$Internal$Model$Rgba, clr.red / 255, clr.green / 255, clr.blue / 255, clr.alpha);
-};
-var $author$project$Main$lightBlack = $mdgriffith$elm_ui$Element$fromRgb255(
-	{alpha: 1, blue: 32, green: 32, red: 32});
-var $mdgriffith$elm_ui$Internal$Model$PaddingStyle = F5(
-	function (a, b, c, d, e) {
-		return {$: 'PaddingStyle', a: a, b: b, c: c, d: d, e: e};
-	});
-var $mdgriffith$elm_ui$Internal$Flag$padding = $mdgriffith$elm_ui$Internal$Flag$flag(2);
-var $mdgriffith$elm_ui$Element$paddingXY = F2(
+var $mdgriffith$elm_ui$Element$BigDesktop = {$: 'BigDesktop'};
+var $mdgriffith$elm_ui$Element$Desktop = {$: 'Desktop'};
+var $mdgriffith$elm_ui$Element$Landscape = {$: 'Landscape'};
+var $mdgriffith$elm_ui$Element$Phone = {$: 'Phone'};
+var $mdgriffith$elm_ui$Element$Portrait = {$: 'Portrait'};
+var $mdgriffith$elm_ui$Element$Tablet = {$: 'Tablet'};
+var $elm$core$Basics$min = F2(
 	function (x, y) {
-		return _Utils_eq(x, y) ? A2(
-			$mdgriffith$elm_ui$Internal$Model$StyleClass,
-			$mdgriffith$elm_ui$Internal$Flag$padding,
-			A5(
-				$mdgriffith$elm_ui$Internal$Model$PaddingStyle,
-				'p-' + $elm$core$String$fromInt(x),
-				x,
-				x,
-				x,
-				x)) : A2(
-			$mdgriffith$elm_ui$Internal$Model$StyleClass,
-			$mdgriffith$elm_ui$Internal$Flag$padding,
-			A5(
-				$mdgriffith$elm_ui$Internal$Model$PaddingStyle,
-				'p-' + ($elm$core$String$fromInt(x) + ('-' + $elm$core$String$fromInt(y))),
-				y,
-				x,
-				y,
-				x));
+		return (_Utils_cmp(x, y) < 0) ? x : y;
 	});
-var $mdgriffith$elm_ui$Internal$Model$FontSize = function (a) {
-	return {$: 'FontSize', a: a};
+var $mdgriffith$elm_ui$Element$classifyDevice = function (window) {
+	return {
+		_class: function () {
+			var shortSide = A2($elm$core$Basics$min, window.width, window.height);
+			var longSide = A2($elm$core$Basics$max, window.width, window.height);
+			return (shortSide < 600) ? $mdgriffith$elm_ui$Element$Phone : ((longSide <= 1200) ? $mdgriffith$elm_ui$Element$Tablet : (((longSide > 1200) && (longSide <= 1920)) ? $mdgriffith$elm_ui$Element$Desktop : $mdgriffith$elm_ui$Element$BigDesktop));
+		}(),
+		orientation: (_Utils_cmp(window.width, window.height) < 0) ? $mdgriffith$elm_ui$Element$Portrait : $mdgriffith$elm_ui$Element$Landscape
+	};
 };
-var $mdgriffith$elm_ui$Internal$Flag$fontSize = $mdgriffith$elm_ui$Internal$Flag$flag(4);
-var $mdgriffith$elm_ui$Element$Font$size = function (i) {
-	return A2(
-		$mdgriffith$elm_ui$Internal$Model$StyleClass,
-		$mdgriffith$elm_ui$Internal$Flag$fontSize,
-		$mdgriffith$elm_ui$Internal$Model$FontSize(i));
+var $author$project$Window$classifyDevice = function (_v0) {
+	var dimension = _v0.a;
+	return $mdgriffith$elm_ui$Element$classifyDevice(dimension);
 };
-var $author$project$Main$white = $mdgriffith$elm_ui$Element$fromRgb255(
-	{alpha: 1, blue: 255, green: 255, red: 255});
-var $author$project$Main$attributeHeader = $elm$core$List$concat(
-	_List_fromArray(
-		[
-			$author$project$Main$fillWidth,
-			_List_fromArray(
-			[
-				A2($mdgriffith$elm_ui$Element$paddingXY, 144, 18)
-			]),
-			_List_fromArray(
-			[
-				$mdgriffith$elm_ui$Element$Background$color($author$project$Main$lightBlack)
-			]),
-			_List_fromArray(
-			[
-				$mdgriffith$elm_ui$Element$Font$color($author$project$Main$white),
-				$mdgriffith$elm_ui$Element$Font$size(36),
-				$mdgriffith$elm_ui$Element$Font$alignLeft,
-				$mdgriffith$elm_ui$Element$Font$bold
-			])
-		]));
+var $mdgriffith$elm_ui$Internal$Style$classes = {above: 'a', active: 'atv', alignBottom: 'ab', alignCenterX: 'cx', alignCenterY: 'cy', alignContainerBottom: 'acb', alignContainerCenterX: 'accx', alignContainerCenterY: 'accy', alignContainerRight: 'acr', alignLeft: 'al', alignRight: 'ar', alignTop: 'at', alignedHorizontally: 'ah', alignedVertically: 'av', any: 's', behind: 'bh', below: 'b', bold: 'w7', borderDashed: 'bd', borderDotted: 'bdt', borderNone: 'bn', borderSolid: 'bs', capturePointerEvents: 'cpe', clip: 'cp', clipX: 'cpx', clipY: 'cpy', column: 'c', container: 'ctr', contentBottom: 'cb', contentCenterX: 'ccx', contentCenterY: 'ccy', contentLeft: 'cl', contentRight: 'cr', contentTop: 'ct', cursorPointer: 'cptr', cursorText: 'ctxt', focus: 'fcs', focusedWithin: 'focus-within', fullSize: 'fs', grid: 'g', hasBehind: 'hbh', heightContent: 'hc', heightExact: 'he', heightFill: 'hf', heightFillPortion: 'hfp', hover: 'hv', imageContainer: 'ic', inFront: 'fr', inputMultiline: 'iml', inputMultilineFiller: 'imlf', inputMultilineParent: 'imlp', inputMultilineWrapper: 'implw', inputText: 'it', italic: 'i', link: 'lnk', nearby: 'nb', noTextSelection: 'notxt', onLeft: 'ol', onRight: 'or', opaque: 'oq', overflowHidden: 'oh', page: 'pg', paragraph: 'p', passPointerEvents: 'ppe', root: 'ui', row: 'r', scrollbars: 'sb', scrollbarsX: 'sbx', scrollbarsY: 'sby', seButton: 'sbt', single: 'e', sizeByCapital: 'cap', spaceEvenly: 'sev', strike: 'sk', text: 't', textCenter: 'tc', textExtraBold: 'w8', textExtraLight: 'w2', textHeavy: 'w9', textJustify: 'tj', textJustifyAll: 'tja', textLeft: 'tl', textLight: 'w3', textMedium: 'w5', textNormalWeight: 'w4', textRight: 'tr', textSemiBold: 'w6', textThin: 'w1', textUnitalicized: 'tun', transition: 'ts', transparent: 'clr', underline: 'u', widthContent: 'wc', widthExact: 'we', widthFill: 'wf', widthFillPortion: 'wfp', wrapped: 'wrp'};
+var $mdgriffith$elm_ui$Internal$Model$Attr = function (a) {
+	return {$: 'Attr', a: a};
+};
+var $elm$json$Json$Encode$string = _Json_wrap;
+var $elm$html$Html$Attributes$stringProperty = F2(
+	function (key, string) {
+		return A2(
+			_VirtualDom_property,
+			key,
+			$elm$json$Json$Encode$string(string));
+	});
+var $elm$html$Html$Attributes$class = $elm$html$Html$Attributes$stringProperty('className');
+var $mdgriffith$elm_ui$Internal$Model$htmlClass = function (cls) {
+	return $mdgriffith$elm_ui$Internal$Model$Attr(
+		$elm$html$Html$Attributes$class(cls));
+};
+var $mdgriffith$elm_ui$Internal$Model$OnlyDynamic = F2(
+	function (a, b) {
+		return {$: 'OnlyDynamic', a: a, b: b};
+	});
+var $mdgriffith$elm_ui$Internal$Model$StaticRootAndDynamic = F2(
+	function (a, b) {
+		return {$: 'StaticRootAndDynamic', a: a, b: b};
+	});
 var $mdgriffith$elm_ui$Internal$Model$Unkeyed = function (a) {
 	return {$: 'Unkeyed', a: a};
 };
@@ -5942,19 +5996,20 @@ var $mdgriffith$elm_ui$Internal$Model$addKeyedChildren = F3(
 	});
 var $mdgriffith$elm_ui$Internal$Model$AsParagraph = {$: 'AsParagraph'};
 var $mdgriffith$elm_ui$Internal$Model$asParagraph = $mdgriffith$elm_ui$Internal$Model$AsParagraph;
+var $mdgriffith$elm_ui$Internal$Flag$Flag = function (a) {
+	return {$: 'Flag', a: a};
+};
+var $mdgriffith$elm_ui$Internal$Flag$Second = function (a) {
+	return {$: 'Second', a: a};
+};
+var $elm$core$Bitwise$shiftLeftBy = _Bitwise_shiftLeftBy;
+var $mdgriffith$elm_ui$Internal$Flag$flag = function (i) {
+	return (i > 31) ? $mdgriffith$elm_ui$Internal$Flag$Second(1 << (i - 32)) : $mdgriffith$elm_ui$Internal$Flag$Flag(1 << i);
+};
 var $mdgriffith$elm_ui$Internal$Flag$alignBottom = $mdgriffith$elm_ui$Internal$Flag$flag(41);
 var $mdgriffith$elm_ui$Internal$Flag$alignRight = $mdgriffith$elm_ui$Internal$Flag$flag(40);
 var $mdgriffith$elm_ui$Internal$Flag$centerX = $mdgriffith$elm_ui$Internal$Flag$flag(42);
 var $mdgriffith$elm_ui$Internal$Flag$centerY = $mdgriffith$elm_ui$Internal$Flag$flag(43);
-var $elm$json$Json$Encode$string = _Json_wrap;
-var $elm$html$Html$Attributes$stringProperty = F2(
-	function (key, string) {
-		return A2(
-			_VirtualDom_property,
-			key,
-			$elm$json$Json$Encode$string(string));
-	});
-var $elm$html$Html$Attributes$class = $elm$html$Html$Attributes$stringProperty('className');
 var $elm$html$Html$div = _VirtualDom_node('div');
 var $elm$core$Set$Set_elm_builtin = function (a) {
 	return {$: 'Set_elm_builtin', a: a};
@@ -5980,9 +6035,10 @@ var $mdgriffith$elm_ui$Internal$Model$lengthClassName = function (x) {
 			return 'max' + ($elm$core$String$fromInt(max) + $mdgriffith$elm_ui$Internal$Model$lengthClassName(len));
 	}
 };
-var $elm$core$Tuple$second = function (_v0) {
-	var y = _v0.b;
-	return y;
+var $elm$core$Basics$round = _Basics_round;
+var $mdgriffith$elm_ui$Internal$Model$floatClass = function (x) {
+	return $elm$core$String$fromInt(
+		$elm$core$Basics$round(x * 255));
 };
 var $mdgriffith$elm_ui$Internal$Model$transformClass = function (transform) {
 	switch (transform.$) {
@@ -11217,59 +11273,12 @@ var $mdgriffith$elm_ui$Internal$Model$element = F4(
 				$mdgriffith$elm_ui$Internal$Model$NoNearbyChildren,
 				$elm$core$List$reverse(attributes)));
 	});
-var $mdgriffith$elm_ui$Element$el = F2(
-	function (attrs, child) {
-		return A4(
-			$mdgriffith$elm_ui$Internal$Model$element,
-			$mdgriffith$elm_ui$Internal$Model$asEl,
-			$mdgriffith$elm_ui$Internal$Model$div,
-			A2(
-				$elm$core$List$cons,
-				$mdgriffith$elm_ui$Element$width($mdgriffith$elm_ui$Element$shrink),
-				A2(
-					$elm$core$List$cons,
-					$mdgriffith$elm_ui$Element$height($mdgriffith$elm_ui$Element$shrink),
-					attrs)),
-			$mdgriffith$elm_ui$Internal$Model$Unkeyed(
-				_List_fromArray(
-					[child])));
-	});
-var $mdgriffith$elm_ui$Internal$Model$Text = function (a) {
-	return {$: 'Text', a: a};
-};
-var $mdgriffith$elm_ui$Element$text = function (content) {
-	return $mdgriffith$elm_ui$Internal$Model$Text(content);
-};
-var $author$project$Main$viewHeader = A2(
-	$mdgriffith$elm_ui$Element$el,
-	$author$project$Main$attributeHeader,
-	$mdgriffith$elm_ui$Element$text('Ownally'));
-var $author$project$Main$attributeLayout = $elm$core$List$concat(
-	_List_fromArray(
-		[
-			$author$project$Main$fillWindow,
-			_List_fromArray(
-			[
-				$mdgriffith$elm_ui$Element$inFront($author$project$Main$viewHeader)
-			])
-		]));
-var $mdgriffith$elm_ui$Internal$Model$Attr = function (a) {
-	return {$: 'Attr', a: a};
-};
-var $mdgriffith$elm_ui$Internal$Model$htmlClass = function (cls) {
-	return $mdgriffith$elm_ui$Internal$Model$Attr(
-		$elm$html$Html$Attributes$class(cls));
-};
-var $mdgriffith$elm_ui$Internal$Model$OnlyDynamic = F2(
-	function (a, b) {
-		return {$: 'OnlyDynamic', a: a, b: b};
-	});
-var $mdgriffith$elm_ui$Internal$Model$StaticRootAndDynamic = F2(
-	function (a, b) {
-		return {$: 'StaticRootAndDynamic', a: a, b: b};
-	});
 var $mdgriffith$elm_ui$Internal$Model$AllowHover = {$: 'AllowHover'};
 var $mdgriffith$elm_ui$Internal$Model$Layout = {$: 'Layout'};
+var $mdgriffith$elm_ui$Internal$Model$Rgba = F4(
+	function (a, b, c, d) {
+		return {$: 'Rgba', a: a, b: b, c: c, d: d};
+	});
 var $mdgriffith$elm_ui$Internal$Model$focusDefaultStyle = {
 	backgroundColor: $elm$core$Maybe$Nothing,
 	borderColor: $elm$core$Maybe$Nothing,
@@ -11404,15 +11413,36 @@ var $mdgriffith$elm_ui$Internal$Model$renderRoot = F3(
 					_List_fromArray(
 						[child]))));
 	});
+var $mdgriffith$elm_ui$Internal$Model$Colored = F3(
+	function (a, b, c) {
+		return {$: 'Colored', a: a, b: b, c: c};
+	});
 var $mdgriffith$elm_ui$Internal$Model$FontFamily = F2(
 	function (a, b) {
 		return {$: 'FontFamily', a: a, b: b};
 	});
+var $mdgriffith$elm_ui$Internal$Model$FontSize = function (a) {
+	return {$: 'FontSize', a: a};
+};
 var $mdgriffith$elm_ui$Internal$Model$SansSerif = {$: 'SansSerif'};
+var $mdgriffith$elm_ui$Internal$Model$StyleClass = F2(
+	function (a, b) {
+		return {$: 'StyleClass', a: a, b: b};
+	});
 var $mdgriffith$elm_ui$Internal$Model$Typeface = function (a) {
 	return {$: 'Typeface', a: a};
 };
+var $mdgriffith$elm_ui$Internal$Flag$bgColor = $mdgriffith$elm_ui$Internal$Flag$flag(8);
+var $mdgriffith$elm_ui$Internal$Flag$fontColor = $mdgriffith$elm_ui$Internal$Flag$flag(14);
 var $mdgriffith$elm_ui$Internal$Flag$fontFamily = $mdgriffith$elm_ui$Internal$Flag$flag(5);
+var $mdgriffith$elm_ui$Internal$Flag$fontSize = $mdgriffith$elm_ui$Internal$Flag$flag(4);
+var $mdgriffith$elm_ui$Internal$Model$formatColorClass = function (_v0) {
+	var red = _v0.a;
+	var green = _v0.b;
+	var blue = _v0.c;
+	var alpha = _v0.d;
+	return $mdgriffith$elm_ui$Internal$Model$floatClass(red) + ('-' + ($mdgriffith$elm_ui$Internal$Model$floatClass(green) + ('-' + ($mdgriffith$elm_ui$Internal$Model$floatClass(blue) + ('-' + $mdgriffith$elm_ui$Internal$Model$floatClass(alpha))))));
+};
 var $elm$core$String$toLower = _String_toLower;
 var $elm$core$String$words = _String_words;
 var $mdgriffith$elm_ui$Internal$Model$renderFontClassName = F2(
@@ -11512,41 +11542,101 @@ var $mdgriffith$elm_ui$Element$layoutWith = F3(
 	});
 var $mdgriffith$elm_ui$Element$layout = $mdgriffith$elm_ui$Element$layoutWith(
 	{options: _List_Nil});
-var $author$project$Main$attributeBody = $author$project$Main$fillWidth;
-var $mdgriffith$elm_ui$Internal$Model$AsColumn = {$: 'AsColumn'};
-var $mdgriffith$elm_ui$Internal$Model$asColumn = $mdgriffith$elm_ui$Internal$Model$AsColumn;
-var $mdgriffith$elm_ui$Element$column = F2(
-	function (attrs, children) {
-		return A4(
-			$mdgriffith$elm_ui$Internal$Model$element,
-			$mdgriffith$elm_ui$Internal$Model$asColumn,
-			$mdgriffith$elm_ui$Internal$Model$div,
-			A2(
-				$elm$core$List$cons,
-				$mdgriffith$elm_ui$Internal$Model$htmlClass($mdgriffith$elm_ui$Internal$Style$classes.contentTop + (' ' + $mdgriffith$elm_ui$Internal$Style$classes.contentLeft)),
-				A2(
-					$elm$core$List$cons,
-					$mdgriffith$elm_ui$Element$height($mdgriffith$elm_ui$Element$shrink),
-					A2(
-						$elm$core$List$cons,
-						$mdgriffith$elm_ui$Element$width($mdgriffith$elm_ui$Element$shrink),
-						attrs))),
-			$mdgriffith$elm_ui$Internal$Model$Unkeyed(children));
-	});
-var $author$project$Main$attributeBenefit = $author$project$Main$fillWidth;
-var $author$project$Image$Image = function (a) {
-	return {$: 'Image', a: a};
+var $mdgriffith$elm_ui$Internal$Model$Empty = {$: 'Empty'};
+var $mdgriffith$elm_ui$Internal$Model$Text = function (a) {
+	return {$: 'Text', a: a};
 };
-var $author$project$Image$createImage = F2(
-	function (filename, description) {
-		return $author$project$Image$Image(
-			{description: description, src: '/image/' + filename});
+var $elm$core$Basics$composeL = F3(
+	function (g, f, x) {
+		return g(
+			f(x));
 	});
-var $author$project$Image$technology = A2($author$project$Image$createImage, 'Technology.jpg', 'Technology Photo');
-var $mdgriffith$elm_ui$Element$Font$alignRight = A2($mdgriffith$elm_ui$Internal$Model$Class, $mdgriffith$elm_ui$Internal$Flag$fontAlignment, $mdgriffith$elm_ui$Internal$Style$classes.textRight);
-var $mdgriffith$elm_ui$Internal$Model$Behind = {$: 'Behind'};
-var $mdgriffith$elm_ui$Element$behindContent = function (element) {
-	return A2($mdgriffith$elm_ui$Element$createNearby, $mdgriffith$elm_ui$Internal$Model$Behind, element);
+var $elm$virtual_dom$VirtualDom$map = _VirtualDom_map;
+var $mdgriffith$elm_ui$Internal$Model$map = F2(
+	function (fn, el) {
+		switch (el.$) {
+			case 'Styled':
+				var styled = el.a;
+				return $mdgriffith$elm_ui$Internal$Model$Styled(
+					{
+						html: F2(
+							function (add, context) {
+								return A2(
+									$elm$virtual_dom$VirtualDom$map,
+									fn,
+									A2(styled.html, add, context));
+							}),
+						styles: styled.styles
+					});
+			case 'Unstyled':
+				var html = el.a;
+				return $mdgriffith$elm_ui$Internal$Model$Unstyled(
+					A2(
+						$elm$core$Basics$composeL,
+						$elm$virtual_dom$VirtualDom$map(fn),
+						html));
+			case 'Text':
+				var str = el.a;
+				return $mdgriffith$elm_ui$Internal$Model$Text(str);
+			default:
+				return $mdgriffith$elm_ui$Internal$Model$Empty;
+		}
+	});
+var $mdgriffith$elm_ui$Element$map = $mdgriffith$elm_ui$Internal$Model$map;
+var $mdgriffith$elm_ui$Element$Background$color = function (clr) {
+	return A2(
+		$mdgriffith$elm_ui$Internal$Model$StyleClass,
+		$mdgriffith$elm_ui$Internal$Flag$bgColor,
+		A3(
+			$mdgriffith$elm_ui$Internal$Model$Colored,
+			'bg-' + $mdgriffith$elm_ui$Internal$Model$formatColorClass(clr),
+			'background-color',
+			clr));
+};
+var $mdgriffith$elm_ui$Element$fromRgb255 = function (clr) {
+	return A4($mdgriffith$elm_ui$Internal$Model$Rgba, clr.red / 255, clr.green / 255, clr.blue / 255, clr.alpha);
+};
+var $author$project$Page$Dashboard$darkWhite = $mdgriffith$elm_ui$Element$fromRgb255(
+	{alpha: 1, blue: 245, green: 245, red: 245});
+var $mdgriffith$elm_ui$Internal$Model$PaddingStyle = F5(
+	function (a, b, c, d, e) {
+		return {$: 'PaddingStyle', a: a, b: b, c: c, d: d, e: e};
+	});
+var $mdgriffith$elm_ui$Internal$Flag$padding = $mdgriffith$elm_ui$Internal$Flag$flag(2);
+var $mdgriffith$elm_ui$Element$paddingXY = F2(
+	function (x, y) {
+		return _Utils_eq(x, y) ? A2(
+			$mdgriffith$elm_ui$Internal$Model$StyleClass,
+			$mdgriffith$elm_ui$Internal$Flag$padding,
+			A5(
+				$mdgriffith$elm_ui$Internal$Model$PaddingStyle,
+				'p-' + $elm$core$String$fromInt(x),
+				x,
+				x,
+				x,
+				x)) : A2(
+			$mdgriffith$elm_ui$Internal$Model$StyleClass,
+			$mdgriffith$elm_ui$Internal$Flag$padding,
+			A5(
+				$mdgriffith$elm_ui$Internal$Model$PaddingStyle,
+				'p-' + ($elm$core$String$fromInt(x) + ('-' + $elm$core$String$fromInt(y))),
+				y,
+				x,
+				y,
+				x));
+	});
+var $mdgriffith$elm_ui$Internal$Model$Px = function (a) {
+	return {$: 'Px', a: a};
+};
+var $mdgriffith$elm_ui$Element$px = $mdgriffith$elm_ui$Internal$Model$Px;
+var $author$project$Window$size = function (_v0) {
+	var height = _v0.a.height;
+	return _List_fromArray(
+		[
+			$mdgriffith$elm_ui$Element$width($mdgriffith$elm_ui$Element$fill),
+			$mdgriffith$elm_ui$Element$height(
+			$mdgriffith$elm_ui$Element$px(height))
+		]);
 };
 var $mdgriffith$elm_ui$Internal$Model$SpacingStyle = F3(
 	function (a, b, c) {
@@ -11567,12 +11657,2943 @@ var $mdgriffith$elm_ui$Element$spacing = function (x) {
 			x,
 			x));
 };
-var $author$project$Main$bodyPadding = _List_fromArray(
+var $author$project$Page$Dashboard$attribute = function (window) {
+	return $elm$core$List$concat(
+		_List_fromArray(
+			[
+				$author$project$Window$size(window),
+				_List_fromArray(
+				[
+					A2($mdgriffith$elm_ui$Element$paddingXY, 144, 144),
+					$mdgriffith$elm_ui$Element$spacing(36),
+					$mdgriffith$elm_ui$Element$Background$color($author$project$Page$Dashboard$darkWhite)
+				])
+			]));
+};
+var $mdgriffith$elm_ui$Internal$Model$AsColumn = {$: 'AsColumn'};
+var $mdgriffith$elm_ui$Internal$Model$asColumn = $mdgriffith$elm_ui$Internal$Model$AsColumn;
+var $mdgriffith$elm_ui$Internal$Model$Content = {$: 'Content'};
+var $mdgriffith$elm_ui$Element$shrink = $mdgriffith$elm_ui$Internal$Model$Content;
+var $mdgriffith$elm_ui$Element$column = F2(
+	function (attrs, children) {
+		return A4(
+			$mdgriffith$elm_ui$Internal$Model$element,
+			$mdgriffith$elm_ui$Internal$Model$asColumn,
+			$mdgriffith$elm_ui$Internal$Model$div,
+			A2(
+				$elm$core$List$cons,
+				$mdgriffith$elm_ui$Internal$Model$htmlClass($mdgriffith$elm_ui$Internal$Style$classes.contentTop + (' ' + $mdgriffith$elm_ui$Internal$Style$classes.contentLeft)),
+				A2(
+					$elm$core$List$cons,
+					$mdgriffith$elm_ui$Element$height($mdgriffith$elm_ui$Element$shrink),
+					A2(
+						$elm$core$List$cons,
+						$mdgriffith$elm_ui$Element$width($mdgriffith$elm_ui$Element$shrink),
+						attrs))),
+			$mdgriffith$elm_ui$Internal$Model$Unkeyed(children));
+	});
+var $mdgriffith$elm_ui$Internal$Model$AlignY = function (a) {
+	return {$: 'AlignY', a: a};
+};
+var $mdgriffith$elm_ui$Internal$Model$Top = {$: 'Top'};
+var $mdgriffith$elm_ui$Element$alignTop = $mdgriffith$elm_ui$Internal$Model$AlignY($mdgriffith$elm_ui$Internal$Model$Top);
+var $author$project$Page$Dashboard$fillWidth = _List_fromArray(
+	[
+		$mdgriffith$elm_ui$Element$width($mdgriffith$elm_ui$Element$fill),
+		$mdgriffith$elm_ui$Element$height($mdgriffith$elm_ui$Element$shrink)
+	]);
+var $author$project$Page$Dashboard$attributeInformation = $elm$core$List$concat(
+	_List_fromArray(
+		[
+			$author$project$Page$Dashboard$fillWidth,
+			_List_fromArray(
+			[
+				$mdgriffith$elm_ui$Element$spacing(36),
+				$mdgriffith$elm_ui$Element$alignTop
+			])
+		]));
+var $mdgriffith$elm_ui$Internal$Model$AsRow = {$: 'AsRow'};
+var $mdgriffith$elm_ui$Internal$Model$asRow = $mdgriffith$elm_ui$Internal$Model$AsRow;
+var $mdgriffith$elm_ui$Element$row = F2(
+	function (attrs, children) {
+		return A4(
+			$mdgriffith$elm_ui$Internal$Model$element,
+			$mdgriffith$elm_ui$Internal$Model$asRow,
+			$mdgriffith$elm_ui$Internal$Model$div,
+			A2(
+				$elm$core$List$cons,
+				$mdgriffith$elm_ui$Internal$Model$htmlClass($mdgriffith$elm_ui$Internal$Style$classes.contentLeft + (' ' + $mdgriffith$elm_ui$Internal$Style$classes.contentCenterY)),
+				A2(
+					$elm$core$List$cons,
+					$mdgriffith$elm_ui$Element$width($mdgriffith$elm_ui$Element$shrink),
+					A2(
+						$elm$core$List$cons,
+						$mdgriffith$elm_ui$Element$height($mdgriffith$elm_ui$Element$shrink),
+						attrs))),
+			$mdgriffith$elm_ui$Internal$Model$Unkeyed(children));
+	});
+var $author$project$Page$Dashboard$white = $mdgriffith$elm_ui$Element$fromRgb255(
+	{alpha: 1, blue: 255, green: 255, red: 255});
+var $author$project$Page$Dashboard$attributeEquity = $elm$core$List$concat(
+	_List_fromArray(
+		[
+			$author$project$Page$Dashboard$fillWidth,
+			_List_fromArray(
+			[
+				A2($mdgriffith$elm_ui$Element$paddingXY, 36, 36),
+				$mdgriffith$elm_ui$Element$spacing(36),
+				$mdgriffith$elm_ui$Element$Background$color($author$project$Page$Dashboard$white)
+			])
+		]));
+var $mdgriffith$elm_ui$Internal$Model$CenterY = {$: 'CenterY'};
+var $mdgriffith$elm_ui$Element$centerY = $mdgriffith$elm_ui$Internal$Model$AlignY($mdgriffith$elm_ui$Internal$Model$CenterY);
+var $author$project$Page$Dashboard$attritubeEquityNext = $elm$core$List$concat(
+	_List_fromArray(
+		[
+			$author$project$Page$Dashboard$fillWidth,
+			_List_fromArray(
+			[
+				$mdgriffith$elm_ui$Element$spacing(12),
+				$mdgriffith$elm_ui$Element$Background$color($author$project$Page$Dashboard$white),
+				$mdgriffith$elm_ui$Element$centerY
+			])
+		]));
+var $author$project$Page$Dashboard$shrinkContent = _List_fromArray(
+	[
+		$mdgriffith$elm_ui$Element$width($mdgriffith$elm_ui$Element$shrink),
+		$mdgriffith$elm_ui$Element$height($mdgriffith$elm_ui$Element$shrink)
+	]);
+var $author$project$Page$Dashboard$attributePercentage = $elm$core$List$concat(
+	_List_fromArray(
+		[
+			$author$project$Page$Dashboard$shrinkContent,
+			_List_fromArray(
+			[
+				$mdgriffith$elm_ui$Element$spacing(6)
+			])
+		]));
+var $mdgriffith$elm_ui$Internal$Model$Class = F2(
+	function (a, b) {
+		return {$: 'Class', a: a, b: b};
+	});
+var $mdgriffith$elm_ui$Internal$Flag$fontAlignment = $mdgriffith$elm_ui$Internal$Flag$flag(12);
+var $mdgriffith$elm_ui$Element$Font$alignLeft = A2($mdgriffith$elm_ui$Internal$Model$Class, $mdgriffith$elm_ui$Internal$Flag$fontAlignment, $mdgriffith$elm_ui$Internal$Style$classes.textLeft);
+var $mdgriffith$elm_ui$Internal$Flag$fontWeight = $mdgriffith$elm_ui$Internal$Flag$flag(13);
+var $mdgriffith$elm_ui$Element$Font$bold = A2($mdgriffith$elm_ui$Internal$Model$Class, $mdgriffith$elm_ui$Internal$Flag$fontWeight, $mdgriffith$elm_ui$Internal$Style$classes.bold);
+var $mdgriffith$elm_ui$Element$Font$color = function (fontColor) {
+	return A2(
+		$mdgriffith$elm_ui$Internal$Model$StyleClass,
+		$mdgriffith$elm_ui$Internal$Flag$fontColor,
+		A3(
+			$mdgriffith$elm_ui$Internal$Model$Colored,
+			'fc-' + $mdgriffith$elm_ui$Internal$Model$formatColorClass(fontColor),
+			'color',
+			fontColor));
+};
+var $author$project$Page$Dashboard$lightBlack = $mdgriffith$elm_ui$Element$fromRgb255(
+	{alpha: 1, blue: 32, green: 32, red: 32});
+var $mdgriffith$elm_ui$Element$Font$size = function (i) {
+	return A2(
+		$mdgriffith$elm_ui$Internal$Model$StyleClass,
+		$mdgriffith$elm_ui$Internal$Flag$fontSize,
+		$mdgriffith$elm_ui$Internal$Model$FontSize(i));
+};
+var $author$project$Page$Dashboard$attributePercentageNumber = _List_fromArray(
+	[
+		$mdgriffith$elm_ui$Element$Font$color($author$project$Page$Dashboard$lightBlack),
+		$mdgriffith$elm_ui$Element$Font$size(18),
+		$mdgriffith$elm_ui$Element$Font$alignLeft,
+		$mdgriffith$elm_ui$Element$Font$bold
+	]);
+var $mdgriffith$elm_ui$Element$el = F2(
+	function (attrs, child) {
+		return A4(
+			$mdgriffith$elm_ui$Internal$Model$element,
+			$mdgriffith$elm_ui$Internal$Model$asEl,
+			$mdgriffith$elm_ui$Internal$Model$div,
+			A2(
+				$elm$core$List$cons,
+				$mdgriffith$elm_ui$Element$width($mdgriffith$elm_ui$Element$shrink),
+				A2(
+					$elm$core$List$cons,
+					$mdgriffith$elm_ui$Element$height($mdgriffith$elm_ui$Element$shrink),
+					attrs)),
+			$mdgriffith$elm_ui$Internal$Model$Unkeyed(
+				_List_fromArray(
+					[child])));
+	});
+var $mdgriffith$elm_ui$Element$text = function (content) {
+	return $mdgriffith$elm_ui$Internal$Model$Text(content);
+};
+var $author$project$Page$Dashboard$viewPercentageNumber = function (shares) {
+	return A2(
+		$mdgriffith$elm_ui$Element$el,
+		$author$project$Page$Dashboard$attributePercentageNumber,
+		$mdgriffith$elm_ui$Element$text(
+			$elm$core$String$fromInt(((shares * 100) / $author$project$Page$Dashboard$totalShares) | 0) + '% of all shares'));
+};
+var $author$project$Page$Dashboard$attributePercentageTitle = _List_fromArray(
+	[
+		$mdgriffith$elm_ui$Element$Font$color($author$project$Page$Dashboard$lightBlack),
+		$mdgriffith$elm_ui$Element$Font$size(12),
+		$mdgriffith$elm_ui$Element$Font$alignLeft
+	]);
+var $author$project$Page$Dashboard$viewPercentageTitle = A2(
+	$mdgriffith$elm_ui$Element$el,
+	$author$project$Page$Dashboard$attributePercentageTitle,
+	$mdgriffith$elm_ui$Element$text('You own'));
+var $author$project$Page$Dashboard$viewPercentage = function (shares) {
+	return A2(
+		$mdgriffith$elm_ui$Element$column,
+		$author$project$Page$Dashboard$attributePercentage,
+		_List_fromArray(
+			[
+				$author$project$Page$Dashboard$viewPercentageTitle,
+				$author$project$Page$Dashboard$viewPercentageNumber(shares)
+			]));
+};
+var $author$project$Page$Dashboard$attributeTotalShares = $elm$core$List$concat(
+	_List_fromArray(
+		[
+			$author$project$Page$Dashboard$shrinkContent,
+			_List_fromArray(
+			[
+				$mdgriffith$elm_ui$Element$spacing(6)
+			])
+		]));
+var $author$project$Page$Dashboard$attributeTotalSharesNumber = _List_fromArray(
+	[
+		$mdgriffith$elm_ui$Element$Font$color($author$project$Page$Dashboard$lightBlack),
+		$mdgriffith$elm_ui$Element$Font$size(18),
+		$mdgriffith$elm_ui$Element$Font$alignLeft,
+		$mdgriffith$elm_ui$Element$Font$bold
+	]);
+var $author$project$Page$Dashboard$viewTotalSharesNumber = A2(
+	$mdgriffith$elm_ui$Element$el,
+	$author$project$Page$Dashboard$attributeTotalSharesNumber,
+	$mdgriffith$elm_ui$Element$text(
+		$elm$core$String$fromInt($author$project$Page$Dashboard$totalShares) + ' shares'));
+var $author$project$Page$Dashboard$attributeTotalSharesTitle = _List_fromArray(
+	[
+		$mdgriffith$elm_ui$Element$Font$color($author$project$Page$Dashboard$lightBlack),
+		$mdgriffith$elm_ui$Element$Font$size(12),
+		$mdgriffith$elm_ui$Element$Font$alignLeft
+	]);
+var $author$project$Page$Dashboard$viewTotalSharesTitle = A2(
+	$mdgriffith$elm_ui$Element$el,
+	$author$project$Page$Dashboard$attributeTotalSharesTitle,
+	$mdgriffith$elm_ui$Element$text('Total equity shares'));
+var $author$project$Page$Dashboard$viewTotalShares = A2(
+	$mdgriffith$elm_ui$Element$column,
+	$author$project$Page$Dashboard$attributeTotalShares,
+	_List_fromArray(
+		[$author$project$Page$Dashboard$viewTotalSharesTitle, $author$project$Page$Dashboard$viewTotalSharesNumber]));
+var $author$project$Page$Dashboard$viewEquityNext = function (shares) {
+	return A2(
+		$mdgriffith$elm_ui$Element$column,
+		$author$project$Page$Dashboard$attritubeEquityNext,
+		_List_fromArray(
+			[
+				$author$project$Page$Dashboard$viewTotalShares,
+				$author$project$Page$Dashboard$viewPercentage(shares)
+			]));
+};
+var $mdgriffith$elm_ui$Element$fillPortion = $mdgriffith$elm_ui$Internal$Model$Fill;
+var $author$project$Page$Dashboard$attributeShares = _List_fromArray(
+	[
+		$mdgriffith$elm_ui$Element$width(
+		$mdgriffith$elm_ui$Element$fillPortion(2)),
+		$mdgriffith$elm_ui$Element$height($mdgriffith$elm_ui$Element$shrink),
+		$mdgriffith$elm_ui$Element$spacing(6),
+		$mdgriffith$elm_ui$Element$centerY
+	]);
+var $mdgriffith$elm_ui$Element$Font$heavy = A2($mdgriffith$elm_ui$Internal$Model$Class, $mdgriffith$elm_ui$Internal$Flag$fontWeight, $mdgriffith$elm_ui$Internal$Style$classes.textHeavy);
+var $author$project$Page$Dashboard$attributeSharesNumber = _List_fromArray(
+	[
+		$mdgriffith$elm_ui$Element$Font$color($author$project$Page$Dashboard$lightBlack),
+		$mdgriffith$elm_ui$Element$Font$size(48),
+		$mdgriffith$elm_ui$Element$Font$alignLeft,
+		$mdgriffith$elm_ui$Element$Font$heavy
+	]);
+var $author$project$Page$Dashboard$viewSharesNumber = function (shares) {
+	return A2(
+		$mdgriffith$elm_ui$Element$el,
+		$author$project$Page$Dashboard$attributeSharesNumber,
+		$mdgriffith$elm_ui$Element$text(
+			$elm$core$String$fromInt(shares) + ' shares'));
+};
+var $author$project$Page$Dashboard$attributeSharesTitle = _List_fromArray(
+	[
+		$mdgriffith$elm_ui$Element$Font$color($author$project$Page$Dashboard$lightBlack),
+		$mdgriffith$elm_ui$Element$Font$size(12),
+		$mdgriffith$elm_ui$Element$Font$alignLeft
+	]);
+var $author$project$Page$Dashboard$viewSharesTitle = A2(
+	$mdgriffith$elm_ui$Element$el,
+	$author$project$Page$Dashboard$attributeSharesTitle,
+	$mdgriffith$elm_ui$Element$text('Your equity shares'));
+var $author$project$Page$Dashboard$viewShares = function (shares) {
+	return A2(
+		$mdgriffith$elm_ui$Element$column,
+		$author$project$Page$Dashboard$attributeShares,
+		_List_fromArray(
+			[
+				$author$project$Page$Dashboard$viewSharesTitle,
+				$author$project$Page$Dashboard$viewSharesNumber(shares)
+			]));
+};
+var $author$project$Page$Dashboard$viewEquity = function (shares) {
+	return A2(
+		$mdgriffith$elm_ui$Element$row,
+		$author$project$Page$Dashboard$attributeEquity,
+		_List_fromArray(
+			[
+				$author$project$Page$Dashboard$viewShares(shares),
+				$author$project$Page$Dashboard$viewEquityNext(shares)
+			]));
+};
+var $author$project$Page$Dashboard$attributeRent = $elm$core$List$concat(
+	_List_fromArray(
+		[
+			$author$project$Page$Dashboard$fillWidth,
+			_List_fromArray(
+			[
+				A2($mdgriffith$elm_ui$Element$paddingXY, 36, 36),
+				$mdgriffith$elm_ui$Element$spacing(36),
+				$mdgriffith$elm_ui$Element$Background$color($author$project$Page$Dashboard$white)
+			])
+		]));
+var $author$project$Page$Dashboard$attributePayment = _List_fromArray(
+	[
+		$mdgriffith$elm_ui$Element$width(
+		$mdgriffith$elm_ui$Element$fillPortion(2)),
+		$mdgriffith$elm_ui$Element$height($mdgriffith$elm_ui$Element$shrink),
+		$mdgriffith$elm_ui$Element$spacing(6),
+		$mdgriffith$elm_ui$Element$centerY
+	]);
+var $author$project$Page$Dashboard$attributePaymentNumber = _List_fromArray(
+	[
+		$mdgriffith$elm_ui$Element$Font$color($author$project$Page$Dashboard$lightBlack),
+		$mdgriffith$elm_ui$Element$Font$size(48),
+		$mdgriffith$elm_ui$Element$Font$alignLeft,
+		$mdgriffith$elm_ui$Element$Font$heavy
+	]);
+var $author$project$Page$Dashboard$rent = 2000000;
+var $author$project$Page$Dashboard$rentIncome = 1500000;
+var $elm$core$String$dropRight = F2(
+	function (n, string) {
+		return (n < 1) ? string : A3($elm$core$String$slice, 0, -n, string);
+	});
+var $elm$core$String$right = F2(
+	function (n, string) {
+		return (n < 1) ? '' : A3(
+			$elm$core$String$slice,
+			-n,
+			$elm$core$String$length(string),
+			string);
+	});
+var $author$project$Page$Dashboard$toMoney = function (integer) {
+	var string = $elm$core$String$fromInt(integer);
+	var right = A2($elm$core$String$right, 2, string);
+	var left = A2($elm$core$String$dropRight, 2, string);
+	return 'P' + (left + ('.' + right));
+};
+var $author$project$Page$Dashboard$viewPaymentNumber = function (shares) {
+	return A2(
+		$mdgriffith$elm_ui$Element$el,
+		$author$project$Page$Dashboard$attributePaymentNumber,
+		$mdgriffith$elm_ui$Element$text(
+			$author$project$Page$Dashboard$toMoney($author$project$Page$Dashboard$rent - ((($author$project$Page$Dashboard$rentIncome * shares) / $author$project$Page$Dashboard$totalShares) | 0))));
+};
+var $author$project$Page$Dashboard$attributePaymentTitle = _List_fromArray(
+	[
+		$mdgriffith$elm_ui$Element$Font$color($author$project$Page$Dashboard$lightBlack),
+		$mdgriffith$elm_ui$Element$Font$size(12),
+		$mdgriffith$elm_ui$Element$Font$alignLeft
+	]);
+var $author$project$Page$Dashboard$viewPaymentTitle = A2(
+	$mdgriffith$elm_ui$Element$el,
+	$author$project$Page$Dashboard$attributePaymentTitle,
+	$mdgriffith$elm_ui$Element$text('Your monthly payment'));
+var $author$project$Page$Dashboard$viewPayment = function (shares) {
+	return A2(
+		$mdgriffith$elm_ui$Element$column,
+		$author$project$Page$Dashboard$attributePayment,
+		_List_fromArray(
+			[
+				$author$project$Page$Dashboard$viewPaymentTitle,
+				$author$project$Page$Dashboard$viewPaymentNumber(shares)
+			]));
+};
+var $author$project$Page$Dashboard$attributeRentNext = $elm$core$List$concat(
+	_List_fromArray(
+		[
+			$author$project$Page$Dashboard$fillWidth,
+			_List_fromArray(
+			[
+				$mdgriffith$elm_ui$Element$spacing(12),
+				$mdgriffith$elm_ui$Element$Background$color($author$project$Page$Dashboard$white),
+				$mdgriffith$elm_ui$Element$centerY
+			])
+		]));
+var $author$project$Page$Dashboard$attributeMonthlyRent = $elm$core$List$concat(
+	_List_fromArray(
+		[
+			$author$project$Page$Dashboard$shrinkContent,
+			_List_fromArray(
+			[
+				$mdgriffith$elm_ui$Element$spacing(6)
+			])
+		]));
+var $author$project$Page$Dashboard$attributeMonthlyRentNumber = _List_fromArray(
+	[
+		$mdgriffith$elm_ui$Element$Font$color($author$project$Page$Dashboard$lightBlack),
+		$mdgriffith$elm_ui$Element$Font$size(18),
+		$mdgriffith$elm_ui$Element$Font$alignLeft,
+		$mdgriffith$elm_ui$Element$Font$bold
+	]);
+var $author$project$Page$Dashboard$viewMonthlyRentNumber = A2(
+	$mdgriffith$elm_ui$Element$el,
+	$author$project$Page$Dashboard$attributeMonthlyRentNumber,
+	$mdgriffith$elm_ui$Element$text(
+		$author$project$Page$Dashboard$toMoney($author$project$Page$Dashboard$rent)));
+var $author$project$Page$Dashboard$attributeMonthlyRentTitle = _List_fromArray(
+	[
+		$mdgriffith$elm_ui$Element$Font$color($author$project$Page$Dashboard$lightBlack),
+		$mdgriffith$elm_ui$Element$Font$size(12),
+		$mdgriffith$elm_ui$Element$Font$alignLeft
+	]);
+var $author$project$Page$Dashboard$viewMonthlyRentTitle = A2(
+	$mdgriffith$elm_ui$Element$el,
+	$author$project$Page$Dashboard$attributeMonthlyRentTitle,
+	$mdgriffith$elm_ui$Element$text('Your monthly rent'));
+var $author$project$Page$Dashboard$viewMonthlyRent = A2(
+	$mdgriffith$elm_ui$Element$column,
+	$author$project$Page$Dashboard$attributeMonthlyRent,
+	_List_fromArray(
+		[$author$project$Page$Dashboard$viewMonthlyRentTitle, $author$project$Page$Dashboard$viewMonthlyRentNumber]));
+var $author$project$Page$Dashboard$attributeRentalIncome = $elm$core$List$concat(
+	_List_fromArray(
+		[
+			$author$project$Page$Dashboard$shrinkContent,
+			_List_fromArray(
+			[
+				$mdgriffith$elm_ui$Element$spacing(6)
+			])
+		]));
+var $author$project$Page$Dashboard$attributeRentalIncomeNumber = _List_fromArray(
+	[
+		$mdgriffith$elm_ui$Element$Font$color($author$project$Page$Dashboard$lightBlack),
+		$mdgriffith$elm_ui$Element$Font$size(18),
+		$mdgriffith$elm_ui$Element$Font$alignLeft,
+		$mdgriffith$elm_ui$Element$Font$bold
+	]);
+var $author$project$Page$Dashboard$viewRentalIncomeNumber = function (shares) {
+	return A2(
+		$mdgriffith$elm_ui$Element$el,
+		$author$project$Page$Dashboard$attributeRentalIncomeNumber,
+		$mdgriffith$elm_ui$Element$text(
+			$author$project$Page$Dashboard$toMoney((($author$project$Page$Dashboard$rentIncome * shares) / $author$project$Page$Dashboard$totalShares) | 0)));
+};
+var $author$project$Page$Dashboard$attributeRentalIncomeTitle = _List_fromArray(
+	[
+		$mdgriffith$elm_ui$Element$Font$color($author$project$Page$Dashboard$lightBlack),
+		$mdgriffith$elm_ui$Element$Font$size(12),
+		$mdgriffith$elm_ui$Element$Font$alignLeft
+	]);
+var $author$project$Page$Dashboard$viewRentalIncomeTitle = A2(
+	$mdgriffith$elm_ui$Element$el,
+	$author$project$Page$Dashboard$attributeRentalIncomeTitle,
+	$mdgriffith$elm_ui$Element$text('Your monthly rental income'));
+var $author$project$Page$Dashboard$viewRentalIncome = function (shares) {
+	return A2(
+		$mdgriffith$elm_ui$Element$column,
+		$author$project$Page$Dashboard$attributeRentalIncome,
+		_List_fromArray(
+			[
+				$author$project$Page$Dashboard$viewRentalIncomeTitle,
+				$author$project$Page$Dashboard$viewRentalIncomeNumber(shares)
+			]));
+};
+var $author$project$Page$Dashboard$viewRentNext = function (shares) {
+	return A2(
+		$mdgriffith$elm_ui$Element$column,
+		$author$project$Page$Dashboard$attributeRentNext,
+		_List_fromArray(
+			[
+				$author$project$Page$Dashboard$viewMonthlyRent,
+				$author$project$Page$Dashboard$viewRentalIncome(shares)
+			]));
+};
+var $author$project$Page$Dashboard$viewRent = function (shares) {
+	return A2(
+		$mdgriffith$elm_ui$Element$row,
+		$author$project$Page$Dashboard$attributeRent,
+		_List_fromArray(
+			[
+				$author$project$Page$Dashboard$viewPayment(shares),
+				$author$project$Page$Dashboard$viewRentNext(shares)
+			]));
+};
+var $author$project$Page$Dashboard$viewInformation = function (shares) {
+	return A2(
+		$mdgriffith$elm_ui$Element$row,
+		$author$project$Page$Dashboard$attributeInformation,
+		_List_fromArray(
+			[
+				$author$project$Page$Dashboard$viewEquity(shares),
+				$author$project$Page$Dashboard$viewRent(shares)
+			]));
+};
+var $mdgriffith$elm_ui$Internal$Model$Bottom = {$: 'Bottom'};
+var $mdgriffith$elm_ui$Element$alignBottom = $mdgriffith$elm_ui$Internal$Model$AlignY($mdgriffith$elm_ui$Internal$Model$Bottom);
+var $author$project$Page$Dashboard$attributeMarket = $elm$core$List$concat(
+	_List_fromArray(
+		[
+			$author$project$Page$Dashboard$fillWidth,
+			_List_fromArray(
+			[
+				$mdgriffith$elm_ui$Element$spacing(36),
+				$mdgriffith$elm_ui$Element$alignBottom
+			])
+		]));
+var $author$project$Page$Dashboard$attributeAsk = $elm$core$List$concat(
+	_List_fromArray(
+		[
+			$author$project$Page$Dashboard$fillWidth,
+			_List_fromArray(
+			[
+				A2($mdgriffith$elm_ui$Element$paddingXY, 36, 36),
+				$mdgriffith$elm_ui$Element$spacing(36),
+				$mdgriffith$elm_ui$Element$Background$color($author$project$Page$Dashboard$white)
+			])
+		]));
+var $author$project$Page$Dashboard$attributeAskNext = $elm$core$List$concat(
+	_List_fromArray(
+		[
+			$author$project$Page$Dashboard$fillWidth,
+			_List_fromArray(
+			[
+				$mdgriffith$elm_ui$Element$spacing(12),
+				$mdgriffith$elm_ui$Element$Background$color($author$project$Page$Dashboard$white),
+				$mdgriffith$elm_ui$Element$centerY
+			])
+		]));
+var $author$project$Page$Dashboard$Ask = {$: 'Ask'};
+var $mdgriffith$elm_ui$Element$padding = function (x) {
+	return A2(
+		$mdgriffith$elm_ui$Internal$Model$StyleClass,
+		$mdgriffith$elm_ui$Internal$Flag$padding,
+		A5(
+			$mdgriffith$elm_ui$Internal$Model$PaddingStyle,
+			'p-' + $elm$core$String$fromInt(x),
+			x,
+			x,
+			x,
+			x));
+};
+var $author$project$Page$Dashboard$attributeAskButton = $elm$core$List$concat(
+	_List_fromArray(
+		[
+			$author$project$Page$Dashboard$shrinkContent,
+			_List_fromArray(
+			[
+				$mdgriffith$elm_ui$Element$padding(6),
+				$mdgriffith$elm_ui$Element$Background$color($author$project$Page$Dashboard$lightBlack),
+				$mdgriffith$elm_ui$Element$Font$color($author$project$Page$Dashboard$white),
+				$mdgriffith$elm_ui$Element$Font$size(18),
+				$mdgriffith$elm_ui$Element$Font$alignLeft,
+				$mdgriffith$elm_ui$Element$Font$bold
+			])
+		]));
+var $mdgriffith$elm_ui$Internal$Model$Button = {$: 'Button'};
+var $mdgriffith$elm_ui$Internal$Model$Describe = function (a) {
+	return {$: 'Describe', a: a};
+};
+var $elm$json$Json$Encode$bool = _Json_wrap;
+var $elm$html$Html$Attributes$boolProperty = F2(
+	function (key, bool) {
+		return A2(
+			_VirtualDom_property,
+			key,
+			$elm$json$Json$Encode$bool(bool));
+	});
+var $elm$html$Html$Attributes$disabled = $elm$html$Html$Attributes$boolProperty('disabled');
+var $mdgriffith$elm_ui$Element$Input$hasFocusStyle = function (attr) {
+	if (((attr.$ === 'StyleClass') && (attr.b.$ === 'PseudoSelector')) && (attr.b.a.$ === 'Focus')) {
+		var _v1 = attr.b;
+		var _v2 = _v1.a;
+		return true;
+	} else {
+		return false;
+	}
+};
+var $mdgriffith$elm_ui$Element$Input$focusDefault = function (attrs) {
+	return A2($elm$core$List$any, $mdgriffith$elm_ui$Element$Input$hasFocusStyle, attrs) ? $mdgriffith$elm_ui$Internal$Model$NoAttribute : $mdgriffith$elm_ui$Internal$Model$htmlClass('focusable');
+};
+var $elm$virtual_dom$VirtualDom$Normal = function (a) {
+	return {$: 'Normal', a: a};
+};
+var $elm$virtual_dom$VirtualDom$on = _VirtualDom_on;
+var $elm$html$Html$Events$on = F2(
+	function (event, decoder) {
+		return A2(
+			$elm$virtual_dom$VirtualDom$on,
+			event,
+			$elm$virtual_dom$VirtualDom$Normal(decoder));
+	});
+var $elm$html$Html$Events$onClick = function (msg) {
+	return A2(
+		$elm$html$Html$Events$on,
+		'click',
+		$elm$json$Json$Decode$succeed(msg));
+};
+var $mdgriffith$elm_ui$Element$Events$onClick = A2($elm$core$Basics$composeL, $mdgriffith$elm_ui$Internal$Model$Attr, $elm$html$Html$Events$onClick);
+var $mdgriffith$elm_ui$Element$Input$enter = 'Enter';
+var $elm$json$Json$Decode$fail = _Json_fail;
+var $elm$virtual_dom$VirtualDom$MayPreventDefault = function (a) {
+	return {$: 'MayPreventDefault', a: a};
+};
+var $elm$html$Html$Events$preventDefaultOn = F2(
+	function (event, decoder) {
+		return A2(
+			$elm$virtual_dom$VirtualDom$on,
+			event,
+			$elm$virtual_dom$VirtualDom$MayPreventDefault(decoder));
+	});
+var $elm$json$Json$Decode$string = _Json_decodeString;
+var $mdgriffith$elm_ui$Element$Input$onKey = F2(
+	function (desiredCode, msg) {
+		var decode = function (code) {
+			return _Utils_eq(code, desiredCode) ? $elm$json$Json$Decode$succeed(msg) : $elm$json$Json$Decode$fail('Not the enter key');
+		};
+		var isKey = A2(
+			$elm$json$Json$Decode$andThen,
+			decode,
+			A2($elm$json$Json$Decode$field, 'key', $elm$json$Json$Decode$string));
+		return $mdgriffith$elm_ui$Internal$Model$Attr(
+			A2(
+				$elm$html$Html$Events$preventDefaultOn,
+				'keyup',
+				A2(
+					$elm$json$Json$Decode$map,
+					function (fired) {
+						return _Utils_Tuple2(fired, true);
+					},
+					isKey)));
+	});
+var $mdgriffith$elm_ui$Element$Input$onEnter = function (msg) {
+	return A2($mdgriffith$elm_ui$Element$Input$onKey, $mdgriffith$elm_ui$Element$Input$enter, msg);
+};
+var $mdgriffith$elm_ui$Internal$Flag$cursor = $mdgriffith$elm_ui$Internal$Flag$flag(21);
+var $mdgriffith$elm_ui$Element$pointer = A2($mdgriffith$elm_ui$Internal$Model$Class, $mdgriffith$elm_ui$Internal$Flag$cursor, $mdgriffith$elm_ui$Internal$Style$classes.cursorPointer);
+var $elm$html$Html$Attributes$tabindex = function (n) {
+	return A2(
+		_VirtualDom_attribute,
+		'tabIndex',
+		$elm$core$String$fromInt(n));
+};
+var $mdgriffith$elm_ui$Element$Input$button = F2(
+	function (attrs, _v0) {
+		var onPress = _v0.onPress;
+		var label = _v0.label;
+		return A4(
+			$mdgriffith$elm_ui$Internal$Model$element,
+			$mdgriffith$elm_ui$Internal$Model$asEl,
+			$mdgriffith$elm_ui$Internal$Model$div,
+			A2(
+				$elm$core$List$cons,
+				$mdgriffith$elm_ui$Element$width($mdgriffith$elm_ui$Element$shrink),
+				A2(
+					$elm$core$List$cons,
+					$mdgriffith$elm_ui$Element$height($mdgriffith$elm_ui$Element$shrink),
+					A2(
+						$elm$core$List$cons,
+						$mdgriffith$elm_ui$Internal$Model$htmlClass($mdgriffith$elm_ui$Internal$Style$classes.contentCenterX + (' ' + ($mdgriffith$elm_ui$Internal$Style$classes.contentCenterY + (' ' + ($mdgriffith$elm_ui$Internal$Style$classes.seButton + (' ' + $mdgriffith$elm_ui$Internal$Style$classes.noTextSelection)))))),
+						A2(
+							$elm$core$List$cons,
+							$mdgriffith$elm_ui$Element$pointer,
+							A2(
+								$elm$core$List$cons,
+								$mdgriffith$elm_ui$Element$Input$focusDefault(attrs),
+								A2(
+									$elm$core$List$cons,
+									$mdgriffith$elm_ui$Internal$Model$Describe($mdgriffith$elm_ui$Internal$Model$Button),
+									A2(
+										$elm$core$List$cons,
+										$mdgriffith$elm_ui$Internal$Model$Attr(
+											$elm$html$Html$Attributes$tabindex(0)),
+										function () {
+											if (onPress.$ === 'Nothing') {
+												return A2(
+													$elm$core$List$cons,
+													$mdgriffith$elm_ui$Internal$Model$Attr(
+														$elm$html$Html$Attributes$disabled(true)),
+													attrs);
+											} else {
+												var msg = onPress.a;
+												return A2(
+													$elm$core$List$cons,
+													$mdgriffith$elm_ui$Element$Events$onClick(msg),
+													A2(
+														$elm$core$List$cons,
+														$mdgriffith$elm_ui$Element$Input$onEnter(msg),
+														attrs));
+											}
+										}()))))))),
+			$mdgriffith$elm_ui$Internal$Model$Unkeyed(
+				_List_fromArray(
+					[label])));
+	});
+var $author$project$Page$Dashboard$viewAskButton = A2(
+	$mdgriffith$elm_ui$Element$Input$button,
+	$author$project$Page$Dashboard$attributeAskButton,
+	{
+		label: $mdgriffith$elm_ui$Element$text('Buy Equity'),
+		onPress: $elm$core$Maybe$Just($author$project$Page$Dashboard$Ask)
+	});
+var $author$project$Page$Dashboard$ChangeAskInput = function (a) {
+	return {$: 'ChangeAskInput', a: a};
+};
+var $author$project$Page$Dashboard$attributeAskInput = $elm$core$List$concat(
+	_List_fromArray(
+		[
+			$author$project$Page$Dashboard$fillWidth,
+			_List_fromArray(
+			[
+				$mdgriffith$elm_ui$Element$padding(6),
+				$mdgriffith$elm_ui$Element$Font$color($author$project$Page$Dashboard$lightBlack),
+				$mdgriffith$elm_ui$Element$Font$size(18),
+				$mdgriffith$elm_ui$Element$Font$alignLeft
+			])
+		]));
+var $author$project$Page$Dashboard$maybeText = function (bidInput) {
+	if (bidInput.$ === 'Just') {
+		var input = bidInput.a;
+		return $elm$core$String$fromInt(input);
+	} else {
+		return '';
+	}
+};
+var $mdgriffith$elm_ui$Element$Input$TextInputNode = function (a) {
+	return {$: 'TextInputNode', a: a};
+};
+var $mdgriffith$elm_ui$Element$Input$TextArea = {$: 'TextArea'};
+var $mdgriffith$elm_ui$Internal$Model$LivePolite = {$: 'LivePolite'};
+var $mdgriffith$elm_ui$Element$Region$announce = $mdgriffith$elm_ui$Internal$Model$Describe($mdgriffith$elm_ui$Internal$Model$LivePolite);
+var $mdgriffith$elm_ui$Element$Input$applyLabel = F3(
+	function (attrs, label, input) {
+		if (label.$ === 'HiddenLabel') {
+			var labelText = label.a;
+			return A4(
+				$mdgriffith$elm_ui$Internal$Model$element,
+				$mdgriffith$elm_ui$Internal$Model$asColumn,
+				$mdgriffith$elm_ui$Internal$Model$NodeName('label'),
+				attrs,
+				$mdgriffith$elm_ui$Internal$Model$Unkeyed(
+					_List_fromArray(
+						[input])));
+		} else {
+			var position = label.a;
+			var labelAttrs = label.b;
+			var labelChild = label.c;
+			var labelElement = A4(
+				$mdgriffith$elm_ui$Internal$Model$element,
+				$mdgriffith$elm_ui$Internal$Model$asEl,
+				$mdgriffith$elm_ui$Internal$Model$div,
+				labelAttrs,
+				$mdgriffith$elm_ui$Internal$Model$Unkeyed(
+					_List_fromArray(
+						[labelChild])));
+			switch (position.$) {
+				case 'Above':
+					return A4(
+						$mdgriffith$elm_ui$Internal$Model$element,
+						$mdgriffith$elm_ui$Internal$Model$asColumn,
+						$mdgriffith$elm_ui$Internal$Model$NodeName('label'),
+						attrs,
+						$mdgriffith$elm_ui$Internal$Model$Unkeyed(
+							_List_fromArray(
+								[labelElement, input])));
+				case 'Below':
+					return A4(
+						$mdgriffith$elm_ui$Internal$Model$element,
+						$mdgriffith$elm_ui$Internal$Model$asColumn,
+						$mdgriffith$elm_ui$Internal$Model$NodeName('label'),
+						attrs,
+						$mdgriffith$elm_ui$Internal$Model$Unkeyed(
+							_List_fromArray(
+								[input, labelElement])));
+				case 'OnRight':
+					return A4(
+						$mdgriffith$elm_ui$Internal$Model$element,
+						$mdgriffith$elm_ui$Internal$Model$asRow,
+						$mdgriffith$elm_ui$Internal$Model$NodeName('label'),
+						attrs,
+						$mdgriffith$elm_ui$Internal$Model$Unkeyed(
+							_List_fromArray(
+								[input, labelElement])));
+				default:
+					return A4(
+						$mdgriffith$elm_ui$Internal$Model$element,
+						$mdgriffith$elm_ui$Internal$Model$asRow,
+						$mdgriffith$elm_ui$Internal$Model$NodeName('label'),
+						attrs,
+						$mdgriffith$elm_ui$Internal$Model$Unkeyed(
+							_List_fromArray(
+								[labelElement, input])));
+			}
+		}
+	});
+var $elm$html$Html$Attributes$attribute = $elm$virtual_dom$VirtualDom$attribute;
+var $mdgriffith$elm_ui$Element$Input$autofill = A2(
+	$elm$core$Basics$composeL,
+	$mdgriffith$elm_ui$Internal$Model$Attr,
+	$elm$html$Html$Attributes$attribute('autocomplete'));
+var $mdgriffith$elm_ui$Internal$Model$Behind = {$: 'Behind'};
+var $mdgriffith$elm_ui$Element$behindContent = function (element) {
+	return A2($mdgriffith$elm_ui$Element$createNearby, $mdgriffith$elm_ui$Internal$Model$Behind, element);
+};
+var $mdgriffith$elm_ui$Internal$Model$MoveY = function (a) {
+	return {$: 'MoveY', a: a};
+};
+var $mdgriffith$elm_ui$Internal$Model$TransformComponent = F2(
+	function (a, b) {
+		return {$: 'TransformComponent', a: a, b: b};
+	});
+var $mdgriffith$elm_ui$Internal$Flag$moveY = $mdgriffith$elm_ui$Internal$Flag$flag(26);
+var $mdgriffith$elm_ui$Element$moveUp = function (y) {
+	return A2(
+		$mdgriffith$elm_ui$Internal$Model$TransformComponent,
+		$mdgriffith$elm_ui$Internal$Flag$moveY,
+		$mdgriffith$elm_ui$Internal$Model$MoveY(-y));
+};
+var $mdgriffith$elm_ui$Element$Input$calcMoveToCompensateForPadding = function (attrs) {
+	var gatherSpacing = F2(
+		function (attr, found) {
+			if ((attr.$ === 'StyleClass') && (attr.b.$ === 'SpacingStyle')) {
+				var _v2 = attr.b;
+				var x = _v2.b;
+				var y = _v2.c;
+				if (found.$ === 'Nothing') {
+					return $elm$core$Maybe$Just(y);
+				} else {
+					return found;
+				}
+			} else {
+				return found;
+			}
+		});
+	var _v0 = A3($elm$core$List$foldr, gatherSpacing, $elm$core$Maybe$Nothing, attrs);
+	if (_v0.$ === 'Nothing') {
+		return $mdgriffith$elm_ui$Internal$Model$NoAttribute;
+	} else {
+		var vSpace = _v0.a;
+		return $mdgriffith$elm_ui$Element$moveUp(
+			$elm$core$Basics$floor(vSpace / 2));
+	}
+};
+var $mdgriffith$elm_ui$Internal$Flag$overflow = $mdgriffith$elm_ui$Internal$Flag$flag(20);
+var $mdgriffith$elm_ui$Element$clip = A2($mdgriffith$elm_ui$Internal$Model$Class, $mdgriffith$elm_ui$Internal$Flag$overflow, $mdgriffith$elm_ui$Internal$Style$classes.clip);
+var $mdgriffith$elm_ui$Internal$Flag$borderColor = $mdgriffith$elm_ui$Internal$Flag$flag(28);
+var $mdgriffith$elm_ui$Element$Border$color = function (clr) {
+	return A2(
+		$mdgriffith$elm_ui$Internal$Model$StyleClass,
+		$mdgriffith$elm_ui$Internal$Flag$borderColor,
+		A3(
+			$mdgriffith$elm_ui$Internal$Model$Colored,
+			'bc-' + $mdgriffith$elm_ui$Internal$Model$formatColorClass(clr),
+			'border-color',
+			clr));
+};
+var $mdgriffith$elm_ui$Element$rgb = F3(
+	function (r, g, b) {
+		return A4($mdgriffith$elm_ui$Internal$Model$Rgba, r, g, b, 1);
+	});
+var $mdgriffith$elm_ui$Element$Input$darkGrey = A3($mdgriffith$elm_ui$Element$rgb, 186 / 255, 189 / 255, 182 / 255);
+var $mdgriffith$elm_ui$Element$Input$defaultTextPadding = A2($mdgriffith$elm_ui$Element$paddingXY, 12, 12);
+var $mdgriffith$elm_ui$Internal$Flag$borderRound = $mdgriffith$elm_ui$Internal$Flag$flag(17);
+var $mdgriffith$elm_ui$Element$Border$rounded = function (radius) {
+	return A2(
+		$mdgriffith$elm_ui$Internal$Model$StyleClass,
+		$mdgriffith$elm_ui$Internal$Flag$borderRound,
+		A3(
+			$mdgriffith$elm_ui$Internal$Model$Single,
+			'br-' + $elm$core$String$fromInt(radius),
+			'border-radius',
+			$elm$core$String$fromInt(radius) + 'px'));
+};
+var $mdgriffith$elm_ui$Element$Input$white = A3($mdgriffith$elm_ui$Element$rgb, 1, 1, 1);
+var $mdgriffith$elm_ui$Internal$Model$BorderWidth = F5(
+	function (a, b, c, d, e) {
+		return {$: 'BorderWidth', a: a, b: b, c: c, d: d, e: e};
+	});
+var $mdgriffith$elm_ui$Element$Border$width = function (v) {
+	return A2(
+		$mdgriffith$elm_ui$Internal$Model$StyleClass,
+		$mdgriffith$elm_ui$Internal$Flag$borderWidth,
+		A5(
+			$mdgriffith$elm_ui$Internal$Model$BorderWidth,
+			'b-' + $elm$core$String$fromInt(v),
+			v,
+			v,
+			v,
+			v));
+};
+var $mdgriffith$elm_ui$Element$Input$defaultTextBoxStyle = _List_fromArray(
+	[
+		$mdgriffith$elm_ui$Element$Input$defaultTextPadding,
+		$mdgriffith$elm_ui$Element$Border$rounded(3),
+		$mdgriffith$elm_ui$Element$Border$color($mdgriffith$elm_ui$Element$Input$darkGrey),
+		$mdgriffith$elm_ui$Element$Background$color($mdgriffith$elm_ui$Element$Input$white),
+		$mdgriffith$elm_ui$Element$Border$width(1),
+		$mdgriffith$elm_ui$Element$spacing(5),
+		$mdgriffith$elm_ui$Element$width($mdgriffith$elm_ui$Element$fill),
+		$mdgriffith$elm_ui$Element$height($mdgriffith$elm_ui$Element$shrink)
+	]);
+var $mdgriffith$elm_ui$Element$Input$getHeight = function (attr) {
+	if (attr.$ === 'Height') {
+		var h = attr.a;
+		return $elm$core$Maybe$Just(h);
+	} else {
+		return $elm$core$Maybe$Nothing;
+	}
+};
+var $elm$core$List$head = function (list) {
+	if (list.b) {
+		var x = list.a;
+		var xs = list.b;
+		return $elm$core$Maybe$Just(x);
+	} else {
+		return $elm$core$Maybe$Nothing;
+	}
+};
+var $mdgriffith$elm_ui$Internal$Model$Label = function (a) {
+	return {$: 'Label', a: a};
+};
+var $mdgriffith$elm_ui$Element$Input$hiddenLabelAttribute = function (label) {
+	if (label.$ === 'HiddenLabel') {
+		var textLabel = label.a;
+		return $mdgriffith$elm_ui$Internal$Model$Describe(
+			$mdgriffith$elm_ui$Internal$Model$Label(textLabel));
+	} else {
+		return $mdgriffith$elm_ui$Internal$Model$NoAttribute;
+	}
+};
+var $mdgriffith$elm_ui$Element$Input$isConstrained = function (len) {
+	isConstrained:
+	while (true) {
+		switch (len.$) {
+			case 'Content':
+				return false;
+			case 'Px':
+				return true;
+			case 'Fill':
+				return true;
+			case 'Min':
+				var l = len.b;
+				var $temp$len = l;
+				len = $temp$len;
+				continue isConstrained;
+			default:
+				var l = len.b;
+				return true;
+		}
+	}
+};
+var $mdgriffith$elm_ui$Element$Input$isHiddenLabel = function (label) {
+	if (label.$ === 'HiddenLabel') {
+		return true;
+	} else {
+		return false;
+	}
+};
+var $mdgriffith$elm_ui$Element$Input$isStacked = function (label) {
+	if (label.$ === 'Label') {
+		var loc = label.a;
+		switch (loc.$) {
+			case 'OnRight':
+				return false;
+			case 'OnLeft':
+				return false;
+			case 'Above':
+				return true;
+			default:
+				return true;
+		}
+	} else {
+		return true;
+	}
+};
+var $mdgriffith$elm_ui$Element$Input$negateBox = function (box) {
+	return {bottom: -box.bottom, left: -box.left, right: -box.right, top: -box.top};
+};
+var $elm$html$Html$Events$alwaysStop = function (x) {
+	return _Utils_Tuple2(x, true);
+};
+var $elm$virtual_dom$VirtualDom$MayStopPropagation = function (a) {
+	return {$: 'MayStopPropagation', a: a};
+};
+var $elm$html$Html$Events$stopPropagationOn = F2(
+	function (event, decoder) {
+		return A2(
+			$elm$virtual_dom$VirtualDom$on,
+			event,
+			$elm$virtual_dom$VirtualDom$MayStopPropagation(decoder));
+	});
+var $elm$json$Json$Decode$at = F2(
+	function (fields, decoder) {
+		return A3($elm$core$List$foldr, $elm$json$Json$Decode$field, decoder, fields);
+	});
+var $elm$html$Html$Events$targetValue = A2(
+	$elm$json$Json$Decode$at,
+	_List_fromArray(
+		['target', 'value']),
+	$elm$json$Json$Decode$string);
+var $elm$html$Html$Events$onInput = function (tagger) {
+	return A2(
+		$elm$html$Html$Events$stopPropagationOn,
+		'input',
+		A2(
+			$elm$json$Json$Decode$map,
+			$elm$html$Html$Events$alwaysStop,
+			A2($elm$json$Json$Decode$map, tagger, $elm$html$Html$Events$targetValue)));
+};
+var $mdgriffith$elm_ui$Internal$Model$paddingName = F4(
+	function (top, right, bottom, left) {
+		return 'pad-' + ($elm$core$String$fromInt(top) + ('-' + ($elm$core$String$fromInt(right) + ('-' + ($elm$core$String$fromInt(bottom) + ('-' + $elm$core$String$fromInt(left)))))));
+	});
+var $mdgriffith$elm_ui$Element$paddingEach = function (_v0) {
+	var top = _v0.top;
+	var right = _v0.right;
+	var bottom = _v0.bottom;
+	var left = _v0.left;
+	return (_Utils_eq(top, right) && (_Utils_eq(top, bottom) && _Utils_eq(top, left))) ? A2(
+		$mdgriffith$elm_ui$Internal$Model$StyleClass,
+		$mdgriffith$elm_ui$Internal$Flag$padding,
+		A5(
+			$mdgriffith$elm_ui$Internal$Model$PaddingStyle,
+			'p-' + $elm$core$String$fromInt(top),
+			top,
+			top,
+			top,
+			top)) : A2(
+		$mdgriffith$elm_ui$Internal$Model$StyleClass,
+		$mdgriffith$elm_ui$Internal$Flag$padding,
+		A5(
+			$mdgriffith$elm_ui$Internal$Model$PaddingStyle,
+			A4($mdgriffith$elm_ui$Internal$Model$paddingName, top, right, bottom, left),
+			top,
+			right,
+			bottom,
+			left));
+};
+var $mdgriffith$elm_ui$Element$htmlAttribute = $mdgriffith$elm_ui$Internal$Model$Attr;
+var $mdgriffith$elm_ui$Element$Input$isFill = function (len) {
+	isFill:
+	while (true) {
+		switch (len.$) {
+			case 'Fill':
+				return true;
+			case 'Content':
+				return false;
+			case 'Px':
+				return false;
+			case 'Min':
+				var l = len.b;
+				var $temp$len = l;
+				len = $temp$len;
+				continue isFill;
+			default:
+				var l = len.b;
+				var $temp$len = l;
+				len = $temp$len;
+				continue isFill;
+		}
+	}
+};
+var $mdgriffith$elm_ui$Element$Input$isPixel = function (len) {
+	isPixel:
+	while (true) {
+		switch (len.$) {
+			case 'Content':
+				return false;
+			case 'Px':
+				return true;
+			case 'Fill':
+				return false;
+			case 'Min':
+				var l = len.b;
+				var $temp$len = l;
+				len = $temp$len;
+				continue isPixel;
+			default:
+				var l = len.b;
+				var $temp$len = l;
+				len = $temp$len;
+				continue isPixel;
+		}
+	}
+};
+var $elm$virtual_dom$VirtualDom$style = _VirtualDom_style;
+var $elm$html$Html$Attributes$style = $elm$virtual_dom$VirtualDom$style;
+var $mdgriffith$elm_ui$Element$Input$redistributeOver = F4(
+	function (isMultiline, stacked, attr, els) {
+		switch (attr.$) {
+			case 'Nearby':
+				return _Utils_update(
+					els,
+					{
+						parent: A2($elm$core$List$cons, attr, els.parent)
+					});
+			case 'Width':
+				var width = attr.a;
+				return $mdgriffith$elm_ui$Element$Input$isFill(width) ? _Utils_update(
+					els,
+					{
+						fullParent: A2($elm$core$List$cons, attr, els.fullParent),
+						input: A2($elm$core$List$cons, attr, els.input),
+						parent: A2($elm$core$List$cons, attr, els.parent)
+					}) : (stacked ? _Utils_update(
+					els,
+					{
+						fullParent: A2($elm$core$List$cons, attr, els.fullParent)
+					}) : _Utils_update(
+					els,
+					{
+						parent: A2($elm$core$List$cons, attr, els.parent)
+					}));
+			case 'Height':
+				var height = attr.a;
+				return (!stacked) ? _Utils_update(
+					els,
+					{
+						fullParent: A2($elm$core$List$cons, attr, els.fullParent),
+						parent: A2($elm$core$List$cons, attr, els.parent)
+					}) : ($mdgriffith$elm_ui$Element$Input$isFill(height) ? _Utils_update(
+					els,
+					{
+						fullParent: A2($elm$core$List$cons, attr, els.fullParent),
+						parent: A2($elm$core$List$cons, attr, els.parent)
+					}) : ($mdgriffith$elm_ui$Element$Input$isPixel(height) ? _Utils_update(
+					els,
+					{
+						parent: A2($elm$core$List$cons, attr, els.parent)
+					}) : _Utils_update(
+					els,
+					{
+						parent: A2($elm$core$List$cons, attr, els.parent)
+					})));
+			case 'AlignX':
+				return _Utils_update(
+					els,
+					{
+						fullParent: A2($elm$core$List$cons, attr, els.fullParent)
+					});
+			case 'AlignY':
+				return _Utils_update(
+					els,
+					{
+						fullParent: A2($elm$core$List$cons, attr, els.fullParent)
+					});
+			case 'StyleClass':
+				switch (attr.b.$) {
+					case 'SpacingStyle':
+						var _v1 = attr.b;
+						return _Utils_update(
+							els,
+							{
+								fullParent: A2($elm$core$List$cons, attr, els.fullParent),
+								input: A2($elm$core$List$cons, attr, els.input),
+								parent: A2($elm$core$List$cons, attr, els.parent),
+								wrapper: A2($elm$core$List$cons, attr, els.wrapper)
+							});
+					case 'PaddingStyle':
+						var cls = attr.a;
+						var _v2 = attr.b;
+						var pad = _v2.a;
+						var t = _v2.b;
+						var r = _v2.c;
+						var b = _v2.d;
+						var l = _v2.e;
+						if (isMultiline) {
+							return _Utils_update(
+								els,
+								{
+									cover: A2($elm$core$List$cons, attr, els.cover),
+									parent: A2($elm$core$List$cons, attr, els.parent)
+								});
+						} else {
+							var reducedVerticalPadding = $mdgriffith$elm_ui$Element$paddingEach(
+								{
+									bottom: b - A2($elm$core$Basics$min, t, b),
+									left: l,
+									right: r,
+									top: t - A2($elm$core$Basics$min, t, b)
+								});
+							var newLineHeight = $mdgriffith$elm_ui$Element$htmlAttribute(
+								A2(
+									$elm$html$Html$Attributes$style,
+									'line-height',
+									'calc(1.0em + ' + ($elm$core$String$fromInt(
+										2 * A2($elm$core$Basics$min, t, b)) + 'px)')));
+							var newHeight = $mdgriffith$elm_ui$Element$htmlAttribute(
+								A2(
+									$elm$html$Html$Attributes$style,
+									'height',
+									'calc(1.0em + ' + ($elm$core$String$fromInt(
+										2 * A2($elm$core$Basics$min, t, b)) + 'px)')));
+							return _Utils_update(
+								els,
+								{
+									cover: A2($elm$core$List$cons, attr, els.cover),
+									input: A2(
+										$elm$core$List$cons,
+										newHeight,
+										A2($elm$core$List$cons, newLineHeight, els.input)),
+									parent: A2($elm$core$List$cons, reducedVerticalPadding, els.parent)
+								});
+						}
+					case 'BorderWidth':
+						var _v3 = attr.b;
+						return _Utils_update(
+							els,
+							{
+								cover: A2($elm$core$List$cons, attr, els.cover),
+								parent: A2($elm$core$List$cons, attr, els.parent)
+							});
+					case 'Transform':
+						return _Utils_update(
+							els,
+							{
+								cover: A2($elm$core$List$cons, attr, els.cover),
+								parent: A2($elm$core$List$cons, attr, els.parent)
+							});
+					case 'FontSize':
+						return _Utils_update(
+							els,
+							{
+								fullParent: A2($elm$core$List$cons, attr, els.fullParent)
+							});
+					case 'FontFamily':
+						var _v4 = attr.b;
+						return _Utils_update(
+							els,
+							{
+								fullParent: A2($elm$core$List$cons, attr, els.fullParent)
+							});
+					default:
+						var flag = attr.a;
+						var cls = attr.b;
+						return _Utils_update(
+							els,
+							{
+								parent: A2($elm$core$List$cons, attr, els.parent)
+							});
+				}
+			case 'NoAttribute':
+				return els;
+			case 'Attr':
+				var a = attr.a;
+				return _Utils_update(
+					els,
+					{
+						input: A2($elm$core$List$cons, attr, els.input)
+					});
+			case 'Describe':
+				return _Utils_update(
+					els,
+					{
+						input: A2($elm$core$List$cons, attr, els.input)
+					});
+			case 'Class':
+				return _Utils_update(
+					els,
+					{
+						parent: A2($elm$core$List$cons, attr, els.parent)
+					});
+			default:
+				return _Utils_update(
+					els,
+					{
+						input: A2($elm$core$List$cons, attr, els.input)
+					});
+		}
+	});
+var $mdgriffith$elm_ui$Element$Input$redistribute = F3(
+	function (isMultiline, stacked, attrs) {
+		return function (redist) {
+			return {
+				cover: $elm$core$List$reverse(redist.cover),
+				fullParent: $elm$core$List$reverse(redist.fullParent),
+				input: $elm$core$List$reverse(redist.input),
+				parent: $elm$core$List$reverse(redist.parent),
+				wrapper: $elm$core$List$reverse(redist.wrapper)
+			};
+		}(
+			A3(
+				$elm$core$List$foldl,
+				A2($mdgriffith$elm_ui$Element$Input$redistributeOver, isMultiline, stacked),
+				{cover: _List_Nil, fullParent: _List_Nil, input: _List_Nil, parent: _List_Nil, wrapper: _List_Nil},
+				attrs));
+	});
+var $mdgriffith$elm_ui$Element$Input$renderBox = function (_v0) {
+	var top = _v0.top;
+	var right = _v0.right;
+	var bottom = _v0.bottom;
+	var left = _v0.left;
+	return $elm$core$String$fromInt(top) + ('px ' + ($elm$core$String$fromInt(right) + ('px ' + ($elm$core$String$fromInt(bottom) + ('px ' + ($elm$core$String$fromInt(left) + 'px'))))));
+};
+var $mdgriffith$elm_ui$Internal$Model$Transparency = F2(
+	function (a, b) {
+		return {$: 'Transparency', a: a, b: b};
+	});
+var $mdgriffith$elm_ui$Internal$Flag$transparency = $mdgriffith$elm_ui$Internal$Flag$flag(0);
+var $mdgriffith$elm_ui$Element$alpha = function (o) {
+	var transparency = function (x) {
+		return 1 - x;
+	}(
+		A2(
+			$elm$core$Basics$min,
+			1.0,
+			A2($elm$core$Basics$max, 0.0, o)));
+	return A2(
+		$mdgriffith$elm_ui$Internal$Model$StyleClass,
+		$mdgriffith$elm_ui$Internal$Flag$transparency,
+		A2(
+			$mdgriffith$elm_ui$Internal$Model$Transparency,
+			'transparency-' + $mdgriffith$elm_ui$Internal$Model$floatClass(transparency),
+			transparency));
+};
+var $mdgriffith$elm_ui$Element$Input$charcoal = A3($mdgriffith$elm_ui$Element$rgb, 136 / 255, 138 / 255, 133 / 255);
+var $mdgriffith$elm_ui$Element$rgba = $mdgriffith$elm_ui$Internal$Model$Rgba;
+var $mdgriffith$elm_ui$Element$Input$renderPlaceholder = F3(
+	function (_v0, forPlaceholder, on) {
+		var placeholderAttrs = _v0.a;
+		var placeholderEl = _v0.b;
+		return A2(
+			$mdgriffith$elm_ui$Element$el,
+			_Utils_ap(
+				forPlaceholder,
+				_Utils_ap(
+					_List_fromArray(
+						[
+							$mdgriffith$elm_ui$Element$Font$color($mdgriffith$elm_ui$Element$Input$charcoal),
+							$mdgriffith$elm_ui$Internal$Model$htmlClass($mdgriffith$elm_ui$Internal$Style$classes.noTextSelection + (' ' + $mdgriffith$elm_ui$Internal$Style$classes.passPointerEvents)),
+							$mdgriffith$elm_ui$Element$clip,
+							$mdgriffith$elm_ui$Element$Border$color(
+							A4($mdgriffith$elm_ui$Element$rgba, 0, 0, 0, 0)),
+							$mdgriffith$elm_ui$Element$Background$color(
+							A4($mdgriffith$elm_ui$Element$rgba, 0, 0, 0, 0)),
+							$mdgriffith$elm_ui$Element$height($mdgriffith$elm_ui$Element$fill),
+							$mdgriffith$elm_ui$Element$width($mdgriffith$elm_ui$Element$fill),
+							$mdgriffith$elm_ui$Element$alpha(
+							on ? 1 : 0)
+						]),
+					placeholderAttrs)),
+			placeholderEl);
+	});
+var $mdgriffith$elm_ui$Element$scrollbarY = A2($mdgriffith$elm_ui$Internal$Model$Class, $mdgriffith$elm_ui$Internal$Flag$overflow, $mdgriffith$elm_ui$Internal$Style$classes.scrollbarsY);
+var $elm$html$Html$span = _VirtualDom_node('span');
+var $elm$html$Html$Attributes$spellcheck = $elm$html$Html$Attributes$boolProperty('spellcheck');
+var $mdgriffith$elm_ui$Element$Input$spellcheck = A2($elm$core$Basics$composeL, $mdgriffith$elm_ui$Internal$Model$Attr, $elm$html$Html$Attributes$spellcheck);
+var $elm$html$Html$Attributes$type_ = $elm$html$Html$Attributes$stringProperty('type');
+var $elm$core$Basics$always = F2(
+	function (a, _v0) {
+		return a;
+	});
+var $mdgriffith$elm_ui$Internal$Model$unstyled = A2($elm$core$Basics$composeL, $mdgriffith$elm_ui$Internal$Model$Unstyled, $elm$core$Basics$always);
+var $elm$html$Html$Attributes$value = $elm$html$Html$Attributes$stringProperty('value');
+var $mdgriffith$elm_ui$Element$Input$value = A2($elm$core$Basics$composeL, $mdgriffith$elm_ui$Internal$Model$Attr, $elm$html$Html$Attributes$value);
+var $mdgriffith$elm_ui$Element$Input$textHelper = F3(
+	function (textInput, attrs, textOptions) {
+		var withDefaults = _Utils_ap($mdgriffith$elm_ui$Element$Input$defaultTextBoxStyle, attrs);
+		var redistributed = A3(
+			$mdgriffith$elm_ui$Element$Input$redistribute,
+			_Utils_eq(textInput.type_, $mdgriffith$elm_ui$Element$Input$TextArea),
+			$mdgriffith$elm_ui$Element$Input$isStacked(textOptions.label),
+			withDefaults);
+		var onlySpacing = function (attr) {
+			if ((attr.$ === 'StyleClass') && (attr.b.$ === 'SpacingStyle')) {
+				var _v9 = attr.b;
+				return true;
+			} else {
+				return false;
+			}
+		};
+		var heightConstrained = function () {
+			var _v7 = textInput.type_;
+			if (_v7.$ === 'TextInputNode') {
+				var inputType = _v7.a;
+				return false;
+			} else {
+				return A2(
+					$elm$core$Maybe$withDefault,
+					false,
+					A2(
+						$elm$core$Maybe$map,
+						$mdgriffith$elm_ui$Element$Input$isConstrained,
+						$elm$core$List$head(
+							$elm$core$List$reverse(
+								A2($elm$core$List$filterMap, $mdgriffith$elm_ui$Element$Input$getHeight, withDefaults)))));
+			}
+		}();
+		var getPadding = function (attr) {
+			if ((attr.$ === 'StyleClass') && (attr.b.$ === 'PaddingStyle')) {
+				var cls = attr.a;
+				var _v6 = attr.b;
+				var pad = _v6.a;
+				var t = _v6.b;
+				var r = _v6.c;
+				var b = _v6.d;
+				var l = _v6.e;
+				return $elm$core$Maybe$Just(
+					{
+						bottom: A2(
+							$elm$core$Basics$max,
+							0,
+							$elm$core$Basics$floor(b - 3)),
+						left: A2(
+							$elm$core$Basics$max,
+							0,
+							$elm$core$Basics$floor(l - 3)),
+						right: A2(
+							$elm$core$Basics$max,
+							0,
+							$elm$core$Basics$floor(r - 3)),
+						top: A2(
+							$elm$core$Basics$max,
+							0,
+							$elm$core$Basics$floor(t - 3))
+					});
+			} else {
+				return $elm$core$Maybe$Nothing;
+			}
+		};
+		var parentPadding = A2(
+			$elm$core$Maybe$withDefault,
+			{bottom: 0, left: 0, right: 0, top: 0},
+			$elm$core$List$head(
+				$elm$core$List$reverse(
+					A2($elm$core$List$filterMap, getPadding, withDefaults))));
+		var inputElement = A4(
+			$mdgriffith$elm_ui$Internal$Model$element,
+			$mdgriffith$elm_ui$Internal$Model$asEl,
+			function () {
+				var _v3 = textInput.type_;
+				if (_v3.$ === 'TextInputNode') {
+					var inputType = _v3.a;
+					return $mdgriffith$elm_ui$Internal$Model$NodeName('input');
+				} else {
+					return $mdgriffith$elm_ui$Internal$Model$NodeName('textarea');
+				}
+			}(),
+			_Utils_ap(
+				function () {
+					var _v4 = textInput.type_;
+					if (_v4.$ === 'TextInputNode') {
+						var inputType = _v4.a;
+						return _List_fromArray(
+							[
+								$mdgriffith$elm_ui$Internal$Model$Attr(
+								$elm$html$Html$Attributes$type_(inputType)),
+								$mdgriffith$elm_ui$Internal$Model$htmlClass($mdgriffith$elm_ui$Internal$Style$classes.inputText)
+							]);
+					} else {
+						return _List_fromArray(
+							[
+								$mdgriffith$elm_ui$Element$clip,
+								$mdgriffith$elm_ui$Element$height($mdgriffith$elm_ui$Element$fill),
+								$mdgriffith$elm_ui$Internal$Model$htmlClass($mdgriffith$elm_ui$Internal$Style$classes.inputMultiline),
+								$mdgriffith$elm_ui$Element$Input$calcMoveToCompensateForPadding(withDefaults),
+								$mdgriffith$elm_ui$Element$paddingEach(parentPadding),
+								$mdgriffith$elm_ui$Internal$Model$Attr(
+								A2(
+									$elm$html$Html$Attributes$style,
+									'margin',
+									$mdgriffith$elm_ui$Element$Input$renderBox(
+										$mdgriffith$elm_ui$Element$Input$negateBox(parentPadding)))),
+								$mdgriffith$elm_ui$Internal$Model$Attr(
+								A2($elm$html$Html$Attributes$style, 'box-sizing', 'content-box'))
+							]);
+					}
+				}(),
+				_Utils_ap(
+					_List_fromArray(
+						[
+							$mdgriffith$elm_ui$Element$Input$value(textOptions.text),
+							$mdgriffith$elm_ui$Internal$Model$Attr(
+							$elm$html$Html$Events$onInput(textOptions.onChange)),
+							$mdgriffith$elm_ui$Element$Input$hiddenLabelAttribute(textOptions.label),
+							$mdgriffith$elm_ui$Element$Input$spellcheck(textInput.spellchecked),
+							A2(
+							$elm$core$Maybe$withDefault,
+							$mdgriffith$elm_ui$Internal$Model$NoAttribute,
+							A2($elm$core$Maybe$map, $mdgriffith$elm_ui$Element$Input$autofill, textInput.autofill))
+						]),
+					redistributed.input)),
+			$mdgriffith$elm_ui$Internal$Model$Unkeyed(_List_Nil));
+		var wrappedInput = function () {
+			var _v0 = textInput.type_;
+			if (_v0.$ === 'TextArea') {
+				return A4(
+					$mdgriffith$elm_ui$Internal$Model$element,
+					$mdgriffith$elm_ui$Internal$Model$asEl,
+					$mdgriffith$elm_ui$Internal$Model$div,
+					_Utils_ap(
+						(heightConstrained ? $elm$core$List$cons($mdgriffith$elm_ui$Element$scrollbarY) : $elm$core$Basics$identity)(
+							_List_fromArray(
+								[
+									$mdgriffith$elm_ui$Element$width($mdgriffith$elm_ui$Element$fill),
+									A2($elm$core$List$any, $mdgriffith$elm_ui$Element$Input$hasFocusStyle, withDefaults) ? $mdgriffith$elm_ui$Internal$Model$NoAttribute : $mdgriffith$elm_ui$Internal$Model$htmlClass($mdgriffith$elm_ui$Internal$Style$classes.focusedWithin),
+									$mdgriffith$elm_ui$Internal$Model$htmlClass($mdgriffith$elm_ui$Internal$Style$classes.inputMultilineWrapper)
+								])),
+						redistributed.parent),
+					$mdgriffith$elm_ui$Internal$Model$Unkeyed(
+						_List_fromArray(
+							[
+								A4(
+								$mdgriffith$elm_ui$Internal$Model$element,
+								$mdgriffith$elm_ui$Internal$Model$asParagraph,
+								$mdgriffith$elm_ui$Internal$Model$div,
+								A2(
+									$elm$core$List$cons,
+									$mdgriffith$elm_ui$Element$width($mdgriffith$elm_ui$Element$fill),
+									A2(
+										$elm$core$List$cons,
+										$mdgriffith$elm_ui$Element$height($mdgriffith$elm_ui$Element$fill),
+										A2(
+											$elm$core$List$cons,
+											$mdgriffith$elm_ui$Element$inFront(inputElement),
+											A2(
+												$elm$core$List$cons,
+												$mdgriffith$elm_ui$Internal$Model$htmlClass($mdgriffith$elm_ui$Internal$Style$classes.inputMultilineParent),
+												redistributed.wrapper)))),
+								$mdgriffith$elm_ui$Internal$Model$Unkeyed(
+									function () {
+										if (textOptions.text === '') {
+											var _v1 = textOptions.placeholder;
+											if (_v1.$ === 'Nothing') {
+												return _List_fromArray(
+													[
+														$mdgriffith$elm_ui$Element$text('\u00A0')
+													]);
+											} else {
+												var place = _v1.a;
+												return _List_fromArray(
+													[
+														A3($mdgriffith$elm_ui$Element$Input$renderPlaceholder, place, _List_Nil, textOptions.text === '')
+													]);
+											}
+										} else {
+											return _List_fromArray(
+												[
+													$mdgriffith$elm_ui$Internal$Model$unstyled(
+													A2(
+														$elm$html$Html$span,
+														_List_fromArray(
+															[
+																$elm$html$Html$Attributes$class($mdgriffith$elm_ui$Internal$Style$classes.inputMultilineFiller)
+															]),
+														_List_fromArray(
+															[
+																$elm$html$Html$text(textOptions.text + '\u00A0')
+															])))
+												]);
+										}
+									}()))
+							])));
+			} else {
+				var inputType = _v0.a;
+				return A4(
+					$mdgriffith$elm_ui$Internal$Model$element,
+					$mdgriffith$elm_ui$Internal$Model$asEl,
+					$mdgriffith$elm_ui$Internal$Model$div,
+					A2(
+						$elm$core$List$cons,
+						$mdgriffith$elm_ui$Element$width($mdgriffith$elm_ui$Element$fill),
+						A2(
+							$elm$core$List$cons,
+							A2($elm$core$List$any, $mdgriffith$elm_ui$Element$Input$hasFocusStyle, withDefaults) ? $mdgriffith$elm_ui$Internal$Model$NoAttribute : $mdgriffith$elm_ui$Internal$Model$htmlClass($mdgriffith$elm_ui$Internal$Style$classes.focusedWithin),
+							$elm$core$List$concat(
+								_List_fromArray(
+									[
+										redistributed.parent,
+										function () {
+										var _v2 = textOptions.placeholder;
+										if (_v2.$ === 'Nothing') {
+											return _List_Nil;
+										} else {
+											var place = _v2.a;
+											return _List_fromArray(
+												[
+													$mdgriffith$elm_ui$Element$behindContent(
+													A3($mdgriffith$elm_ui$Element$Input$renderPlaceholder, place, redistributed.cover, textOptions.text === ''))
+												]);
+										}
+									}()
+									])))),
+					$mdgriffith$elm_ui$Internal$Model$Unkeyed(
+						_List_fromArray(
+							[inputElement])));
+			}
+		}();
+		return A3(
+			$mdgriffith$elm_ui$Element$Input$applyLabel,
+			A2(
+				$elm$core$List$cons,
+				A2($mdgriffith$elm_ui$Internal$Model$Class, $mdgriffith$elm_ui$Internal$Flag$cursor, $mdgriffith$elm_ui$Internal$Style$classes.cursorText),
+				A2(
+					$elm$core$List$cons,
+					$mdgriffith$elm_ui$Element$Input$isHiddenLabel(textOptions.label) ? $mdgriffith$elm_ui$Internal$Model$NoAttribute : $mdgriffith$elm_ui$Element$spacing(5),
+					A2($elm$core$List$cons, $mdgriffith$elm_ui$Element$Region$announce, redistributed.fullParent))),
+			textOptions.label,
+			wrappedInput);
+	});
+var $mdgriffith$elm_ui$Element$Input$text = $mdgriffith$elm_ui$Element$Input$textHelper(
+	{
+		autofill: $elm$core$Maybe$Nothing,
+		spellchecked: false,
+		type_: $mdgriffith$elm_ui$Element$Input$TextInputNode('text')
+	});
+var $author$project$Page$Dashboard$attributeAskInputTitle = _List_fromArray(
+	[
+		$mdgriffith$elm_ui$Element$Font$color($author$project$Page$Dashboard$lightBlack),
+		$mdgriffith$elm_ui$Element$Font$size(12),
+		$mdgriffith$elm_ui$Element$Font$alignLeft
+	]);
+var $mdgriffith$elm_ui$Element$Input$Above = {$: 'Above'};
+var $mdgriffith$elm_ui$Element$Input$Label = F3(
+	function (a, b, c) {
+		return {$: 'Label', a: a, b: b, c: c};
+	});
+var $mdgriffith$elm_ui$Element$Input$labelAbove = $mdgriffith$elm_ui$Element$Input$Label($mdgriffith$elm_ui$Element$Input$Above);
+var $author$project$Page$Dashboard$viewAskInputTitle = A2(
+	$mdgriffith$elm_ui$Element$Input$labelAbove,
+	$author$project$Page$Dashboard$attributeAskInputTitle,
+	$mdgriffith$elm_ui$Element$text('Number of shares'));
+var $author$project$Page$Dashboard$viewAskInput = function (askInput) {
+	return A2(
+		$mdgriffith$elm_ui$Element$Input$text,
+		$author$project$Page$Dashboard$attributeAskInput,
+		{
+			label: $author$project$Page$Dashboard$viewAskInputTitle,
+			onChange: $author$project$Page$Dashboard$ChangeAskInput,
+			placeholder: $elm$core$Maybe$Nothing,
+			text: $author$project$Page$Dashboard$maybeText(askInput)
+		});
+};
+var $author$project$Page$Dashboard$attributeAskTotal = $elm$core$List$concat(
+	_List_fromArray(
+		[
+			$author$project$Page$Dashboard$shrinkContent,
+			_List_fromArray(
+			[
+				$mdgriffith$elm_ui$Element$spacing(6)
+			])
+		]));
+var $author$project$Page$Dashboard$ask = 1312;
+var $author$project$Page$Dashboard$attributeAskTotalNumber = _List_fromArray(
+	[
+		$mdgriffith$elm_ui$Element$Font$color($author$project$Page$Dashboard$lightBlack),
+		$mdgriffith$elm_ui$Element$Font$size(18),
+		$mdgriffith$elm_ui$Element$Font$alignLeft,
+		$mdgriffith$elm_ui$Element$Font$bold
+	]);
+var $author$project$Page$Dashboard$viewAskTotalNumber = function (askInput) {
+	if (askInput.$ === 'Just') {
+		var input = askInput.a;
+		return A2(
+			$mdgriffith$elm_ui$Element$el,
+			$author$project$Page$Dashboard$attributeAskTotalNumber,
+			$mdgriffith$elm_ui$Element$text(
+				$author$project$Page$Dashboard$toMoney(input * $author$project$Page$Dashboard$ask)));
+	} else {
+		return A2(
+			$mdgriffith$elm_ui$Element$el,
+			$author$project$Page$Dashboard$attributeAskTotalNumber,
+			$mdgriffith$elm_ui$Element$text('0'));
+	}
+};
+var $author$project$Page$Dashboard$attributeAskTotalTitle = _List_fromArray(
+	[
+		$mdgriffith$elm_ui$Element$Font$color($author$project$Page$Dashboard$lightBlack),
+		$mdgriffith$elm_ui$Element$Font$size(12),
+		$mdgriffith$elm_ui$Element$Font$alignLeft
+	]);
+var $author$project$Page$Dashboard$viewAskTotalTitle = A2(
+	$mdgriffith$elm_ui$Element$el,
+	$author$project$Page$Dashboard$attributeAskTotalTitle,
+	$mdgriffith$elm_ui$Element$text('Total amount payment'));
+var $author$project$Page$Dashboard$viewAskTotal = function (askInput) {
+	return A2(
+		$mdgriffith$elm_ui$Element$column,
+		$author$project$Page$Dashboard$attributeAskTotal,
+		_List_fromArray(
+			[
+				$author$project$Page$Dashboard$viewAskTotalTitle,
+				$author$project$Page$Dashboard$viewAskTotalNumber(askInput)
+			]));
+};
+var $author$project$Page$Dashboard$viewAskNext = function (askInput) {
+	return A2(
+		$mdgriffith$elm_ui$Element$column,
+		$author$project$Page$Dashboard$attributeAskNext,
+		_List_fromArray(
+			[
+				$author$project$Page$Dashboard$viewAskInput(askInput),
+				$author$project$Page$Dashboard$viewAskTotal(askInput),
+				$author$project$Page$Dashboard$viewAskButton
+			]));
+};
+var $author$project$Page$Dashboard$attributeBuy = _List_fromArray(
+	[
+		$mdgriffith$elm_ui$Element$width(
+		$mdgriffith$elm_ui$Element$fillPortion(2)),
+		$mdgriffith$elm_ui$Element$height($mdgriffith$elm_ui$Element$shrink),
+		$mdgriffith$elm_ui$Element$centerY,
+		$mdgriffith$elm_ui$Element$spacing(6)
+	]);
+var $author$project$Page$Dashboard$attributeBuyNumber = _List_fromArray(
+	[
+		$mdgriffith$elm_ui$Element$Font$color($author$project$Page$Dashboard$lightBlack),
+		$mdgriffith$elm_ui$Element$Font$size(48),
+		$mdgriffith$elm_ui$Element$Font$alignLeft,
+		$mdgriffith$elm_ui$Element$Font$heavy
+	]);
+var $author$project$Page$Dashboard$viewBuyNumber = A2(
+	$mdgriffith$elm_ui$Element$el,
+	$author$project$Page$Dashboard$attributeBuyNumber,
+	$mdgriffith$elm_ui$Element$text(
+		$author$project$Page$Dashboard$toMoney($author$project$Page$Dashboard$ask)));
+var $author$project$Page$Dashboard$attributeBuyPer = _List_fromArray(
+	[
+		$mdgriffith$elm_ui$Element$Font$color($author$project$Page$Dashboard$lightBlack),
+		$mdgriffith$elm_ui$Element$Font$size(24),
+		$mdgriffith$elm_ui$Element$Font$alignLeft,
+		$mdgriffith$elm_ui$Element$Font$heavy
+	]);
+var $author$project$Page$Dashboard$viewBuyPer = A2(
+	$mdgriffith$elm_ui$Element$el,
+	$author$project$Page$Dashboard$attributeBuyPer,
+	$mdgriffith$elm_ui$Element$text('per share'));
+var $author$project$Page$Dashboard$attributeBuyTitle = _List_fromArray(
+	[
+		$mdgriffith$elm_ui$Element$Font$color($author$project$Page$Dashboard$lightBlack),
+		$mdgriffith$elm_ui$Element$Font$size(12),
+		$mdgriffith$elm_ui$Element$Font$alignLeft
+	]);
+var $author$project$Page$Dashboard$viewBuyTitle = A2(
+	$mdgriffith$elm_ui$Element$el,
+	$author$project$Page$Dashboard$attributeBuyTitle,
+	$mdgriffith$elm_ui$Element$text('Buy more equity at'));
+var $author$project$Page$Dashboard$viewBuy = A2(
+	$mdgriffith$elm_ui$Element$column,
+	$author$project$Page$Dashboard$attributeBuy,
+	_List_fromArray(
+		[$author$project$Page$Dashboard$viewBuyTitle, $author$project$Page$Dashboard$viewBuyNumber, $author$project$Page$Dashboard$viewBuyPer]));
+var $author$project$Page$Dashboard$viewAsk = function (askInput) {
+	return A2(
+		$mdgriffith$elm_ui$Element$row,
+		$author$project$Page$Dashboard$attributeAsk,
+		_List_fromArray(
+			[
+				$author$project$Page$Dashboard$viewBuy,
+				$author$project$Page$Dashboard$viewAskNext(askInput)
+			]));
+};
+var $author$project$Page$Dashboard$attributeBid = $elm$core$List$concat(
+	_List_fromArray(
+		[
+			$author$project$Page$Dashboard$fillWidth,
+			_List_fromArray(
+			[
+				A2($mdgriffith$elm_ui$Element$paddingXY, 36, 36),
+				$mdgriffith$elm_ui$Element$spacing(36),
+				$mdgriffith$elm_ui$Element$Background$color($author$project$Page$Dashboard$white)
+			])
+		]));
+var $author$project$Page$Dashboard$attributeBidNext = $elm$core$List$concat(
+	_List_fromArray(
+		[
+			$author$project$Page$Dashboard$fillWidth,
+			_List_fromArray(
+			[
+				$mdgriffith$elm_ui$Element$spacing(12),
+				$mdgriffith$elm_ui$Element$Background$color($author$project$Page$Dashboard$white),
+				$mdgriffith$elm_ui$Element$centerY
+			])
+		]));
+var $author$project$Page$Dashboard$Bid = {$: 'Bid'};
+var $author$project$Page$Dashboard$attributeBidButton = $elm$core$List$concat(
+	_List_fromArray(
+		[
+			$author$project$Page$Dashboard$shrinkContent,
+			_List_fromArray(
+			[
+				$mdgriffith$elm_ui$Element$padding(6),
+				$mdgriffith$elm_ui$Element$Background$color($author$project$Page$Dashboard$lightBlack),
+				$mdgriffith$elm_ui$Element$Font$color($author$project$Page$Dashboard$white),
+				$mdgriffith$elm_ui$Element$Font$size(18),
+				$mdgriffith$elm_ui$Element$Font$alignLeft,
+				$mdgriffith$elm_ui$Element$Font$bold
+			])
+		]));
+var $author$project$Page$Dashboard$viewBidButton = A2(
+	$mdgriffith$elm_ui$Element$Input$button,
+	$author$project$Page$Dashboard$attributeBidButton,
+	{
+		label: $mdgriffith$elm_ui$Element$text('Sell Equity'),
+		onPress: $elm$core$Maybe$Just($author$project$Page$Dashboard$Bid)
+	});
+var $author$project$Page$Dashboard$ChangeBidInput = function (a) {
+	return {$: 'ChangeBidInput', a: a};
+};
+var $author$project$Page$Dashboard$attributeBidInput = $elm$core$List$concat(
+	_List_fromArray(
+		[
+			$author$project$Page$Dashboard$fillWidth,
+			_List_fromArray(
+			[
+				$mdgriffith$elm_ui$Element$padding(6),
+				$mdgriffith$elm_ui$Element$Font$color($author$project$Page$Dashboard$lightBlack),
+				$mdgriffith$elm_ui$Element$Font$size(18),
+				$mdgriffith$elm_ui$Element$Font$alignLeft
+			])
+		]));
+var $author$project$Page$Dashboard$attributeBidInputTitle = _List_fromArray(
+	[
+		$mdgriffith$elm_ui$Element$Font$color($author$project$Page$Dashboard$lightBlack),
+		$mdgriffith$elm_ui$Element$Font$size(12),
+		$mdgriffith$elm_ui$Element$Font$alignLeft
+	]);
+var $author$project$Page$Dashboard$viewBidInputTitle = A2(
+	$mdgriffith$elm_ui$Element$Input$labelAbove,
+	$author$project$Page$Dashboard$attributeBidInputTitle,
+	$mdgriffith$elm_ui$Element$text('Number of shares'));
+var $author$project$Page$Dashboard$viewBidInput = function (bidInput) {
+	return A2(
+		$mdgriffith$elm_ui$Element$Input$text,
+		$author$project$Page$Dashboard$attributeBidInput,
+		{
+			label: $author$project$Page$Dashboard$viewBidInputTitle,
+			onChange: $author$project$Page$Dashboard$ChangeBidInput,
+			placeholder: $elm$core$Maybe$Nothing,
+			text: $author$project$Page$Dashboard$maybeText(bidInput)
+		});
+};
+var $author$project$Page$Dashboard$attributeBidTotal = $elm$core$List$concat(
+	_List_fromArray(
+		[
+			$author$project$Page$Dashboard$shrinkContent,
+			_List_fromArray(
+			[
+				$mdgriffith$elm_ui$Element$spacing(6)
+			])
+		]));
+var $author$project$Page$Dashboard$attributeBidTotalNumber = _List_fromArray(
+	[
+		$mdgriffith$elm_ui$Element$Font$color($author$project$Page$Dashboard$lightBlack),
+		$mdgriffith$elm_ui$Element$Font$size(18),
+		$mdgriffith$elm_ui$Element$Font$alignLeft,
+		$mdgriffith$elm_ui$Element$Font$bold
+	]);
+var $author$project$Page$Dashboard$bid = 1242;
+var $author$project$Page$Dashboard$viewBidTotalNumber = function (bidInput) {
+	if (bidInput.$ === 'Just') {
+		var input = bidInput.a;
+		return A2(
+			$mdgriffith$elm_ui$Element$el,
+			$author$project$Page$Dashboard$attributeBidTotalNumber,
+			$mdgriffith$elm_ui$Element$text(
+				$author$project$Page$Dashboard$toMoney(input * $author$project$Page$Dashboard$bid)));
+	} else {
+		return A2(
+			$mdgriffith$elm_ui$Element$el,
+			$author$project$Page$Dashboard$attributeBidTotalNumber,
+			$mdgriffith$elm_ui$Element$text('0'));
+	}
+};
+var $author$project$Page$Dashboard$attributeBidTotalTitle = _List_fromArray(
+	[
+		$mdgriffith$elm_ui$Element$Font$color($author$project$Page$Dashboard$lightBlack),
+		$mdgriffith$elm_ui$Element$Font$size(12),
+		$mdgriffith$elm_ui$Element$Font$alignLeft
+	]);
+var $author$project$Page$Dashboard$viewBidTotalTitle = A2(
+	$mdgriffith$elm_ui$Element$el,
+	$author$project$Page$Dashboard$attributeBidTotalTitle,
+	$mdgriffith$elm_ui$Element$text('Total amount received'));
+var $author$project$Page$Dashboard$viewBidTotal = function (bidInput) {
+	return A2(
+		$mdgriffith$elm_ui$Element$column,
+		$author$project$Page$Dashboard$attributeBidTotal,
+		_List_fromArray(
+			[
+				$author$project$Page$Dashboard$viewBidTotalTitle,
+				$author$project$Page$Dashboard$viewBidTotalNumber(bidInput)
+			]));
+};
+var $author$project$Page$Dashboard$viewBidNext = function (bidInput) {
+	return A2(
+		$mdgriffith$elm_ui$Element$column,
+		$author$project$Page$Dashboard$attributeBidNext,
+		_List_fromArray(
+			[
+				$author$project$Page$Dashboard$viewBidInput(bidInput),
+				$author$project$Page$Dashboard$viewBidTotal(bidInput),
+				$author$project$Page$Dashboard$viewBidButton
+			]));
+};
+var $author$project$Page$Dashboard$attributeSell = _List_fromArray(
+	[
+		$mdgriffith$elm_ui$Element$width(
+		$mdgriffith$elm_ui$Element$fillPortion(2)),
+		$mdgriffith$elm_ui$Element$height($mdgriffith$elm_ui$Element$shrink),
+		$mdgriffith$elm_ui$Element$centerY,
+		$mdgriffith$elm_ui$Element$spacing(6)
+	]);
+var $author$project$Page$Dashboard$attributeSellNumber = _List_fromArray(
+	[
+		$mdgriffith$elm_ui$Element$Font$color($author$project$Page$Dashboard$lightBlack),
+		$mdgriffith$elm_ui$Element$Font$size(48),
+		$mdgriffith$elm_ui$Element$Font$alignLeft,
+		$mdgriffith$elm_ui$Element$Font$heavy
+	]);
+var $author$project$Page$Dashboard$viewSellNumber = A2(
+	$mdgriffith$elm_ui$Element$el,
+	$author$project$Page$Dashboard$attributeSellNumber,
+	$mdgriffith$elm_ui$Element$text(
+		$author$project$Page$Dashboard$toMoney($author$project$Page$Dashboard$bid)));
+var $author$project$Page$Dashboard$attributeSellPer = _List_fromArray(
+	[
+		$mdgriffith$elm_ui$Element$Font$color($author$project$Page$Dashboard$lightBlack),
+		$mdgriffith$elm_ui$Element$Font$size(24),
+		$mdgriffith$elm_ui$Element$Font$alignLeft,
+		$mdgriffith$elm_ui$Element$Font$heavy
+	]);
+var $author$project$Page$Dashboard$viewSellPer = A2(
+	$mdgriffith$elm_ui$Element$el,
+	$author$project$Page$Dashboard$attributeSellPer,
+	$mdgriffith$elm_ui$Element$text('per share'));
+var $author$project$Page$Dashboard$attributeSellTitle = _List_fromArray(
+	[
+		$mdgriffith$elm_ui$Element$Font$color($author$project$Page$Dashboard$lightBlack),
+		$mdgriffith$elm_ui$Element$Font$size(12),
+		$mdgriffith$elm_ui$Element$Font$alignLeft
+	]);
+var $author$project$Page$Dashboard$viewSellTitle = A2(
+	$mdgriffith$elm_ui$Element$el,
+	$author$project$Page$Dashboard$attributeSellTitle,
+	$mdgriffith$elm_ui$Element$text('Sell your equity at'));
+var $author$project$Page$Dashboard$viewSell = A2(
+	$mdgriffith$elm_ui$Element$column,
+	$author$project$Page$Dashboard$attributeSell,
+	_List_fromArray(
+		[$author$project$Page$Dashboard$viewSellTitle, $author$project$Page$Dashboard$viewSellNumber, $author$project$Page$Dashboard$viewSellPer]));
+var $author$project$Page$Dashboard$viewBid = function (bidInput) {
+	return A2(
+		$mdgriffith$elm_ui$Element$row,
+		$author$project$Page$Dashboard$attributeBid,
+		_List_fromArray(
+			[
+				$author$project$Page$Dashboard$viewSell,
+				$author$project$Page$Dashboard$viewBidNext(bidInput)
+			]));
+};
+var $author$project$Page$Dashboard$viewMarket = F2(
+	function (bidInput, askInput) {
+		return A2(
+			$mdgriffith$elm_ui$Element$row,
+			$author$project$Page$Dashboard$attributeMarket,
+			_List_fromArray(
+				[
+					$author$project$Page$Dashboard$viewBid(bidInput),
+					$author$project$Page$Dashboard$viewAsk(askInput)
+				]));
+	});
+var $mdgriffith$elm_ui$Internal$Model$AlignX = function (a) {
+	return {$: 'AlignX', a: a};
+};
+var $mdgriffith$elm_ui$Internal$Model$CenterX = {$: 'CenterX'};
+var $mdgriffith$elm_ui$Element$centerX = $mdgriffith$elm_ui$Internal$Model$AlignX($mdgriffith$elm_ui$Internal$Model$CenterX);
+var $author$project$Page$Dashboard$attributePie = $elm$core$List$concat(
+	_List_fromArray(
+		[
+			$author$project$Page$Dashboard$fillWidth,
+			_List_fromArray(
+			[
+				$mdgriffith$elm_ui$Element$centerX,
+				$mdgriffith$elm_ui$Element$centerY,
+				$mdgriffith$elm_ui$Element$Background$color($author$project$Page$Dashboard$white)
+			])
+		]));
+var $munksgaard$elm_charts$Chart$changeStyles = F2(
+	function (_v0, styles) {
+		var attr = _v0.a;
+		var val = _v0.b;
+		return A2(
+			$elm$core$List$cons,
+			_Utils_Tuple2(attr, val),
+			A2(
+				$elm$core$List$filter,
+				function (_v1) {
+					var t = _v1.a;
+					return !_Utils_eq(t, attr);
+				},
+				styles));
+	});
+var $elm_community$basics_extra$Basics$Extra$flip = F3(
+	function (f, b, a) {
+		return A2(f, a, b);
+	});
+var $elm$core$Dict$getMin = function (dict) {
+	getMin:
+	while (true) {
+		if ((dict.$ === 'RBNode_elm_builtin') && (dict.d.$ === 'RBNode_elm_builtin')) {
+			var left = dict.d;
+			var $temp$dict = left;
+			dict = $temp$dict;
+			continue getMin;
+		} else {
+			return dict;
+		}
+	}
+};
+var $elm$core$Dict$moveRedLeft = function (dict) {
+	if (((dict.$ === 'RBNode_elm_builtin') && (dict.d.$ === 'RBNode_elm_builtin')) && (dict.e.$ === 'RBNode_elm_builtin')) {
+		if ((dict.e.d.$ === 'RBNode_elm_builtin') && (dict.e.d.a.$ === 'Red')) {
+			var clr = dict.a;
+			var k = dict.b;
+			var v = dict.c;
+			var _v1 = dict.d;
+			var lClr = _v1.a;
+			var lK = _v1.b;
+			var lV = _v1.c;
+			var lLeft = _v1.d;
+			var lRight = _v1.e;
+			var _v2 = dict.e;
+			var rClr = _v2.a;
+			var rK = _v2.b;
+			var rV = _v2.c;
+			var rLeft = _v2.d;
+			var _v3 = rLeft.a;
+			var rlK = rLeft.b;
+			var rlV = rLeft.c;
+			var rlL = rLeft.d;
+			var rlR = rLeft.e;
+			var rRight = _v2.e;
+			return A5(
+				$elm$core$Dict$RBNode_elm_builtin,
+				$elm$core$Dict$Red,
+				rlK,
+				rlV,
+				A5(
+					$elm$core$Dict$RBNode_elm_builtin,
+					$elm$core$Dict$Black,
+					k,
+					v,
+					A5($elm$core$Dict$RBNode_elm_builtin, $elm$core$Dict$Red, lK, lV, lLeft, lRight),
+					rlL),
+				A5($elm$core$Dict$RBNode_elm_builtin, $elm$core$Dict$Black, rK, rV, rlR, rRight));
+		} else {
+			var clr = dict.a;
+			var k = dict.b;
+			var v = dict.c;
+			var _v4 = dict.d;
+			var lClr = _v4.a;
+			var lK = _v4.b;
+			var lV = _v4.c;
+			var lLeft = _v4.d;
+			var lRight = _v4.e;
+			var _v5 = dict.e;
+			var rClr = _v5.a;
+			var rK = _v5.b;
+			var rV = _v5.c;
+			var rLeft = _v5.d;
+			var rRight = _v5.e;
+			if (clr.$ === 'Black') {
+				return A5(
+					$elm$core$Dict$RBNode_elm_builtin,
+					$elm$core$Dict$Black,
+					k,
+					v,
+					A5($elm$core$Dict$RBNode_elm_builtin, $elm$core$Dict$Red, lK, lV, lLeft, lRight),
+					A5($elm$core$Dict$RBNode_elm_builtin, $elm$core$Dict$Red, rK, rV, rLeft, rRight));
+			} else {
+				return A5(
+					$elm$core$Dict$RBNode_elm_builtin,
+					$elm$core$Dict$Black,
+					k,
+					v,
+					A5($elm$core$Dict$RBNode_elm_builtin, $elm$core$Dict$Red, lK, lV, lLeft, lRight),
+					A5($elm$core$Dict$RBNode_elm_builtin, $elm$core$Dict$Red, rK, rV, rLeft, rRight));
+			}
+		}
+	} else {
+		return dict;
+	}
+};
+var $elm$core$Dict$moveRedRight = function (dict) {
+	if (((dict.$ === 'RBNode_elm_builtin') && (dict.d.$ === 'RBNode_elm_builtin')) && (dict.e.$ === 'RBNode_elm_builtin')) {
+		if ((dict.d.d.$ === 'RBNode_elm_builtin') && (dict.d.d.a.$ === 'Red')) {
+			var clr = dict.a;
+			var k = dict.b;
+			var v = dict.c;
+			var _v1 = dict.d;
+			var lClr = _v1.a;
+			var lK = _v1.b;
+			var lV = _v1.c;
+			var _v2 = _v1.d;
+			var _v3 = _v2.a;
+			var llK = _v2.b;
+			var llV = _v2.c;
+			var llLeft = _v2.d;
+			var llRight = _v2.e;
+			var lRight = _v1.e;
+			var _v4 = dict.e;
+			var rClr = _v4.a;
+			var rK = _v4.b;
+			var rV = _v4.c;
+			var rLeft = _v4.d;
+			var rRight = _v4.e;
+			return A5(
+				$elm$core$Dict$RBNode_elm_builtin,
+				$elm$core$Dict$Red,
+				lK,
+				lV,
+				A5($elm$core$Dict$RBNode_elm_builtin, $elm$core$Dict$Black, llK, llV, llLeft, llRight),
+				A5(
+					$elm$core$Dict$RBNode_elm_builtin,
+					$elm$core$Dict$Black,
+					k,
+					v,
+					lRight,
+					A5($elm$core$Dict$RBNode_elm_builtin, $elm$core$Dict$Red, rK, rV, rLeft, rRight)));
+		} else {
+			var clr = dict.a;
+			var k = dict.b;
+			var v = dict.c;
+			var _v5 = dict.d;
+			var lClr = _v5.a;
+			var lK = _v5.b;
+			var lV = _v5.c;
+			var lLeft = _v5.d;
+			var lRight = _v5.e;
+			var _v6 = dict.e;
+			var rClr = _v6.a;
+			var rK = _v6.b;
+			var rV = _v6.c;
+			var rLeft = _v6.d;
+			var rRight = _v6.e;
+			if (clr.$ === 'Black') {
+				return A5(
+					$elm$core$Dict$RBNode_elm_builtin,
+					$elm$core$Dict$Black,
+					k,
+					v,
+					A5($elm$core$Dict$RBNode_elm_builtin, $elm$core$Dict$Red, lK, lV, lLeft, lRight),
+					A5($elm$core$Dict$RBNode_elm_builtin, $elm$core$Dict$Red, rK, rV, rLeft, rRight));
+			} else {
+				return A5(
+					$elm$core$Dict$RBNode_elm_builtin,
+					$elm$core$Dict$Black,
+					k,
+					v,
+					A5($elm$core$Dict$RBNode_elm_builtin, $elm$core$Dict$Red, lK, lV, lLeft, lRight),
+					A5($elm$core$Dict$RBNode_elm_builtin, $elm$core$Dict$Red, rK, rV, rLeft, rRight));
+			}
+		}
+	} else {
+		return dict;
+	}
+};
+var $elm$core$Dict$removeHelpPrepEQGT = F7(
+	function (targetKey, dict, color, key, value, left, right) {
+		if ((left.$ === 'RBNode_elm_builtin') && (left.a.$ === 'Red')) {
+			var _v1 = left.a;
+			var lK = left.b;
+			var lV = left.c;
+			var lLeft = left.d;
+			var lRight = left.e;
+			return A5(
+				$elm$core$Dict$RBNode_elm_builtin,
+				color,
+				lK,
+				lV,
+				lLeft,
+				A5($elm$core$Dict$RBNode_elm_builtin, $elm$core$Dict$Red, key, value, lRight, right));
+		} else {
+			_v2$2:
+			while (true) {
+				if ((right.$ === 'RBNode_elm_builtin') && (right.a.$ === 'Black')) {
+					if (right.d.$ === 'RBNode_elm_builtin') {
+						if (right.d.a.$ === 'Black') {
+							var _v3 = right.a;
+							var _v4 = right.d;
+							var _v5 = _v4.a;
+							return $elm$core$Dict$moveRedRight(dict);
+						} else {
+							break _v2$2;
+						}
+					} else {
+						var _v6 = right.a;
+						var _v7 = right.d;
+						return $elm$core$Dict$moveRedRight(dict);
+					}
+				} else {
+					break _v2$2;
+				}
+			}
+			return dict;
+		}
+	});
+var $elm$core$Dict$removeMin = function (dict) {
+	if ((dict.$ === 'RBNode_elm_builtin') && (dict.d.$ === 'RBNode_elm_builtin')) {
+		var color = dict.a;
+		var key = dict.b;
+		var value = dict.c;
+		var left = dict.d;
+		var lColor = left.a;
+		var lLeft = left.d;
+		var right = dict.e;
+		if (lColor.$ === 'Black') {
+			if ((lLeft.$ === 'RBNode_elm_builtin') && (lLeft.a.$ === 'Red')) {
+				var _v3 = lLeft.a;
+				return A5(
+					$elm$core$Dict$RBNode_elm_builtin,
+					color,
+					key,
+					value,
+					$elm$core$Dict$removeMin(left),
+					right);
+			} else {
+				var _v4 = $elm$core$Dict$moveRedLeft(dict);
+				if (_v4.$ === 'RBNode_elm_builtin') {
+					var nColor = _v4.a;
+					var nKey = _v4.b;
+					var nValue = _v4.c;
+					var nLeft = _v4.d;
+					var nRight = _v4.e;
+					return A5(
+						$elm$core$Dict$balance,
+						nColor,
+						nKey,
+						nValue,
+						$elm$core$Dict$removeMin(nLeft),
+						nRight);
+				} else {
+					return $elm$core$Dict$RBEmpty_elm_builtin;
+				}
+			}
+		} else {
+			return A5(
+				$elm$core$Dict$RBNode_elm_builtin,
+				color,
+				key,
+				value,
+				$elm$core$Dict$removeMin(left),
+				right);
+		}
+	} else {
+		return $elm$core$Dict$RBEmpty_elm_builtin;
+	}
+};
+var $elm$core$Dict$removeHelp = F2(
+	function (targetKey, dict) {
+		if (dict.$ === 'RBEmpty_elm_builtin') {
+			return $elm$core$Dict$RBEmpty_elm_builtin;
+		} else {
+			var color = dict.a;
+			var key = dict.b;
+			var value = dict.c;
+			var left = dict.d;
+			var right = dict.e;
+			if (_Utils_cmp(targetKey, key) < 0) {
+				if ((left.$ === 'RBNode_elm_builtin') && (left.a.$ === 'Black')) {
+					var _v4 = left.a;
+					var lLeft = left.d;
+					if ((lLeft.$ === 'RBNode_elm_builtin') && (lLeft.a.$ === 'Red')) {
+						var _v6 = lLeft.a;
+						return A5(
+							$elm$core$Dict$RBNode_elm_builtin,
+							color,
+							key,
+							value,
+							A2($elm$core$Dict$removeHelp, targetKey, left),
+							right);
+					} else {
+						var _v7 = $elm$core$Dict$moveRedLeft(dict);
+						if (_v7.$ === 'RBNode_elm_builtin') {
+							var nColor = _v7.a;
+							var nKey = _v7.b;
+							var nValue = _v7.c;
+							var nLeft = _v7.d;
+							var nRight = _v7.e;
+							return A5(
+								$elm$core$Dict$balance,
+								nColor,
+								nKey,
+								nValue,
+								A2($elm$core$Dict$removeHelp, targetKey, nLeft),
+								nRight);
+						} else {
+							return $elm$core$Dict$RBEmpty_elm_builtin;
+						}
+					}
+				} else {
+					return A5(
+						$elm$core$Dict$RBNode_elm_builtin,
+						color,
+						key,
+						value,
+						A2($elm$core$Dict$removeHelp, targetKey, left),
+						right);
+				}
+			} else {
+				return A2(
+					$elm$core$Dict$removeHelpEQGT,
+					targetKey,
+					A7($elm$core$Dict$removeHelpPrepEQGT, targetKey, dict, color, key, value, left, right));
+			}
+		}
+	});
+var $elm$core$Dict$removeHelpEQGT = F2(
+	function (targetKey, dict) {
+		if (dict.$ === 'RBNode_elm_builtin') {
+			var color = dict.a;
+			var key = dict.b;
+			var value = dict.c;
+			var left = dict.d;
+			var right = dict.e;
+			if (_Utils_eq(targetKey, key)) {
+				var _v1 = $elm$core$Dict$getMin(right);
+				if (_v1.$ === 'RBNode_elm_builtin') {
+					var minKey = _v1.b;
+					var minValue = _v1.c;
+					return A5(
+						$elm$core$Dict$balance,
+						color,
+						minKey,
+						minValue,
+						left,
+						$elm$core$Dict$removeMin(right));
+				} else {
+					return $elm$core$Dict$RBEmpty_elm_builtin;
+				}
+			} else {
+				return A5(
+					$elm$core$Dict$balance,
+					color,
+					key,
+					value,
+					left,
+					A2($elm$core$Dict$removeHelp, targetKey, right));
+			}
+		} else {
+			return $elm$core$Dict$RBEmpty_elm_builtin;
+		}
+	});
+var $elm$core$Dict$remove = F2(
+	function (key, dict) {
+		var _v0 = A2($elm$core$Dict$removeHelp, key, dict);
+		if ((_v0.$ === 'RBNode_elm_builtin') && (_v0.a.$ === 'Red')) {
+			var _v1 = _v0.a;
+			var k = _v0.b;
+			var v = _v0.c;
+			var l = _v0.d;
+			var r = _v0.e;
+			return A5($elm$core$Dict$RBNode_elm_builtin, $elm$core$Dict$Black, k, v, l, r);
+		} else {
+			var x = _v0;
+			return x;
+		}
+	});
+var $elm$core$Dict$update = F3(
+	function (targetKey, alter, dictionary) {
+		var _v0 = alter(
+			A2($elm$core$Dict$get, targetKey, dictionary));
+		if (_v0.$ === 'Just') {
+			var value = _v0.a;
+			return A3($elm$core$Dict$insert, targetKey, value, dictionary);
+		} else {
+			return A2($elm$core$Dict$remove, targetKey, dictionary);
+		}
+	});
+var $munksgaard$elm_charts$Chart$updateStyles = F3(
+	function (selector, lst, model) {
+		return _Utils_update(
+			model,
+			{
+				styles: A3(
+					$elm$core$Dict$update,
+					selector,
+					$elm$core$Maybe$map(
+						A2(
+							$elm_community$basics_extra$Basics$Extra$flip,
+							$elm$core$List$foldl($munksgaard$elm_charts$Chart$changeStyles),
+							lst)),
+					model.styles)
+			});
+	});
+var $munksgaard$elm_charts$Chart$colours = F2(
+	function (newColours, model) {
+		if (!newColours.b) {
+			return model;
+		} else {
+			var c = newColours.a;
+			var cs = newColours.b;
+			var _v1 = model.chartType;
+			if (_v1.$ === 'Pie') {
+				return _Utils_update(
+					model,
+					{
+						colours: A2($elm$core$List$cons, c, cs)
+					});
+			} else {
+				var otherwise = _v1;
+				return A3(
+					$munksgaard$elm_charts$Chart$updateStyles,
+					'chart',
+					_List_fromArray(
+						[
+							_Utils_Tuple2('background-color', c)
+						]),
+					model);
+			}
+		}
+	});
+var $munksgaard$elm_charts$Chart$dimensions = F3(
+	function (width, height, model) {
+		return _Utils_update(
+			model,
+			{height: height, width: width});
+	});
+var $mdgriffith$elm_ui$Element$html = $mdgriffith$elm_ui$Internal$Model$unstyled;
+var $munksgaard$elm_charts$ChartModel$Pie = {$: 'Pie'};
+var $munksgaard$elm_charts$ChartModel$initItem = F2(
+	function (v, l) {
+		return {label: l, normValue: 0, value: v};
+	});
+var $elm_community$basics_extra$Basics$Extra$uncurry = F2(
+	function (f, _v0) {
+		var a = _v0.a;
+		var b = _v0.b;
+		return A2(f, a, b);
+	});
+var $munksgaard$elm_charts$ChartModel$initItems = $elm$core$List$map(
+	$elm_community$basics_extra$Basics$Extra$uncurry($munksgaard$elm_charts$ChartModel$initItem));
+var $munksgaard$elm_charts$ChartModel$chartInit = F2(
+	function (vs, typ) {
+		return {
+			chartType: typ,
+			colours: _List_fromArray(
+				['#BF69B1', '#96A65B', '#D9A679', '#593F27', '#A63D33']),
+			height: 300,
+			items: $munksgaard$elm_charts$ChartModel$initItems(vs),
+			styles: $elm$core$Dict$fromList(
+				_List_fromArray(
+					[
+						_Utils_Tuple2(
+						'title',
+						_List_fromArray(
+							[
+								_Utils_Tuple2('text-align', 'center')
+							])),
+						_Utils_Tuple2(
+						'container',
+						_List_fromArray(
+							[
+								_Utils_Tuple2('background-color', '#eee'),
+								_Utils_Tuple2('padding', '15px'),
+								_Utils_Tuple2('display', 'flex'),
+								_Utils_Tuple2('flex-direction', 'column')
+							])),
+						_Utils_Tuple2(
+						'chart-container',
+						_List_fromArray(
+							[
+								_Utils_Tuple2('display', 'flex'),
+								_Utils_Tuple2('background-color', '#fff'),
+								_Utils_Tuple2('padding', '15px')
+							])),
+						_Utils_Tuple2(
+						'chart',
+						_List_fromArray(
+							[
+								_Utils_Tuple2('display', 'flex')
+							])),
+						_Utils_Tuple2('chart-elements', _List_Nil),
+						_Utils_Tuple2(
+						'legend',
+						_List_fromArray(
+							[
+								_Utils_Tuple2('display', 'flex')
+							])),
+						_Utils_Tuple2(
+						'legend-labels',
+						_List_fromArray(
+							[
+								_Utils_Tuple2('white-space', 'nowrap'),
+								_Utils_Tuple2('overflow', 'hidden'),
+								_Utils_Tuple2('text-overflow', 'ellipsis')
+							]))
+					])),
+			title: '',
+			width: 400
+		};
+	});
+var $elm$core$List$sum = function (numbers) {
+	return A3($elm$core$List$foldl, $elm$core$Basics$add, 0, numbers);
+};
+var $munksgaard$elm_charts$Chart$toPercent = function (model) {
+	var tot = $elm$core$List$sum(
+		A2(
+			$elm$core$List$map,
+			function ($) {
+				return $.value;
+			},
+			model.items));
+	var items = A2(
+		$elm$core$List$map,
+		function (item) {
+			return _Utils_update(
+				item,
+				{normValue: (item.value / tot) * 100});
+		},
+		model.items);
+	return _Utils_update(
+		model,
+		{items: items});
+};
+var $munksgaard$elm_charts$Chart$pie = function (data) {
+	return A3(
+		$munksgaard$elm_charts$Chart$updateStyles,
+		'legend-labels',
+		_List_fromArray(
+			[
+				_Utils_Tuple2('white-space', 'nowrap'),
+				_Utils_Tuple2('overflow', 'hidden'),
+				_Utils_Tuple2('text-overflow', 'ellipsis')
+			]),
+		A3(
+			$munksgaard$elm_charts$Chart$updateStyles,
+			'legend',
+			_List_fromArray(
+				[
+					_Utils_Tuple2('flex-direction', 'column'),
+					_Utils_Tuple2('justify-content', 'center'),
+					_Utils_Tuple2('padding-left', '15px'),
+					_Utils_Tuple2('flex-basis', '67%'),
+					_Utils_Tuple2('flex-grow', '2'),
+					_Utils_Tuple2('max-width', '100%')
+				]),
+			A3(
+				$munksgaard$elm_charts$Chart$updateStyles,
+				'chart-elements',
+				_List_fromArray(
+					[
+						_Utils_Tuple2('fill-opacity', '0'),
+						_Utils_Tuple2('stroke-width', '32')
+					]),
+				A3(
+					$munksgaard$elm_charts$Chart$updateStyles,
+					'chart',
+					_List_fromArray(
+						[
+							_Utils_Tuple2('height', '200px'),
+							_Utils_Tuple2('transform', 'rotate(-90deg)'),
+							_Utils_Tuple2('background', 'grey'),
+							_Utils_Tuple2('border-radius', '50%')
+						]),
+					A3(
+						$munksgaard$elm_charts$Chart$updateStyles,
+						'chart-container',
+						_List_fromArray(
+							[
+								_Utils_Tuple2('justify-content', 'center'),
+								_Utils_Tuple2('align-items', 'center'),
+								_Utils_Tuple2('flex-wrap', 'wrap')
+							]),
+						$munksgaard$elm_charts$Chart$toPercent(
+							A2($munksgaard$elm_charts$ChartModel$chartInit, data, $munksgaard$elm_charts$ChartModel$Pie)))))));
+};
+var $elm$html$Html$h3 = _VirtualDom_node('h3');
+var $munksgaard$elm_charts$Chart$viewBarHorizontal = function (model) {
+	var get_ = function (sel) {
+		return A2(
+			$elm$core$Maybe$withDefault,
+			_List_Nil,
+			A2($elm$core$Dict$get, sel, model.styles));
+	};
+	var colour = A2(
+		$elm$core$Maybe$withDefault,
+		'steelblue',
+		$elm$core$List$head(model.colours));
+	var elements = A2(
+		$elm$core$List$map,
+		function (_v0) {
+			var normValue = _v0.normValue;
+			var label = _v0.label;
+			return A2(
+				$elm$html$Html$div,
+				A2(
+					$elm$core$List$cons,
+					A2(
+						$elm$html$Html$Attributes$style,
+						'width',
+						$elm$core$String$fromFloat(normValue) + '%'),
+					A2(
+						$elm$core$List$cons,
+						A2($elm$html$Html$Attributes$style, 'background-color', colour),
+						A2(
+							$elm$core$List$map,
+							$elm_community$basics_extra$Basics$Extra$uncurry($elm$html$Html$Attributes$style),
+							get_('chart-elements')))),
+				_List_fromArray(
+					[
+						A2(
+						$elm$html$Html$span,
+						A2(
+							$elm$core$List$map,
+							$elm_community$basics_extra$Basics$Extra$uncurry($elm$html$Html$Attributes$style),
+							get_('legend-labels')),
+						_List_fromArray(
+							[
+								$elm$html$Html$text(label)
+							]))
+					]));
+		},
+		model.items);
+	return elements;
+};
+var $elm$core$Basics$modBy = _Basics_modBy;
+var $munksgaard$elm_charts$Chart$viewBarVertical = function (model) {
+	var rotateLabel = F2(
+		function (lenData, idx) {
+			var labelWidth = 60;
+			var offset = function () {
+				var _v1 = !A2($elm$core$Basics$modBy, lenData, 2);
+				if (_v1) {
+					return (((((lenData / 2) | 0) - idx) - 1) * labelWidth) + 20;
+				} else {
+					return ((((lenData / 2) | 0) - idx) * labelWidth) - 10;
+				}
+			}();
+			return A2(
+				$elm$html$Html$Attributes$style,
+				'transform',
+				'translateX( ' + ($elm$core$String$fromInt(offset) + 'px) translateY(30px) rotate(-45deg)'));
+		});
+	var get_ = function (sel) {
+		return A2(
+			$elm$core$Maybe$withDefault,
+			_List_Nil,
+			A2($elm$core$Dict$get, sel, model.styles));
+	};
+	var labels = A2(
+		$elm$core$List$indexedMap,
+		F2(
+			function (idx, item) {
+				return A2(
+					$elm$html$Html$div,
+					A2(
+						$elm$core$List$cons,
+						A2(
+							rotateLabel,
+							$elm$core$List$length(model.items),
+							idx),
+						A2(
+							$elm$core$List$map,
+							$elm_community$basics_extra$Basics$Extra$uncurry($elm$html$Html$Attributes$style),
+							get_('legend-labels'))),
+					_List_fromArray(
+						[
+							$elm$html$Html$text(
+							function ($) {
+								return $.label;
+							}(item))
+						]));
+			}),
+		model.items);
+	var elements = A2(
+		$elm$core$List$map,
+		function (_v0) {
+			var normValue = _v0.normValue;
+			return A2(
+				$elm$html$Html$div,
+				A2(
+					$elm$core$List$cons,
+					A2(
+						$elm$html$Html$Attributes$style,
+						'height',
+						$elm$core$String$fromFloat(normValue) + '%'),
+					A2(
+						$elm$core$List$map,
+						$elm_community$basics_extra$Basics$Extra$uncurry($elm$html$Html$Attributes$style),
+						get_('chart-elements'))),
+				_List_Nil);
+		},
+		model.items);
+	return _List_fromArray(
+		[
+			A2(
+			$elm$html$Html$div,
+			A2(
+				$elm$core$List$map,
+				$elm_community$basics_extra$Basics$Extra$uncurry($elm$html$Html$Attributes$style),
+				get_('chart')),
+			elements),
+			A2(
+			$elm$html$Html$div,
+			A2(
+				$elm$core$List$map,
+				$elm_community$basics_extra$Basics$Extra$uncurry($elm$html$Html$Attributes$style),
+				get_('legend')),
+			labels)
+		]);
+};
+var $elm$svg$Svg$trustedNode = _VirtualDom_nodeNS('http://www.w3.org/2000/svg');
+var $elm$svg$Svg$circle = $elm$svg$Svg$trustedNode('circle');
+var $elm$svg$Svg$Attributes$cx = _VirtualDom_attribute('cx');
+var $elm$svg$Svg$Attributes$cy = _VirtualDom_attribute('cy');
+var $elm$svg$Svg$Attributes$preserveAspectRatio = _VirtualDom_attribute('preserveAspectRatio');
+var $elm$svg$Svg$Attributes$r = _VirtualDom_attribute('r');
+var $elm$svg$Svg$Attributes$stroke = _VirtualDom_attribute('stroke');
+var $elm$svg$Svg$Attributes$strokeDasharray = _VirtualDom_attribute('stroke-dasharray');
+var $elm$svg$Svg$Attributes$strokeDashoffset = _VirtualDom_attribute('stroke-dashoffset');
+var $elm$svg$Svg$svg = $elm$svg$Svg$trustedNode('svg');
+var $elm$svg$Svg$Attributes$viewBox = _VirtualDom_attribute('viewBox');
+var $munksgaard$elm_charts$Chart$viewPie = function (model) {
+	var get_ = function (sel) {
+		return A2(
+			$elm$core$Maybe$withDefault,
+			_List_Nil,
+			A2($elm$core$Dict$get, sel, model.styles));
+	};
+	var legend = function (items) {
+		return A3(
+			$elm$core$List$map2,
+			F2(
+				function (_v3, col) {
+					var label = _v3.label;
+					return A2(
+						$elm$html$Html$div,
+						A2(
+							$elm$core$List$map,
+							$elm_community$basics_extra$Basics$Extra$uncurry($elm$html$Html$Attributes$style),
+							get_('legend-labels')),
+						_List_fromArray(
+							[
+								A2(
+								$elm$html$Html$span,
+								_List_fromArray(
+									[
+										A2($elm$html$Html$Attributes$style, 'background-color', col),
+										A2($elm$html$Html$Attributes$style, 'display', 'inline-block'),
+										A2($elm$html$Html$Attributes$style, 'height', '20px'),
+										A2($elm$html$Html$Attributes$style, 'width', '20px'),
+										A2($elm$html$Html$Attributes$style, 'margin-right', '5px')
+									]),
+								_List_fromArray(
+									[
+										$elm$html$Html$text(' ')
+									])),
+								$elm$html$Html$text(label)
+							]));
+				}),
+			items,
+			model.colours);
+	};
+	var elem = F3(
+		function (off, ang, col) {
+			return A2(
+				$elm$svg$Svg$circle,
+				_List_fromArray(
+					[
+						$elm$svg$Svg$Attributes$r('25%'),
+						$elm$svg$Svg$Attributes$cx('50%'),
+						$elm$svg$Svg$Attributes$cy('50%'),
+						$elm$svg$Svg$Attributes$stroke(col),
+						$elm$svg$Svg$Attributes$strokeDashoffset(
+						$elm$core$String$fromFloat(off)),
+						$elm$svg$Svg$Attributes$strokeDasharray(
+						$elm$core$String$fromFloat(ang) + ' 100'),
+						A2($elm$html$Html$Attributes$style, 'fill', 'none'),
+						A2($elm$html$Html$Attributes$style, 'stroke-width', '32')
+					]),
+				_List_Nil);
+		});
+	var go = F2(
+		function (val, _v2) {
+			var accOff = _v2.a;
+			var cols = _v2.b;
+			var accElems = _v2.c;
+			if (cols.b) {
+				var c = cols.a;
+				var cs = cols.b;
+				var ang = val.normValue;
+				return _Utils_Tuple3(
+					accOff - ang,
+					$elm$core$List$isEmpty(cs) ? model.colours : cs,
+					A2(
+						$elm$core$List$cons,
+						A3(elem, accOff, ang, c),
+						accElems));
+			} else {
+				return _Utils_Tuple3(accOff, cols, accElems);
+			}
+		});
+	var _v0 = A3(
+		$elm$core$List$foldl,
+		go,
+		_Utils_Tuple3(0, model.colours, _List_Nil),
+		model.items);
+	var elems = _v0.c;
+	return _List_fromArray(
+		[
+			A2(
+			$elm$svg$Svg$svg,
+			_Utils_ap(
+				A2(
+					$elm$core$List$map,
+					$elm_community$basics_extra$Basics$Extra$uncurry($elm$html$Html$Attributes$style),
+					get_('chart')),
+				_List_fromArray(
+					[
+						$elm$svg$Svg$Attributes$viewBox('0 0 63.66198 63.66198'),
+						$elm$svg$Svg$Attributes$preserveAspectRatio('xMidYMid slice')
+					])),
+			elems),
+			A2(
+			$elm$html$Html$div,
+			A2(
+				$elm$core$List$map,
+				$elm_community$basics_extra$Basics$Extra$uncurry($elm$html$Html$Attributes$style),
+				get_('legend')),
+			legend(model.items))
+		]);
+};
+var $munksgaard$elm_charts$Chart$toHtml = function (model) {
+	var get_ = function (sel) {
+		return A2(
+			$elm$core$Maybe$withDefault,
+			_List_Nil,
+			A2($elm$core$Dict$get, sel, model.styles));
+	};
+	return A2(
+		$elm$html$Html$div,
+		A2(
+			$elm$core$List$map,
+			$elm_community$basics_extra$Basics$Extra$uncurry($elm$html$Html$Attributes$style),
+			get_('container')),
+		_List_fromArray(
+			[
+				A2(
+				$elm$html$Html$h3,
+				A2(
+					$elm$core$List$map,
+					$elm_community$basics_extra$Basics$Extra$uncurry($elm$html$Html$Attributes$style),
+					get_('title')),
+				_List_fromArray(
+					[
+						$elm$html$Html$text(model.title)
+					])),
+				A2(
+				$elm$html$Html$div,
+				A2(
+					$elm$core$List$map,
+					$elm_community$basics_extra$Basics$Extra$uncurry($elm$html$Html$Attributes$style),
+					get_('chart-container')),
+				function () {
+					var _v0 = model.chartType;
+					switch (_v0.$) {
+						case 'BarHorizontal':
+							return $munksgaard$elm_charts$Chart$viewBarHorizontal(model);
+						case 'BarVertical':
+							return $munksgaard$elm_charts$Chart$viewBarVertical(model);
+						default:
+							return $munksgaard$elm_charts$Chart$viewPie(model);
+					}
+				}())
+			]));
+};
+var $author$project$Page$Dashboard$viewPieChart = function (shares) {
+	return $mdgriffith$elm_ui$Element$html(
+		$munksgaard$elm_charts$Chart$toHtml(
+			A3(
+				$munksgaard$elm_charts$Chart$updateStyles,
+				'chart-container',
+				_List_fromArray(
+					[
+						_Utils_Tuple2('margin', 'auto')
+					]),
+				A3(
+					$munksgaard$elm_charts$Chart$updateStyles,
+					'container',
+					_List_fromArray(
+						[
+							_Utils_Tuple2('background-color', 'white')
+						]),
+					A2(
+						$munksgaard$elm_charts$Chart$colours,
+						_List_fromArray(
+							['blue', 'skyBlue']),
+						A3(
+							$munksgaard$elm_charts$Chart$dimensions,
+							800,
+							400,
+							$munksgaard$elm_charts$Chart$pie(
+								_List_fromArray(
+									[
+										_Utils_Tuple2(shares / $author$project$Page$Dashboard$totalShares, 'Your shares'),
+										_Utils_Tuple2(($author$project$Page$Dashboard$totalShares - shares) / $author$project$Page$Dashboard$totalShares, 'Ownally')
+									]))))))));
+};
+var $author$project$Page$Dashboard$viewPie = function (shares) {
+	return A2(
+		$mdgriffith$elm_ui$Element$el,
+		$author$project$Page$Dashboard$attributePie,
+		$author$project$Page$Dashboard$viewPieChart(shares));
+};
+var $author$project$Page$Dashboard$view = F2(
+	function (window, _v0) {
+		var shares = _v0.shares;
+		var bidInput = _v0.bidInput;
+		var askInput = _v0.askInput;
+		return A2(
+			$mdgriffith$elm_ui$Element$column,
+			$author$project$Page$Dashboard$attribute(window),
+			_List_fromArray(
+				[
+					$author$project$Page$Dashboard$viewInformation(shares),
+					$author$project$Page$Dashboard$viewPie(shares),
+					A2($author$project$Page$Dashboard$viewMarket, bidInput, askInput)
+				]));
+	});
+var $author$project$Page$Dashboard$viewBigDesktopLandscape = $author$project$Page$Dashboard$view;
+var $author$project$Page$Home$fillWidth = _List_fromArray(
+	[
+		$mdgriffith$elm_ui$Element$width($mdgriffith$elm_ui$Element$fill),
+		$mdgriffith$elm_ui$Element$height($mdgriffith$elm_ui$Element$shrink)
+	]);
+var $author$project$Page$Home$attribute = $author$project$Page$Home$fillWidth;
+var $author$project$Page$Home$attributeBenefit = $author$project$Page$Home$fillWidth;
+var $author$project$Image$Image = function (a) {
+	return {$: 'Image', a: a};
+};
+var $author$project$Image$createImage = F2(
+	function (filename, description) {
+		return $author$project$Image$Image(
+			{description: description, src: '/image/' + filename});
+	});
+var $author$project$Image$technology = A2($author$project$Image$createImage, 'Technology.jpg', 'Technology Photo');
+var $mdgriffith$elm_ui$Element$Font$alignRight = A2($mdgriffith$elm_ui$Internal$Model$Class, $mdgriffith$elm_ui$Internal$Flag$fontAlignment, $mdgriffith$elm_ui$Internal$Style$classes.textRight);
+var $author$project$Page$Home$bodyPadding = _List_fromArray(
 	[
 		A2($mdgriffith$elm_ui$Element$paddingXY, 144, 72),
 		$mdgriffith$elm_ui$Element$spacing(36)
 	]);
-var $elm$virtual_dom$VirtualDom$style = _VirtualDom_style;
 var $mdgriffith$elm_ui$Element$Background$image = function (src) {
 	return $mdgriffith$elm_ui$Internal$Model$Attr(
 		A2($elm$virtual_dom$VirtualDom$style, 'background', 'url(\"' + (src + '\") center / cover no-repeat')));
@@ -11581,6 +14602,11 @@ var $author$project$Image$toBackground = function (_v0) {
 	var src = _v0.a.src;
 	return $mdgriffith$elm_ui$Element$Background$image(src);
 };
+var $author$project$Page$Home$fillWindow = _List_fromArray(
+	[
+		$mdgriffith$elm_ui$Element$width($mdgriffith$elm_ui$Element$fill),
+		$mdgriffith$elm_ui$Element$height($mdgriffith$elm_ui$Element$fill)
+	]);
 var $mdgriffith$elm_ui$Internal$Flag$bgGradient = $mdgriffith$elm_ui$Internal$Flag$flag(10);
 var $mdgriffith$elm_ui$Element$Background$gradient = function (_v0) {
 	var angle = _v0.angle;
@@ -11622,45 +14648,45 @@ var $mdgriffith$elm_ui$Element$Background$gradient = function (_v0) {
 		}
 	}
 };
+var $author$project$Page$Home$lightBlack = $mdgriffith$elm_ui$Element$fromRgb255(
+	{alpha: 1, blue: 32, green: 32, red: 32});
 var $elm$core$Basics$pi = _Basics_pi;
-var $author$project$Main$transparent = $mdgriffith$elm_ui$Element$fromRgb255(
+var $author$project$Page$Home$transparent = $mdgriffith$elm_ui$Element$fromRgb255(
 	{alpha: 0, blue: 255, green: 255, red: 255});
-var $author$project$Main$attributeFadeBlack = $elm$core$List$concat(
+var $author$project$Page$Home$attributeFadeBlack = $elm$core$List$concat(
 	_List_fromArray(
 		[
-			$author$project$Main$fillWindow,
+			$author$project$Page$Home$fillWindow,
 			_List_fromArray(
 			[
 				$mdgriffith$elm_ui$Element$Background$gradient(
 				{
 					angle: $elm$core$Basics$pi / 2,
 					steps: _List_fromArray(
-						[$author$project$Main$transparent, $author$project$Main$lightBlack])
+						[$author$project$Page$Home$transparent, $author$project$Page$Home$lightBlack])
 				})
 			])
 		]));
-var $mdgriffith$elm_ui$Internal$Model$Empty = {$: 'Empty'};
 var $mdgriffith$elm_ui$Element$none = $mdgriffith$elm_ui$Internal$Model$Empty;
-var $author$project$Main$viewFadeBlack = A2($mdgriffith$elm_ui$Element$el, $author$project$Main$attributeFadeBlack, $mdgriffith$elm_ui$Element$none);
-var $author$project$Main$attributeWithPic = function (image) {
+var $author$project$Page$Home$viewFadeBlack = A2($mdgriffith$elm_ui$Element$el, $author$project$Page$Home$attributeFadeBlack, $mdgriffith$elm_ui$Element$none);
+var $author$project$Page$Home$white = $mdgriffith$elm_ui$Element$fromRgb255(
+	{alpha: 1, blue: 255, green: 255, red: 255});
+var $author$project$Page$Home$attributeWithPic = function (image) {
 	return $elm$core$List$concat(
 		_List_fromArray(
 			[
-				$author$project$Main$fillWidth,
-				$author$project$Main$bodyPadding,
+				$author$project$Page$Home$fillWidth,
+				$author$project$Page$Home$bodyPadding,
 				_List_fromArray(
 				[
 					$author$project$Image$toBackground(image),
-					$mdgriffith$elm_ui$Element$behindContent($author$project$Main$viewFadeBlack),
-					$mdgriffith$elm_ui$Element$Font$color($author$project$Main$white),
+					$mdgriffith$elm_ui$Element$behindContent($author$project$Page$Home$viewFadeBlack),
+					$mdgriffith$elm_ui$Element$Font$color($author$project$Page$Home$white),
 					$mdgriffith$elm_ui$Element$Font$size(48),
 					$mdgriffith$elm_ui$Element$Font$alignRight,
 					$mdgriffith$elm_ui$Element$Font$bold
 				])
 			]));
-};
-var $mdgriffith$elm_ui$Internal$Model$Describe = function (a) {
-	return {$: 'Describe', a: a};
 };
 var $mdgriffith$elm_ui$Internal$Model$Paragraph = {$: 'Paragraph'};
 var $mdgriffith$elm_ui$Element$paragraph = F2(
@@ -11681,101 +14707,88 @@ var $mdgriffith$elm_ui$Element$paragraph = F2(
 						attrs))),
 			$mdgriffith$elm_ui$Internal$Model$Unkeyed(children));
 	});
-var $author$project$Main$viewWithPic = F2(
+var $author$project$Page$Home$viewWithPic = F2(
 	function (image, string) {
 		return A2(
 			$mdgriffith$elm_ui$Element$paragraph,
-			$author$project$Main$attributeWithPic(image),
+			$author$project$Page$Home$attributeWithPic(image),
 			_List_fromArray(
 				[
 					$mdgriffith$elm_ui$Element$text(string)
 				]));
 	});
-var $author$project$Main$viewBigData = A2($author$project$Main$viewWithPic, $author$project$Image$technology, 'Determination of prices using Big Data and AI');
-var $author$project$Main$attributeBlack = $elm$core$List$concat(
+var $author$project$Page$Home$viewBigData = A2($author$project$Page$Home$viewWithPic, $author$project$Image$technology, 'Determination of prices using Big Data and AI');
+var $author$project$Page$Home$attributeBlack = $elm$core$List$concat(
 	_List_fromArray(
 		[
-			$author$project$Main$fillWidth,
-			$author$project$Main$bodyPadding,
+			$author$project$Page$Home$fillWidth,
+			$author$project$Page$Home$bodyPadding,
 			_List_fromArray(
 			[
-				$mdgriffith$elm_ui$Element$Background$color($author$project$Main$lightBlack),
-				$mdgriffith$elm_ui$Element$Font$color($author$project$Main$white),
+				$mdgriffith$elm_ui$Element$Background$color($author$project$Page$Home$lightBlack),
+				$mdgriffith$elm_ui$Element$Font$color($author$project$Page$Home$white),
 				$mdgriffith$elm_ui$Element$Font$size(48),
 				$mdgriffith$elm_ui$Element$Font$alignLeft,
 				$mdgriffith$elm_ui$Element$Font$bold
 			])
 		]));
-var $author$project$Main$viewBlack = function (string) {
+var $author$project$Page$Home$viewBlack = function (string) {
 	return A2(
 		$mdgriffith$elm_ui$Element$paragraph,
-		$author$project$Main$attributeBlack,
+		$author$project$Page$Home$attributeBlack,
 		_List_fromArray(
 			[
 				$mdgriffith$elm_ui$Element$text(string)
 			]));
 };
-var $author$project$Main$viewEmergency = $author$project$Main$viewBlack('Seamless conversion of equity to cash in times of need');
-var $author$project$Main$viewInvest = $author$project$Main$viewBlack('Own your property');
+var $author$project$Page$Home$viewEmergency = $author$project$Page$Home$viewBlack('Seamless conversion of equity to cash in times of need');
+var $author$project$Page$Home$viewInvest = $author$project$Page$Home$viewBlack('Own your property');
 var $author$project$Image$buildings = A2($author$project$Image$createImage, 'Buildings.jpg', 'Building Photo');
-var $author$project$Main$viewLesser = A2($author$project$Main$viewWithPic, $author$project$Image$buildings, 'Customizable monthly payments for you');
-var $author$project$Main$viewBenefit = A2(
+var $author$project$Page$Home$viewLesser = A2($author$project$Page$Home$viewWithPic, $author$project$Image$buildings, 'Customizable monthly payments for you');
+var $author$project$Page$Home$viewBenefit = A2(
 	$mdgriffith$elm_ui$Element$column,
-	$author$project$Main$attributeBenefit,
+	$author$project$Page$Home$attributeBenefit,
 	_List_fromArray(
-		[$author$project$Main$viewLesser, $author$project$Main$viewInvest, $author$project$Main$viewBigData, $author$project$Main$viewEmergency]));
-var $author$project$Main$attributeHow = $elm$core$List$concat(
+		[$author$project$Page$Home$viewLesser, $author$project$Page$Home$viewInvest, $author$project$Page$Home$viewBigData, $author$project$Page$Home$viewEmergency]));
+var $author$project$Page$Home$attributeFooter = $elm$core$List$concat(
 	_List_fromArray(
 		[
-			$author$project$Main$fillWidth,
-			$author$project$Main$bodyPadding,
+			$author$project$Page$Home$fillWidth,
 			_List_fromArray(
 			[
-				$mdgriffith$elm_ui$Element$Background$color($author$project$Main$white)
+				A2($mdgriffith$elm_ui$Element$paddingXY, 144, 48)
+			]),
+			_List_fromArray(
+			[
+				$mdgriffith$elm_ui$Element$Background$color($author$project$Page$Home$lightBlack)
+			]),
+			_List_fromArray(
+			[
+				$mdgriffith$elm_ui$Element$Font$color($author$project$Page$Home$white),
+				$mdgriffith$elm_ui$Element$Font$size(36),
+				$mdgriffith$elm_ui$Element$Font$alignLeft,
+				$mdgriffith$elm_ui$Element$Font$bold
 			])
 		]));
-var $mdgriffith$elm_ui$Internal$Model$AsRow = {$: 'AsRow'};
-var $mdgriffith$elm_ui$Internal$Model$asRow = $mdgriffith$elm_ui$Internal$Model$AsRow;
-var $mdgriffith$elm_ui$Element$row = F2(
-	function (attrs, children) {
-		return A4(
-			$mdgriffith$elm_ui$Internal$Model$element,
-			$mdgriffith$elm_ui$Internal$Model$asRow,
-			$mdgriffith$elm_ui$Internal$Model$div,
-			A2(
-				$elm$core$List$cons,
-				$mdgriffith$elm_ui$Internal$Model$htmlClass($mdgriffith$elm_ui$Internal$Style$classes.contentLeft + (' ' + $mdgriffith$elm_ui$Internal$Style$classes.contentCenterY)),
-				A2(
-					$elm$core$List$cons,
-					$mdgriffith$elm_ui$Element$width($mdgriffith$elm_ui$Element$shrink),
-					A2(
-						$elm$core$List$cons,
-						$mdgriffith$elm_ui$Element$height($mdgriffith$elm_ui$Element$shrink),
-						attrs))),
-			$mdgriffith$elm_ui$Internal$Model$Unkeyed(children));
-	});
-var $author$project$Image$pieChart = A2($author$project$Image$createImage, 'PieChart.svg', 'Equity Photo');
-var $mdgriffith$elm_ui$Internal$Model$AlignY = function (a) {
-	return {$: 'AlignY', a: a};
-};
-var $mdgriffith$elm_ui$Internal$Model$Top = {$: 'Top'};
-var $mdgriffith$elm_ui$Element$alignTop = $mdgriffith$elm_ui$Internal$Model$AlignY($mdgriffith$elm_ui$Internal$Model$Top);
-var $mdgriffith$elm_ui$Element$padding = function (x) {
-	return A2(
-		$mdgriffith$elm_ui$Internal$Model$StyleClass,
-		$mdgriffith$elm_ui$Internal$Flag$padding,
-		A5(
-			$mdgriffith$elm_ui$Internal$Model$PaddingStyle,
-			'p-' + $elm$core$String$fromInt(x),
-			x,
-			x,
-			x,
-			x));
-};
-var $author$project$Main$attributeBox = $elm$core$List$concat(
+var $author$project$Page$Home$viewFooter = A2(
+	$mdgriffith$elm_ui$Element$el,
+	$author$project$Page$Home$attributeFooter,
+	$mdgriffith$elm_ui$Element$text('Ownally Footer'));
+var $author$project$Page$Home$attributeHow = $elm$core$List$concat(
 	_List_fromArray(
 		[
-			$author$project$Main$fillWidth,
+			$author$project$Page$Home$fillWidth,
+			$author$project$Page$Home$bodyPadding,
+			_List_fromArray(
+			[
+				$mdgriffith$elm_ui$Element$Background$color($author$project$Page$Home$white)
+			])
+		]));
+var $author$project$Image$pieChart = A2($author$project$Image$createImage, 'PieChart.svg', 'Equity Photo');
+var $author$project$Page$Home$attributeBox = $elm$core$List$concat(
+	_List_fromArray(
+		[
+			$author$project$Page$Home$fillWidth,
 			_List_fromArray(
 			[
 				$mdgriffith$elm_ui$Element$padding(48),
@@ -11783,16 +14796,7 @@ var $author$project$Main$attributeBox = $elm$core$List$concat(
 				$mdgriffith$elm_ui$Element$alignTop
 			])
 		]));
-var $mdgriffith$elm_ui$Internal$Model$AlignX = function (a) {
-	return {$: 'AlignX', a: a};
-};
-var $mdgriffith$elm_ui$Internal$Model$CenterX = {$: 'CenterX'};
-var $mdgriffith$elm_ui$Element$centerX = $mdgriffith$elm_ui$Internal$Model$AlignX($mdgriffith$elm_ui$Internal$Model$CenterX);
-var $mdgriffith$elm_ui$Internal$Model$Px = function (a) {
-	return {$: 'Px', a: a};
-};
-var $mdgriffith$elm_ui$Element$px = $mdgriffith$elm_ui$Internal$Model$Px;
-var $author$project$Main$attributeImageIcon = _List_fromArray(
+var $author$project$Page$Home$attributeImageIcon = _List_fromArray(
 	[
 		$mdgriffith$elm_ui$Element$width(
 		$mdgriffith$elm_ui$Element$px(150)),
@@ -11860,194 +14864,402 @@ var $author$project$Image$toElement = F2(
 			attributes,
 			{description: description, src: src});
 	});
-var $author$project$Main$viewImageIcon = $author$project$Image$toElement($author$project$Main$attributeImageIcon);
+var $author$project$Page$Home$viewImageIcon = $author$project$Image$toElement($author$project$Page$Home$attributeImageIcon);
 var $mdgriffith$elm_ui$Element$Font$justify = A2($mdgriffith$elm_ui$Internal$Model$Class, $mdgriffith$elm_ui$Internal$Flag$fontAlignment, $mdgriffith$elm_ui$Internal$Style$classes.textJustify);
-var $author$project$Main$attributeStep = $elm$core$List$concat(
+var $author$project$Page$Home$attributeStep = $elm$core$List$concat(
 	_List_fromArray(
 		[
-			$author$project$Main$fillWidth,
+			$author$project$Page$Home$fillWidth,
 			_List_fromArray(
 			[
-				$mdgriffith$elm_ui$Element$Font$color($author$project$Main$lightBlack),
+				$mdgriffith$elm_ui$Element$Font$color($author$project$Page$Home$lightBlack),
 				$mdgriffith$elm_ui$Element$Font$size(24),
 				$mdgriffith$elm_ui$Element$Font$justify
 			])
 		]));
-var $author$project$Main$viewStep = function (string) {
+var $author$project$Page$Home$viewStep = function (string) {
 	return A2(
 		$mdgriffith$elm_ui$Element$paragraph,
-		$author$project$Main$attributeStep,
+		$author$project$Page$Home$attributeStep,
 		_List_fromArray(
 			[
 				$mdgriffith$elm_ui$Element$text(string)
 			]));
 };
-var $author$project$Main$viewBox = F2(
+var $author$project$Page$Home$viewBox = F2(
 	function (image, string) {
 		return A2(
 			$mdgriffith$elm_ui$Element$column,
-			$author$project$Main$attributeBox,
+			$author$project$Page$Home$attributeBox,
 			_List_fromArray(
 				[
-					$author$project$Main$viewImageIcon(image),
-					$author$project$Main$viewStep(string)
+					$author$project$Page$Home$viewImageIcon(image),
+					$author$project$Page$Home$viewStep(string)
 				]));
 	});
-var $author$project$Main$viewEquity = A2($author$project$Main$viewBox, $author$project$Image$pieChart, 'Sell fractional equities of your property to Ownally and investors, so you have the funds to purchase your property without loans.');
+var $author$project$Page$Home$viewEquity = A2($author$project$Page$Home$viewBox, $author$project$Image$pieChart, 'Sell fractional equities of your property to Ownally and investors, so you have the funds to purchase your property without loans.');
 var $author$project$Image$rentalContract = A2($author$project$Image$createImage, 'RentalContract.svg', 'Rental Photo');
-var $author$project$Main$viewRental = A2($author$project$Main$viewBox, $author$project$Image$rentalContract, 'Only pay fractional rent for the proportional equities you don\'t own. More equities you own, lesser the rent.');
+var $author$project$Page$Home$viewRental = A2($author$project$Page$Home$viewBox, $author$project$Image$rentalContract, 'Only pay fractional rent for the proportional equities you don\'t own. More equities you own, lesser the rent.');
 var $author$project$Image$tradeGrowth = A2($author$project$Image$createImage, 'TradeGrowth.svg', 'Trade Photo');
-var $author$project$Main$viewTrade = A2($author$project$Main$viewBox, $author$project$Image$tradeGrowth, 'Freely trade equities with Ownally and investors anytime you want. Slowly build your wealth without debt.');
-var $author$project$Main$viewHow = A2(
+var $author$project$Page$Home$viewTrade = A2($author$project$Page$Home$viewBox, $author$project$Image$tradeGrowth, 'Freely trade equities with Ownally and investors anytime you want. Slowly build your wealth without debt.');
+var $author$project$Page$Home$viewHow = A2(
 	$mdgriffith$elm_ui$Element$row,
-	$author$project$Main$attributeHow,
+	$author$project$Page$Home$attributeHow,
 	_List_fromArray(
-		[$author$project$Main$viewEquity, $author$project$Main$viewRental, $author$project$Main$viewTrade]));
+		[$author$project$Page$Home$viewEquity, $author$project$Page$Home$viewRental, $author$project$Page$Home$viewTrade]));
 var $author$project$Image$house = A2($author$project$Image$createImage, 'House.jpg', 'Landing Photo');
-var $author$project$Main$attributeFadeWhite = $elm$core$List$concat(
+var $author$project$Page$Home$attributeFadeWhite = $elm$core$List$concat(
 	_List_fromArray(
 		[
-			$author$project$Main$fillWindow,
+			$author$project$Page$Home$fillWindow,
 			_List_fromArray(
 			[
 				$mdgriffith$elm_ui$Element$Background$gradient(
 				{
 					angle: $elm$core$Basics$pi / 2,
 					steps: _List_fromArray(
-						[$author$project$Main$white, $author$project$Main$transparent])
+						[$author$project$Page$Home$white, $author$project$Page$Home$transparent])
 				})
 			])
 		]));
-var $author$project$Main$viewFadeWhite = A2($mdgriffith$elm_ui$Element$el, $author$project$Main$attributeFadeWhite, $mdgriffith$elm_ui$Element$none);
-var $author$project$Main$attributeLanding = function (_v0) {
-	var width = _v0.width;
-	var height = _v0.height;
-	return _List_fromArray(
-		[
-			$mdgriffith$elm_ui$Element$width($mdgriffith$elm_ui$Element$fill),
-			$mdgriffith$elm_ui$Element$height(
-			$mdgriffith$elm_ui$Element$px(height)),
-			A2($mdgriffith$elm_ui$Element$paddingXY, 144, 72),
-			$mdgriffith$elm_ui$Element$spacing(36),
-			$author$project$Image$toBackground($author$project$Image$house),
-			$mdgriffith$elm_ui$Element$behindContent($author$project$Main$viewFadeWhite)
-		]);
+var $author$project$Page$Home$viewFadeWhite = A2($mdgriffith$elm_ui$Element$el, $author$project$Page$Home$attributeFadeWhite, $mdgriffith$elm_ui$Element$none);
+var $author$project$Page$Home$attributeLanding = function (window) {
+	return $elm$core$List$concat(
+		_List_fromArray(
+			[
+				$author$project$Window$size(window),
+				_List_fromArray(
+				[
+					A2($mdgriffith$elm_ui$Element$paddingXY, 144, 72),
+					$mdgriffith$elm_ui$Element$spacing(36),
+					$author$project$Image$toBackground($author$project$Image$house),
+					$mdgriffith$elm_ui$Element$behindContent($author$project$Page$Home$viewFadeWhite)
+				])
+			]));
 };
 var $mdgriffith$elm_ui$Internal$Model$Left = {$: 'Left'};
 var $mdgriffith$elm_ui$Element$alignLeft = $mdgriffith$elm_ui$Internal$Model$AlignX($mdgriffith$elm_ui$Internal$Model$Left);
-var $mdgriffith$elm_ui$Internal$Model$CenterY = {$: 'CenterY'};
-var $mdgriffith$elm_ui$Element$centerY = $mdgriffith$elm_ui$Internal$Model$AlignY($mdgriffith$elm_ui$Internal$Model$CenterY);
-var $author$project$Main$shrinkContent = _List_fromArray(
+var $author$project$Page$Home$shrinkContent = _List_fromArray(
 	[
 		$mdgriffith$elm_ui$Element$width($mdgriffith$elm_ui$Element$shrink),
 		$mdgriffith$elm_ui$Element$height($mdgriffith$elm_ui$Element$shrink)
 	]);
-var $author$project$Main$attributeHeadline = $elm$core$List$concat(
+var $author$project$Page$Home$attributeHeadline = $elm$core$List$concat(
 	_List_fromArray(
 		[
-			$author$project$Main$shrinkContent,
+			$author$project$Page$Home$shrinkContent,
 			_List_fromArray(
 			[$mdgriffith$elm_ui$Element$alignLeft, $mdgriffith$elm_ui$Element$centerY]),
 			_List_fromArray(
 			[
-				$mdgriffith$elm_ui$Element$Font$color($author$project$Main$lightBlack),
+				$mdgriffith$elm_ui$Element$Font$color($author$project$Page$Home$lightBlack),
 				$mdgriffith$elm_ui$Element$Font$size(72),
 				$mdgriffith$elm_ui$Element$Font$alignLeft,
 				$mdgriffith$elm_ui$Element$Font$bold
 			])
 		]));
-var $author$project$Main$viewHeadline = A2(
+var $author$project$Page$Home$viewHeadline = A2(
 	$mdgriffith$elm_ui$Element$paragraph,
-	$author$project$Main$attributeHeadline,
+	$author$project$Page$Home$attributeHeadline,
 	_List_fromArray(
 		[
 			$mdgriffith$elm_ui$Element$text('Own your home at your terms')
 		]));
-var $author$project$Main$attributeSubHeadline = $elm$core$List$concat(
+var $author$project$Page$Home$attributeSubHeadline = $elm$core$List$concat(
 	_List_fromArray(
 		[
-			$author$project$Main$shrinkContent,
+			$author$project$Page$Home$shrinkContent,
 			_List_fromArray(
 			[$mdgriffith$elm_ui$Element$alignLeft, $mdgriffith$elm_ui$Element$centerY]),
 			_List_fromArray(
 			[
-				$mdgriffith$elm_ui$Element$Font$color($author$project$Main$lightBlack),
+				$mdgriffith$elm_ui$Element$Font$color($author$project$Page$Home$lightBlack),
 				$mdgriffith$elm_ui$Element$Font$size(36),
 				$mdgriffith$elm_ui$Element$Font$alignLeft
 			])
 		]));
-var $author$project$Main$viewSubHeadline = A2(
+var $author$project$Page$Home$viewSubHeadline = A2(
 	$mdgriffith$elm_ui$Element$paragraph,
-	$author$project$Main$attributeSubHeadline,
+	$author$project$Page$Home$attributeSubHeadline,
 	_List_fromArray(
 		[
 			$mdgriffith$elm_ui$Element$text('Lower monthly payments + No loans and interest')
 		]));
-var $author$project$Main$viewLanding = function (window) {
+var $author$project$Page$Home$viewLanding = function (window) {
 	return A2(
 		$mdgriffith$elm_ui$Element$column,
-		$author$project$Main$attributeLanding(window),
+		$author$project$Page$Home$attributeLanding(window),
 		_List_fromArray(
-			[$author$project$Main$viewHeadline, $author$project$Main$viewSubHeadline]));
+			[$author$project$Page$Home$viewHeadline, $author$project$Page$Home$viewSubHeadline]));
 };
-var $author$project$Main$viewBody = function (window) {
+var $author$project$Page$Home$view = function (window) {
 	return A2(
 		$mdgriffith$elm_ui$Element$column,
-		$author$project$Main$attributeBody,
+		$author$project$Page$Home$attribute,
 		_List_fromArray(
 			[
-				$author$project$Main$viewLanding(window),
-				$author$project$Main$viewHow,
-				$author$project$Main$viewBenefit
+				$author$project$Page$Home$viewLanding(window),
+				$author$project$Page$Home$viewHow,
+				$author$project$Page$Home$viewBenefit,
+				$author$project$Page$Home$viewFooter
 			]));
 };
-var $author$project$Main$viewLayout = function (window) {
-	return A2(
-		$mdgriffith$elm_ui$Element$layout,
-		$author$project$Main$attributeLayout,
-		$author$project$Main$viewBody(window));
-};
+var $author$project$Page$Home$viewBigDesktopLandscape = $author$project$Page$Home$view;
+var $author$project$Page$Dashboard$viewBigDesktopPortrait = $author$project$Page$Dashboard$view;
+var $author$project$Page$Home$viewBigDesktopPortrait = $author$project$Page$Home$view;
+var $author$project$Page$Dashboard$viewDesktopLandscape = $author$project$Page$Dashboard$view;
+var $author$project$Page$Home$viewDesktopLandscape = $author$project$Page$Home$view;
+var $author$project$Page$Dashboard$viewDesktopPortrait = $author$project$Page$Dashboard$view;
+var $author$project$Page$Home$viewDesktopPortrait = $author$project$Page$Home$view;
+var $author$project$Main$fillWidth = _List_fromArray(
+	[
+		$mdgriffith$elm_ui$Element$width($mdgriffith$elm_ui$Element$fill),
+		$mdgriffith$elm_ui$Element$height($mdgriffith$elm_ui$Element$shrink)
+	]);
+var $author$project$Main$lightBlack = $mdgriffith$elm_ui$Element$fromRgb255(
+	{alpha: 1, blue: 32, green: 32, red: 32});
+var $author$project$Main$attributeHeaderDashboard = $elm$core$List$concat(
+	_List_fromArray(
+		[
+			$author$project$Main$fillWidth,
+			_List_fromArray(
+			[
+				A2($mdgriffith$elm_ui$Element$paddingXY, 144, 18),
+				$mdgriffith$elm_ui$Element$Background$color($author$project$Main$lightBlack)
+			])
+		]));
+var $author$project$Main$GoHome = {$: 'GoHome'};
+var $author$project$Main$shrinkContent = _List_fromArray(
+	[
+		$mdgriffith$elm_ui$Element$width($mdgriffith$elm_ui$Element$shrink),
+		$mdgriffith$elm_ui$Element$height($mdgriffith$elm_ui$Element$shrink)
+	]);
+var $author$project$Main$white = $mdgriffith$elm_ui$Element$fromRgb255(
+	{alpha: 1, blue: 255, green: 255, red: 255});
+var $author$project$Main$attributeDashboardTitle = $elm$core$List$concat(
+	_List_fromArray(
+		[
+			$author$project$Main$shrinkContent,
+			_List_fromArray(
+			[
+				$mdgriffith$elm_ui$Element$alignLeft,
+				$mdgriffith$elm_ui$Element$Font$color($author$project$Main$white),
+				$mdgriffith$elm_ui$Element$Font$size(36),
+				$mdgriffith$elm_ui$Element$Font$alignLeft,
+				$mdgriffith$elm_ui$Element$Font$bold
+			])
+		]));
+var $author$project$Main$viewDashboardTitle = A2(
+	$mdgriffith$elm_ui$Element$Input$button,
+	$author$project$Main$attributeDashboardTitle,
+	{
+		label: $mdgriffith$elm_ui$Element$text('Ownally'),
+		onPress: $elm$core$Maybe$Just($author$project$Main$GoHome)
+	});
+var $author$project$Main$viewHeaderDashboard = A2(
+	$mdgriffith$elm_ui$Element$row,
+	$author$project$Main$attributeHeaderDashboard,
+	_List_fromArray(
+		[$author$project$Main$viewDashboardTitle]));
+var $author$project$Main$viewHeaderDashboardBigDesktopLandscape = $author$project$Main$viewHeaderDashboard;
+var $author$project$Main$viewHeaderDashboardBigDesktopPortrait = $author$project$Main$viewHeaderDashboard;
+var $author$project$Main$viewHeaderDashboardDesktopLandscape = $author$project$Main$viewHeaderDashboard;
+var $author$project$Main$viewHeaderDashboardDesktopPortrait = $author$project$Main$viewHeaderDashboard;
+var $author$project$Main$viewHeaderDashboardPhoneLandscape = $author$project$Main$viewHeaderDashboard;
+var $author$project$Main$viewHeaderDashboardPhonePortrait = $author$project$Main$viewHeaderDashboard;
+var $author$project$Main$viewHeaderDashboardTabletLandscape = $author$project$Main$viewHeaderDashboard;
+var $author$project$Main$viewHeaderDashboardTabletPortrait = $author$project$Main$viewHeaderDashboard;
+var $author$project$Main$attributeHeaderHome = $elm$core$List$concat(
+	_List_fromArray(
+		[
+			$author$project$Main$fillWidth,
+			_List_fromArray(
+			[
+				A2($mdgriffith$elm_ui$Element$paddingXY, 144, 18),
+				$mdgriffith$elm_ui$Element$Background$color($author$project$Main$lightBlack)
+			])
+		]));
+var $author$project$Main$GoDashboard = {$: 'GoDashboard'};
+var $mdgriffith$elm_ui$Internal$Model$Right = {$: 'Right'};
+var $mdgriffith$elm_ui$Element$alignRight = $mdgriffith$elm_ui$Internal$Model$AlignX($mdgriffith$elm_ui$Internal$Model$Right);
+var $author$project$Main$attributeButtonDashboard = $elm$core$List$concat(
+	_List_fromArray(
+		[
+			$author$project$Main$shrinkContent,
+			_List_fromArray(
+			[
+				$mdgriffith$elm_ui$Element$alignRight,
+				$mdgriffith$elm_ui$Element$centerY,
+				$mdgriffith$elm_ui$Element$Font$color($author$project$Main$white),
+				$mdgriffith$elm_ui$Element$Font$size(24),
+				$mdgriffith$elm_ui$Element$Font$alignLeft
+			])
+		]));
+var $author$project$Main$viewButtonDashboard = A2(
+	$mdgriffith$elm_ui$Element$Input$button,
+	$author$project$Main$attributeButtonDashboard,
+	{
+		label: $mdgriffith$elm_ui$Element$text('Dashboard'),
+		onPress: $elm$core$Maybe$Just($author$project$Main$GoDashboard)
+	});
+var $author$project$Main$attributeTitle = $elm$core$List$concat(
+	_List_fromArray(
+		[
+			$author$project$Main$shrinkContent,
+			_List_fromArray(
+			[
+				$mdgriffith$elm_ui$Element$alignLeft,
+				$mdgriffith$elm_ui$Element$Font$color($author$project$Main$white),
+				$mdgriffith$elm_ui$Element$Font$size(36),
+				$mdgriffith$elm_ui$Element$Font$alignLeft,
+				$mdgriffith$elm_ui$Element$Font$bold
+			])
+		]));
+var $author$project$Main$viewTitle = A2(
+	$mdgriffith$elm_ui$Element$Input$button,
+	$author$project$Main$attributeTitle,
+	{
+		label: $mdgriffith$elm_ui$Element$text('Ownally'),
+		onPress: $elm$core$Maybe$Nothing
+	});
+var $author$project$Main$viewHeaderHome = A2(
+	$mdgriffith$elm_ui$Element$row,
+	$author$project$Main$attributeHeaderHome,
+	_List_fromArray(
+		[$author$project$Main$viewTitle, $author$project$Main$viewButtonDashboard]));
+var $author$project$Main$viewHeaderHomeBigDesktopLandscape = $author$project$Main$viewHeaderHome;
+var $author$project$Main$viewHeaderHomeBigDesktopPortrait = $author$project$Main$viewHeaderHome;
+var $author$project$Main$viewHeaderHomeDesktopLandscape = $author$project$Main$viewHeaderHome;
+var $author$project$Main$viewHeaderHomeDesktopPortrait = $author$project$Main$viewHeaderHome;
+var $author$project$Main$viewHeaderHomePhoneLandscape = $author$project$Main$viewHeaderHome;
+var $author$project$Main$viewHeaderHomePhonePortrait = $author$project$Main$viewHeaderHome;
+var $author$project$Main$viewHeaderHomeTabletLandscape = $author$project$Main$viewHeaderHome;
+var $author$project$Main$viewHeaderHomeTabletPortrait = $author$project$Main$viewHeaderHome;
+var $author$project$Page$Dashboard$viewPhoneLandscape = $author$project$Page$Dashboard$view;
+var $author$project$Page$Home$viewPhoneLandscape = $author$project$Page$Home$view;
+var $author$project$Page$Dashboard$viewPhonePortrait = $author$project$Page$Dashboard$view;
+var $author$project$Page$Home$viewPhonePortrait = $author$project$Page$Home$view;
+var $author$project$Page$Dashboard$viewTabletLandscape = $author$project$Page$Dashboard$view;
+var $author$project$Page$Home$viewTabletLandscape = $author$project$Page$Home$view;
+var $author$project$Page$Dashboard$viewTabletPortrait = $author$project$Page$Dashboard$view;
+var $author$project$Page$Home$viewTabletPortrait = $author$project$Page$Home$view;
 var $author$project$Main$view = function (_v0) {
 	var window = _v0.window;
-	var device = _v0.device;
-	var _v1 = _Utils_Tuple2(device._class, device.orientation);
-	if (_v1.b.$ === 'Portrait') {
-		switch (_v1.a.$) {
-			case 'Phone':
-				var _v2 = _v1.a;
-				var _v3 = _v1.b;
-				return $author$project$Main$viewLayout(window);
-			case 'Tablet':
-				var _v4 = _v1.a;
-				var _v5 = _v1.b;
-				return $author$project$Main$viewLayout(window);
-			case 'Desktop':
-				var _v6 = _v1.a;
-				var _v7 = _v1.b;
-				return $author$project$Main$viewLayout(window);
-			default:
-				var _v8 = _v1.a;
-				var _v9 = _v1.b;
-				return $author$project$Main$viewLayout(window);
+	var page = _v0.page;
+	var layoutHome = F2(
+		function (header, currentPage) {
+			return A2(
+				$mdgriffith$elm_ui$Element$layout,
+				$author$project$Main$attribute(header),
+				currentPage(window));
+		});
+	var layoutDashboard = F3(
+		function (header, currentPage, dashboardModel) {
+			return A2(
+				$mdgriffith$elm_ui$Element$layout,
+				$author$project$Main$attribute(header),
+				A2(
+					$mdgriffith$elm_ui$Element$map,
+					$author$project$Main$OnDashboard,
+					A2(currentPage, window, dashboardModel)));
+		});
+	var device = $author$project$Window$classifyDevice(window);
+	var _v1 = _Utils_Tuple3(page, device._class, device.orientation);
+	if (_v1.a.$ === 'Home') {
+		if (_v1.c.$ === 'Portrait') {
+			switch (_v1.b.$) {
+				case 'Phone':
+					var _v2 = _v1.a;
+					var _v3 = _v1.b;
+					var _v4 = _v1.c;
+					return A2(layoutHome, $author$project$Main$viewHeaderHomePhonePortrait, $author$project$Page$Home$viewPhonePortrait);
+				case 'Tablet':
+					var _v5 = _v1.a;
+					var _v6 = _v1.b;
+					var _v7 = _v1.c;
+					return A2(layoutHome, $author$project$Main$viewHeaderHomeTabletPortrait, $author$project$Page$Home$viewTabletPortrait);
+				case 'Desktop':
+					var _v8 = _v1.a;
+					var _v9 = _v1.b;
+					var _v10 = _v1.c;
+					return A2(layoutHome, $author$project$Main$viewHeaderHomeDesktopPortrait, $author$project$Page$Home$viewDesktopPortrait);
+				default:
+					var _v11 = _v1.a;
+					var _v12 = _v1.b;
+					var _v13 = _v1.c;
+					return A2(layoutHome, $author$project$Main$viewHeaderHomeBigDesktopPortrait, $author$project$Page$Home$viewBigDesktopPortrait);
+			}
+		} else {
+			switch (_v1.b.$) {
+				case 'Phone':
+					var _v14 = _v1.a;
+					var _v15 = _v1.b;
+					var _v16 = _v1.c;
+					return A2(layoutHome, $author$project$Main$viewHeaderHomePhoneLandscape, $author$project$Page$Home$viewPhoneLandscape);
+				case 'Tablet':
+					var _v17 = _v1.a;
+					var _v18 = _v1.b;
+					var _v19 = _v1.c;
+					return A2(layoutHome, $author$project$Main$viewHeaderHomeTabletLandscape, $author$project$Page$Home$viewTabletLandscape);
+				case 'Desktop':
+					var _v20 = _v1.a;
+					var _v21 = _v1.b;
+					var _v22 = _v1.c;
+					return A2(layoutHome, $author$project$Main$viewHeaderHomeDesktopLandscape, $author$project$Page$Home$viewDesktopLandscape);
+				default:
+					var _v23 = _v1.a;
+					var _v24 = _v1.b;
+					var _v25 = _v1.c;
+					return A2(layoutHome, $author$project$Main$viewHeaderHomeBigDesktopLandscape, $author$project$Page$Home$viewBigDesktopLandscape);
+			}
 		}
 	} else {
-		switch (_v1.a.$) {
-			case 'Phone':
-				var _v10 = _v1.a;
-				var _v11 = _v1.b;
-				return $author$project$Main$viewLayout(window);
-			case 'Tablet':
-				var _v12 = _v1.a;
-				var _v13 = _v1.b;
-				return $author$project$Main$viewLayout(window);
-			case 'Desktop':
-				var _v14 = _v1.a;
-				var _v15 = _v1.b;
-				return $author$project$Main$viewLayout(window);
-			default:
-				var _v16 = _v1.a;
-				var _v17 = _v1.b;
-				return $author$project$Main$viewLayout(window);
+		if (_v1.c.$ === 'Portrait') {
+			switch (_v1.b.$) {
+				case 'Phone':
+					var dashboardModel = _v1.a.a;
+					var _v26 = _v1.b;
+					var _v27 = _v1.c;
+					return A3(layoutDashboard, $author$project$Main$viewHeaderDashboardPhonePortrait, $author$project$Page$Dashboard$viewPhonePortrait, dashboardModel);
+				case 'Tablet':
+					var dashboardModel = _v1.a.a;
+					var _v28 = _v1.b;
+					var _v29 = _v1.c;
+					return A3(layoutDashboard, $author$project$Main$viewHeaderDashboardTabletPortrait, $author$project$Page$Dashboard$viewTabletPortrait, dashboardModel);
+				case 'Desktop':
+					var dashboardModel = _v1.a.a;
+					var _v30 = _v1.b;
+					var _v31 = _v1.c;
+					return A3(layoutDashboard, $author$project$Main$viewHeaderDashboardDesktopPortrait, $author$project$Page$Dashboard$viewDesktopPortrait, dashboardModel);
+				default:
+					var dashboardModel = _v1.a.a;
+					var _v32 = _v1.b;
+					var _v33 = _v1.c;
+					return A3(layoutDashboard, $author$project$Main$viewHeaderDashboardBigDesktopPortrait, $author$project$Page$Dashboard$viewBigDesktopPortrait, dashboardModel);
+			}
+		} else {
+			switch (_v1.b.$) {
+				case 'Phone':
+					var dashboardModel = _v1.a.a;
+					var _v34 = _v1.b;
+					var _v35 = _v1.c;
+					return A3(layoutDashboard, $author$project$Main$viewHeaderDashboardPhoneLandscape, $author$project$Page$Dashboard$viewPhoneLandscape, dashboardModel);
+				case 'Tablet':
+					var dashboardModel = _v1.a.a;
+					var _v36 = _v1.b;
+					var _v37 = _v1.c;
+					return A3(layoutDashboard, $author$project$Main$viewHeaderDashboardTabletLandscape, $author$project$Page$Dashboard$viewTabletLandscape, dashboardModel);
+				case 'Desktop':
+					var dashboardModel = _v1.a.a;
+					var _v38 = _v1.b;
+					var _v39 = _v1.c;
+					return A3(layoutDashboard, $author$project$Main$viewHeaderDashboardDesktopLandscape, $author$project$Page$Dashboard$viewDesktopLandscape, dashboardModel);
+				default:
+					var dashboardModel = _v1.a.a;
+					var _v40 = _v1.b;
+					var _v41 = _v1.c;
+					return A3(layoutDashboard, $author$project$Main$viewHeaderDashboardBigDesktopLandscape, $author$project$Page$Dashboard$viewBigDesktopLandscape, dashboardModel);
+			}
 		}
 	}
 };
