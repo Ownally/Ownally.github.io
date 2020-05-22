@@ -1,9 +1,9 @@
 module Window exposing
     ( Window
     , classifyDevice
+    , height
     , init
     , onResize
-    , size
     )
 
 import Browser.Events
@@ -32,8 +32,8 @@ type alias Model model =
 
 
 init : (Window -> ( Model model, Cmd msg )) -> Flag flag -> ( Model model, Cmd msg )
-init model { width, height } =
-    model <| Window <| Dimension width height
+init model flag =
+    model <| Window <| Dimension flag.width flag.height
 
 
 classifyDevice : Window -> Device
@@ -41,18 +41,16 @@ classifyDevice (Window dimension) =
     Element.classifyDevice dimension
 
 
-size : Window -> List (Attribute msg)
-size (Window { height }) =
-    [ Element.width Element.fill
-    , Element.height <| Element.px height
-    ]
-
-
 onResize : (Window -> msg) -> Sub msg
 onResize msg =
     let
         toMsg : Int -> Int -> msg
-        toMsg width height =
-            msg <| Window <| Dimension width height
+        toMsg width currentHeight =
+            msg <| Window <| Dimension width currentHeight
     in
     Browser.Events.onResize toMsg
+
+
+height : Window -> Attribute msg
+height (Window window) =
+    Element.height <| Element.px window.height

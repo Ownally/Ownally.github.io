@@ -9,9 +9,24 @@ module Page.Home exposing
     , viewTabletPortrait
     )
 
-import Element exposing (Attribute, Color, Element)
+import Element
+    exposing
+        ( Attribute
+        , Color
+        , Element
+        , behindContent
+        , column
+        , el
+        , fill
+        , none
+        , paddingXY
+        , row
+        , spacing
+        , width
+        )
 import Element.Background as Background
 import Element.Font as Font
+import GoogleMap
 import Image exposing (Image)
 import Window exposing (Window)
 
@@ -62,17 +77,14 @@ viewBigDesktopLandscape =
 
 view : Window -> Element msg
 view window =
-    Element.column attribute
+    Element.column
+        [ Element.width Element.fill ]
         [ viewLanding window
         , viewHow
         , viewBenefit
+        , viewContact
         , viewFooter
         ]
-
-
-attribute : List (Attribute msg)
-attribute =
-    fillWidth
 
 
 
@@ -81,27 +93,22 @@ attribute =
 
 viewLanding : Window -> Element msg
 viewLanding window =
-    Element.column (attributeLanding window)
+    Element.column
+        [ width fill
+        , Window.height window
+        , paddingXY 144 72
+        , spacing 36
+        , Image.toBackground Image.house
+        , behindContent viewFadeWhite
+        ]
         [ viewHeadline
         , viewSubHeadline
         ]
 
 
-attributeLanding : Window -> List (Attribute msg)
-attributeLanding window =
-    List.concat
-        [ Window.size window
-        , [ Element.paddingXY 144 72
-          , Element.spacing 36
-          , Image.toBackground Image.house
-          , Element.behindContent viewFadeWhite
-          ]
-        ]
-
-
 viewFadeWhite : Element msg
 viewFadeWhite =
-    Element.el attributeFadeWhite Element.none
+    el attributeFadeWhite Element.none
 
 
 attributeFadeWhite : List (Attribute msg)
@@ -349,6 +356,221 @@ attributeBlack =
 
 
 
+-- CONTACT
+
+
+viewContact : Element msg
+viewContact =
+    Element.column
+        [ Element.width Element.fill
+        , Element.paddingXY 144 72
+        , Element.spacing 36
+        ]
+        [ viewContactUs
+        , viewContactDetails
+        ]
+
+
+viewContactUs : Element msg
+viewContactUs =
+    Element.el
+        [ Font.color lightBlack
+        , Font.size 36
+        , Font.heavy
+        ]
+        (Element.text "Contact Us")
+
+
+viewContactDetails : Element msg
+viewContactDetails =
+    Element.row
+        [ Element.width Element.fill
+        , Element.spacing 36
+        ]
+        [ viewSingaporeMap
+        , viewAddresses
+        , viewPhilippines
+        ]
+
+
+viewSingaporeMap : Element msg
+viewSingaporeMap =
+    GoogleMap.toElement GoogleMap.singapore 600 450 []
+
+
+viewPhilippines : Element msg
+viewPhilippines =
+    GoogleMap.toElement GoogleMap.philippines 600 450 []
+
+
+viewAddresses : Element msg
+viewAddresses =
+    Element.column
+        [ Element.width Element.fill
+        , Element.height Element.fill
+        ]
+        [ viewSingaporeDetails
+        , viewPhilippinesDetails
+        ]
+
+
+
+-- DETAILS
+
+
+viewSingaporeDetails : Element msg
+viewSingaporeDetails =
+    viewDetails Top
+        [ viewSingaporeAddress
+        , viewEmailLeft
+        ]
+
+
+viewPhilippinesDetails : Element msg
+viewPhilippinesDetails =
+    viewDetails Bottom
+        [ viewPhillippineAddress
+        , viewEmailRight
+        , viewPhone
+        ]
+
+
+viewDetails : VerticalAlignment -> List (Element msg) -> Element msg
+viewDetails alignment =
+    Element.column
+        [ Element.width Element.fill
+        , Element.spacing 12
+        , fromVerticalAlignmentToAttribute alignment
+        ]
+
+
+
+-- ADDRESS
+
+
+viewSingaporeAddress : Element msg
+viewSingaporeAddress =
+    viewAddress
+        { alignment = Left
+        , fontAlignment = AlignLeft
+        , address = "07-07, TripleOne Somerset, 111 Somerset Road, Singapore 238164"
+        }
+
+
+viewPhillippineAddress : Element msg
+viewPhillippineAddress =
+    viewAddress
+        { alignment = Right
+        , fontAlignment = AlignRight
+        , address = "Penthouse 1, One Corporate Center, Dona Julia Vargas Ave cor Meralco Ave, Ortigas Center, Pasig, Philippines 1605"
+        }
+
+
+viewAddress : { alignment : HorizontalAlignment, fontAlignment : FontAlignment, address : String } -> Element msg
+viewAddress details =
+    Element.paragraph
+        [ fromHorizontalAlignmentToAttribute details.alignment
+        , Font.color lightBlack
+        , Font.size 24
+        , fromFontAlignmentToAttribute details.fontAlignment
+        , Font.bold
+        ]
+        [ Element.text details.address ]
+
+
+
+-- EMAIL
+
+
+viewEmailLeft : Element msg
+viewEmailLeft =
+    viewEmail Left
+
+
+viewEmailRight : Element msg
+viewEmailRight =
+    viewEmail Right
+
+
+viewEmail : HorizontalAlignment -> Element msg
+viewEmail alignment =
+    Element.el
+        [ fromHorizontalAlignmentToAttribute alignment
+        , Font.color blue
+        , Font.size 24
+        , Font.underline
+        ]
+        (Element.text "hello@ownally.com")
+
+
+viewPhone : Element msg
+viewPhone =
+    Element.el
+        [ Element.alignRight
+        , Font.color lightBlack
+        , Font.size 24
+        ]
+        (Element.text "+632 8285 9735")
+
+
+
+-- VERTICAL ALIGNMENT
+
+
+type VerticalAlignment
+    = Top
+    | Bottom
+
+
+fromVerticalAlignmentToAttribute : VerticalAlignment -> Attribute msg
+fromVerticalAlignmentToAttribute verticalAlignment =
+    case verticalAlignment of
+        Top ->
+            Element.alignTop
+
+        Bottom ->
+            Element.alignBottom
+
+
+
+-- HORIZONTAL ALIGNMENT
+
+
+type HorizontalAlignment
+    = Left
+    | Right
+
+
+fromHorizontalAlignmentToAttribute : HorizontalAlignment -> Attribute msg
+fromHorizontalAlignmentToAttribute horizontalAlignment =
+    case horizontalAlignment of
+        Left ->
+            Element.alignLeft
+
+        Right ->
+            Element.alignRight
+
+
+
+-- FONT ALIGNMENT
+
+
+type FontAlignment
+    = AlignLeft
+    | AlignRight
+
+
+fromFontAlignmentToAttribute : FontAlignment -> Attribute msg
+fromFontAlignmentToAttribute fontAlignment =
+    case fontAlignment of
+        AlignLeft ->
+            Font.alignLeft
+
+        AlignRight ->
+            Font.alignRight
+
+
+
 -- FOOTER
 
 
@@ -478,4 +700,14 @@ transparent =
         , green = 255
         , blue = 255
         , alpha = 0
+        }
+
+
+blue : Color
+blue =
+    Element.fromRgb255
+        { red = 0
+        , green = 0
+        , blue = 255
+        , alpha = 1
         }

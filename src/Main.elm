@@ -3,7 +3,7 @@ module Main exposing (main)
 -- IMPORT
 
 import Browser
-import Element exposing (Attribute, Color, Device, Element)
+import Element exposing (Attribute, Color, Device, Element, row)
 import Element.Background as Background
 import Element.Font as Font
 import Element.Input as Input
@@ -240,7 +240,7 @@ viewHeaderHomeBigDesktopLandscape =
 
 viewHeaderHome : Element Msg
 viewHeaderHome =
-    Element.row attributeHeaderHome
+    row attributeHeaderHome
         [ viewTitle
         , viewButtonDashboard
         ]
