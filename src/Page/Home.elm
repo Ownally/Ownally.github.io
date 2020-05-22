@@ -9,21 +9,7 @@ module Page.Home exposing
     , viewTabletPortrait
     )
 
-import Element
-    exposing
-        ( Attribute
-        , Color
-        , Element
-        , behindContent
-        , column
-        , el
-        , fill
-        , none
-        , paddingXY
-        , row
-        , spacing
-        , width
-        )
+import Element exposing (Attribute, Color, Element)
 import Element.Background as Background
 import Element.Font as Font
 import GoogleMap
@@ -94,12 +80,12 @@ view window =
 viewLanding : Window -> Element msg
 viewLanding window =
     Element.column
-        [ width fill
-        , Window.height window
-        , paddingXY 144 72
-        , spacing 36
+        [ Element.width Element.fill
+        , Window.toAttribute window
+        , Element.paddingXY 144 72
+        , Element.spacing 36
         , Image.toBackground Image.house
-        , behindContent viewFadeWhite
+        , Element.behindContent viewFadeWhite
         ]
         [ viewHeadline
         , viewSubHeadline
@@ -108,19 +94,18 @@ viewLanding window =
 
 viewFadeWhite : Element msg
 viewFadeWhite =
-    el attributeFadeWhite Element.none
+    Element.el attributeFadeWhite Element.none
 
 
 attributeFadeWhite : List (Attribute msg)
 attributeFadeWhite =
-    List.concat
-        [ fillWindow
-        , [ Background.gradient
-                { angle = pi / 2
-                , steps = [ white, transparent ]
-                }
-          ]
-        ]
+    [ Element.width Element.fill
+    , Element.height Element.fill
+    , Background.gradient
+        { angle = pi / 2
+        , steps = [ white, transparent ]
+        }
+    ]
 
 
 

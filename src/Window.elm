@@ -1,9 +1,9 @@
 module Window exposing
     ( Window
     , classifyDevice
-    , height
     , init
     , onResize
+    , toAttribute
     )
 
 import Browser.Events
@@ -45,12 +45,12 @@ onResize : (Window -> msg) -> Sub msg
 onResize msg =
     let
         toMsg : Int -> Int -> msg
-        toMsg width currentHeight =
-            msg <| Window <| Dimension width currentHeight
+        toMsg width height =
+            msg <| Window <| Dimension width height
     in
     Browser.Events.onResize toMsg
 
 
-height : Window -> Attribute msg
-height (Window window) =
+toAttribute : Window -> Attribute msg
+toAttribute (Window window) =
     Element.height <| Element.px window.height
