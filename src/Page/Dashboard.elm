@@ -191,13 +191,11 @@ view window { shares, bidInput, askInput } =
 
 attribute : Window -> List (Attribute Msg)
 attribute window =
-    List.concat
-        [ Window.size window
-        , [ Element.paddingXY 144 144
-          , Element.spacing 36
-          , Background.color darkWhite
-          ]
-        ]
+    [ Window.height window
+    , Element.paddingXY 144 144
+    , Element.spacing 36
+    , Background.color darkWhite
+    ]
 
 
 viewInformation : Int -> Element Msg
