@@ -191,7 +191,8 @@ view window { shares, bidInput, askInput } =
 
 attribute : Window -> List (Attribute Msg)
 attribute window =
-    [ Window.height window
+    [ Element.width Element.fill
+    , Window.toAttribute window
     , Element.paddingXY 144 144
     , Element.spacing 36
     , Background.color darkWhite
